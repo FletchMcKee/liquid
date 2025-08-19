@@ -24,11 +24,10 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "block-portfolio"
+rootProject.name = "liquid-root"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
-rootProject.name = "liquid"
 include(":samples:app")
 include(":liquid")

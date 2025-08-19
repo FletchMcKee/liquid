@@ -1,40 +1,26 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
+  `kotlin-dsl`
+  alias(libs.plugins.spotless)
 }
 
-android {
-    namespace = "io.github.fletchmckee.buildlogic"
-    compileSdk = 36
+spotless {
+  kotlin {
+    target("src/**/*.kt")
+    ktlint()
+    licenseHeaderFile(rootProject.file("../spotless/copyright.txt"))
+  }
 
-    defaultConfig {
-        minSdk = 26
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+  kotlinGradle {
+    target("**/*.kts")
+    targetExclude("build/**/*.kts")
+    ktlint()
+    licenseHeaderFile(rootProject.file("../spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+  }
 }
 
 dependencies {
-
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+  compileOnly(libs.android.gradlePlugin)
+  compileOnly(libs.kotlin.gradlePlugin)
+  compileOnly(libs.compose.gradlePlugin)
+  compileOnly(libs.spotless.gradlePlugin)
 }

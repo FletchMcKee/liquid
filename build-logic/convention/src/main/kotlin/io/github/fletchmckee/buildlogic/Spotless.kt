@@ -1,0 +1,35 @@
+package io.github.fletchmckee.buildlogic
+
+import com.diffplug.gradle.spotless.SpotlessExtension
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
+
+internal fun Project.configureSpotless() {
+  with(pluginManager) { apply("com.diffplug.spotless") }
+
+  spotless {
+    val ktlintVersion = libs.findVersion("ktlint").get().requiredVersion
+    val composeRulesDep = libs.findLibrary("ktlint-compose-rules").get()
+    val composeRulesCoordinates = "${composeRulesDep.get().module}:${composeRulesDep.get().version}"
+
+    kotlin {
+      target("src/**/*.kt")
+      ktlint(ktlintVersion).editorConfigOverride(
+        mapOf(
+          "ktlint_standard_filename" to "disabled",
+          "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+        ),
+      ).customRuleSets(listOf(composeRulesCoordinates))
+      licenseHeaderFile(rootProject.file("spotless/copyright.txt"))
+    }
+
+    kotlinGradle {
+      target("**/*.kts")
+      targetExclude("build/**/*.kts")
+      ktlint(ktlintVersion)
+      licenseHeaderFile(rootProject.file("spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
+    }
+  }
+}
+
+private fun Project.spotless(action: SpotlessExtension.() -> Unit) = extensions.configure<SpotlessExtension>(action)
