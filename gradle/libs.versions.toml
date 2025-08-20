@@ -1,21 +1,44 @@
 [versions]
+activityCompose = "1.10.1"
 agp = "8.12.1"
+androidDesugarJdkLibs = "2.1.5"
 appcompat = "1.7.1"
+composeBom = "2025.07.00"
+composeRules = "0.4.27"
 coreKtx = "1.17.0"
 espressoCore = "3.7.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 kotlin = "2.0.21"
+ktlint = "1.6.0"
 material = "1.12.0"
 spotless = "7.2.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+kotlin-test = { group = "org.jetbrains.kotlin", name = "kotlin-test", version.ref = "kotlin" }
+
+# Compose
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+compose-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+compose-foundation = { module = "androidx.compose.foundation:foundation" }
+
+# Formatting
+ktlint-core = { module = "com.pinterest.ktlint:ktlint-core", version.ref = "ktlint" }
+ktlint-compose-rules = { module = "io.nlopez.compose.rules:ktlint", version.ref = "composeRules" }
 
 # build-logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
@@ -29,4 +52,8 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+
+liquid-android-library = { id = "io.github.fletchmckee.liquid.android.library" }
+liquid-android-library-compose = { id = "io.github.fletchmckee.liquid.android.library.compose" }
+
 
