@@ -53,6 +53,7 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 android-library = { id = "com.android.library", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
+liquid-root = { id = "io.github.fletchmckee.liquid.root" }
 liquid-android-library = { id = "io.github.fletchmckee.liquid.android.library" }
 liquid-android-library-compose = { id = "io.github.fletchmckee.liquid.android.library.compose" }
 

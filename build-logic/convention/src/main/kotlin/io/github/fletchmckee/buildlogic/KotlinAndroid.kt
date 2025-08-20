@@ -1,3 +1,5 @@
+// Copyright 2025, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.buildlogic
 
 import com.android.build.api.dsl.CommonExtension
@@ -41,7 +43,7 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
         listOf(
           // Enable experimental coroutines APIs, including Flow
           "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-        )
+        ),
       )
     }
   }

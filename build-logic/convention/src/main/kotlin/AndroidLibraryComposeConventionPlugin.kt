@@ -1,3 +1,5 @@
+// Copyright 2025, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 import com.android.build.gradle.LibraryExtension
 import io.github.fletchmckee.buildlogic.configureAndroidCompose
 import org.gradle.api.Plugin
@@ -7,12 +9,11 @@ import org.gradle.kotlin.dsl.getByType
 
 @Suppress("unused") // Invoked reflectively
 class AndroidLibraryComposeConventionPlugin : Plugin<Project> {
-  override fun apply(target: Project) =
-    with(target) {
-      apply(plugin = "com.android.library")
-      apply(plugin = "org.jetbrains.kotlin.plugin.compose")
+  override fun apply(target: Project) = with(target) {
+    apply(plugin = "com.android.library")
+    apply(plugin = "org.jetbrains.kotlin.plugin.compose")
 
-      val extension = extensions.getByType<LibraryExtension>()
-      configureAndroidCompose(extension)
-    }
+    val extension = extensions.getByType<LibraryExtension>()
+    configureAndroidCompose(extension)
+  }
 }

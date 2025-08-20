@@ -1,3 +1,5 @@
+// Copyright 2025, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.buildlogic
 
 import com.diffplug.gradle.spotless.SpotlessExtension
@@ -13,7 +15,8 @@ internal fun Project.configureSpotless() {
     val composeRulesCoordinates = "${composeRulesDep.get().module}:${composeRulesDep.get().version}"
 
     kotlin {
-      target("src/**/*.kt")
+      target("**/*.kt")
+      targetExclude("build/**/*.kt")
       ktlint(ktlintVersion).editorConfigOverride(
         mapOf(
           "ktlint_standard_filename" to "disabled",

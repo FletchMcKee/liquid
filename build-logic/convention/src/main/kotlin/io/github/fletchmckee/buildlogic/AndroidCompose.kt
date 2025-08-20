@@ -1,3 +1,5 @@
+// Copyright 2025, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.buildlogic
 
 import com.android.build.api.dsl.CommonExtension
@@ -28,12 +30,11 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
   extensions.configure<ComposeCompilerGradlePluginExtension> {
     fun Provider<String>.onlyIfTrue() = flatMap { provider { it.takeIf(String::toBoolean) } }
 
-    fun Provider<*>.relativeToRootProject(dir: String) =
-      map {
-        isolated.rootProject.projectDirectory
-          .dir("build")
-          .dir(projectDir.toRelativeString(rootDir))
-      }.map { it.dir(dir) }
+    fun Provider<*>.relativeToRootProject(dir: String) = map {
+      isolated.rootProject.projectDirectory
+        .dir("build")
+        .dir(projectDir.toRelativeString(rootDir))
+    }.map { it.dir(dir) }
 
     project.providers
       .gradleProperty("enableComposeCompilerMetrics")
@@ -48,6 +49,6 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
       .let(reportsDestination::set)
 
     // TODO
-    //stabilityConfigurationFiles.add(isolated.rootProject.projectDirectory.file("compose_compiler_config.conf"))
+    // stabilityConfigurationFiles.add(isolated.rootProject.projectDirectory.file("compose_compiler_config.conf"))
   }
 }
