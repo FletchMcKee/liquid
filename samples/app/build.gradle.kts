@@ -26,4 +26,6 @@ android {
 dependencies {
   implementation(projects.liquid)
   implementation(libs.activity.compose)
+  implementation(libs.compose.adaptive)
+  implementation(libs.compose.adaptive.layout)
 }

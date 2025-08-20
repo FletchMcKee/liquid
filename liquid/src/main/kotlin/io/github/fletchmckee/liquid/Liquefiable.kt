@@ -38,7 +38,7 @@ public class Liquefiable {
  *
  * @param liquid The shared [Liquid] instance that receives this node’s content for sampling.
  */
-public fun Modifier.otherSide(
+public fun Modifier.liquefiable(
   liquid: Liquid,
 ) = this then when {
   Build.VERSION.SDK_INT >= 33 -> LiquefiableElement(liquid)
