@@ -1,18 +1,15 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
 plugins {
-  alias(libs.plugins.android.application)
-  alias(libs.plugins.kotlin.android)
+  alias(libs.plugins.liquid.android.application)
+  alias(libs.plugins.liquid.android.application.compose)
 }
 
 android {
-  namespace = "io.github.fletchmckee.liquid"
-  compileSdk = 36
+  namespace = "io.github.fletchmckee.liquid.samples.draggable"
 
   defaultConfig {
-    applicationId = "io.github.fletchmckee.liquid"
-    minSdk = 26
-    targetSdk = 36
+    applicationId = "io.github.fletchmckee.liquid.samples.draggable"
     versionCode = 1
     versionName = "1.0"
 
@@ -22,24 +19,11 @@ android {
   buildTypes {
     release {
       isMinifyEnabled = false
-      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
-  }
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-  }
-  kotlinOptions {
-    jvmTarget = "11"
   }
 }
 
 dependencies {
-
-  implementation(libs.androidx.core.ktx)
-  implementation(libs.androidx.appcompat)
-  implementation(libs.material)
-  testImplementation(libs.junit)
-  androidTestImplementation(libs.androidx.junit)
-  androidTestImplementation(libs.androidx.espresso.core)
+  implementation(projects.liquid)
+  implementation(libs.activity.compose)
 }

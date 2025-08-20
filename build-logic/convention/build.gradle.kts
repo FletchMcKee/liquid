@@ -51,5 +51,20 @@ gradlePlugin {
           .pluginId
       implementationClass = "AndroidLibraryComposeConventionPlugin"
     }
+    register("androidApplication") {
+      id =
+        libs.plugins.liquid.android.application
+          .asProvider()
+          .get()
+          .pluginId
+      implementationClass = "AndroidApplicationConventionPlugin"
+    }
+    register("androidApplicationCompose") {
+      id =
+        libs.plugins.liquid.android.application.compose
+          .get()
+          .pluginId
+      implementationClass = "AndroidApplicationComposeConventionPlugin"
+    }
   }
 }
