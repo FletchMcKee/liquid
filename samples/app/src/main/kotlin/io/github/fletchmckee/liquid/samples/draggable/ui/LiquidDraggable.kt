@@ -1,4 +1,7 @@
+// Copyright 2025, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 @file:OptIn(ExperimentalMaterial3Api::class)
+
 package io.github.fletchmckee.liquid.samples.draggable.ui
 
 import androidx.compose.animation.AnimatedVisibility
@@ -14,6 +17,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -57,10 +61,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpSize
@@ -247,7 +248,7 @@ private fun DraggableGlassBox(
       modifier = Modifier
         .fillMaxWidth()
         .align(Alignment.TopCenter)
-        .padding(12.dp)
+        .padding(12.dp),
     )
   }
 }
@@ -312,9 +313,6 @@ private fun BoxScope.GlassSliders(
         steps = 29,
         valueRange = 0f..60f,
         formatter = "%,.0f",
-        modifier = Modifier
-          .testTag("frostSlider")
-          .semantics { testTagsAsResourceId = true },
       )
 
       GlassSliderRow(
@@ -345,7 +343,7 @@ private fun BoxScope.GlassSliders(
 }
 
 @Composable
-private fun GlassSliderRow(
+private fun ColumnScope.GlassSliderRow(
   text: String,
   value: Float,
   onValueChange: (Float) -> Unit,

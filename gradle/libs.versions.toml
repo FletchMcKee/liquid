@@ -3,6 +3,7 @@ activityCompose = "1.10.1"
 agp = "8.12.1"
 androidDesugarJdkLibs = "2.1.5"
 appcompat = "1.7.1"
+benchmark = "1.4.0"
 composeAdaptive = "1.1.0"
 composeBom = "2025.07.00"
 composeRules = "0.4.27"
@@ -14,6 +15,7 @@ kotlin = "2.0.21"
 ktlint = "1.6.0"
 material = "1.12.0"
 spotless = "7.2.1"
+uiautomator = "2.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,12 +50,15 @@ android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
+androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
+androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmark" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+android-test = { id = "com.android.test", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 
 liquid-root = { id = "io.github.fletchmckee.liquid.root" }
@@ -61,4 +66,6 @@ liquid-android-library = { id = "io.github.fletchmckee.liquid.android.library" }
 liquid-android-library-compose = { id = "io.github.fletchmckee.liquid.android.library.compose" }
 liquid-android-application = { id = "io.github.fletchmckee.liquid.android.application" }
 liquid-android-application-compose = { id = "io.github.fletchmckee.liquid.android.application.compose" }
+liquid-android-test = { id = "io.github.fletchmckee.liquid.android.test" }
+
 

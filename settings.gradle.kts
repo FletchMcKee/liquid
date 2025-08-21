@@ -31,3 +31,4 @@ enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 
 include(":samples:app")
 include(":liquid")
+include(":benchmark")

@@ -1,3 +1,5 @@
+// Copyright 2025, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.draggable.theme
 
 import androidx.compose.material3.Typography

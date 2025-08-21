@@ -66,5 +66,12 @@ gradlePlugin {
           .pluginId
       implementationClass = "AndroidApplicationComposeConventionPlugin"
     }
+    register("androidTest") {
+      id =
+        libs.plugins.liquid.android.test
+          .get()
+          .pluginId
+      implementationClass = "AndroidTestConventionPlugin"
+    }
   }
 }

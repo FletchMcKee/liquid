@@ -18,9 +18,9 @@ internal val LiquidShader = """
   const float PI = 3.14159265;
   const float PI_2 = PI * 2.0;
   const float HALF_PI = PI / 2.0;
-  const float DIRECTIONS = 16.0;
+  const float DIRECTIONS = 10.0;
   const float PI_DIRECTIONS = PI / DIRECTIONS;
-  const float QUALITY = 12.0;
+  const float QUALITY = 10.0;
 
   float shape(in float2 p, in float2 b, in half4 r) {
     r.xy = (p.x > 0.0) ? r.xy : r.zw;

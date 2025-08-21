@@ -37,5 +37,5 @@ internal fun Modifier.liquidBackup(
   )
 }
 
-private val FlawedWhite = Color.White
-private val Ink = Color.Black
+private val Ink = Color(0xFF111111)
+private val FlawedWhite = Color(0xFFFFFBFE)
