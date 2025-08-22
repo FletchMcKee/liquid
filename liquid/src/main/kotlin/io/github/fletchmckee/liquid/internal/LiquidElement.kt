@@ -7,14 +7,11 @@ import android.graphics.RuntimeShader
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
@@ -24,58 +21,58 @@ import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.ObserverModifierNode
 import androidx.compose.ui.node.TraversableNode
 import androidx.compose.ui.node.currentValueOf
+import androidx.compose.ui.node.findNearestAncestor
 import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.node.observeReads
-import androidx.compose.ui.node.traverseAncestors
+import androidx.compose.ui.node.requireDensity
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.toIntSize
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.util.fastRoundToInt
 import io.github.fletchmckee.liquid.Liquefiable
-import io.github.fletchmckee.liquid.Liquid
+import io.github.fletchmckee.liquid.LiquidState
+import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
+import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
 import kotlin.collections.orEmpty
 
 @RequiresApi(33)
 internal class LiquidElement(
-  private val liquid: Liquid,
+  private val liquidState: LiquidState,
   private val frost: Dp,
   private val shape: Shape,
-  private val lensRefraction: Float,
-  private val lensCurvature: Float,
+  private val refraction: Float,
+  private val curve: Float,
   private val sharp: Float,
-  private val tint: Color,
 ) : ModifierNodeElement<LiquidNode>() {
 
   override fun create() = LiquidNode(
-    liquid = liquid,
+    liquidState = liquidState,
     frost = frost,
     shape = shape,
-    lensRefraction = lensRefraction,
-    lensCurvature = lensCurvature,
+    refraction = refraction,
+    curve = curve,
     sharp = sharp,
-    tint = tint,
   )
 
   override fun update(node: LiquidNode) {
-    node.liquid = liquid
+    node.liquidState = liquidState
     node.frost = frost
     node.shape = shape
-    node.lensRefraction = lensRefraction
-    node.lensCurvature = lensCurvature
+    node.refraction = refraction
+    node.curve = curve
     node.sharp = sharp
-    node.tint = tint
   }
 
   override fun InspectorInfo.inspectableProperties() {
     name = "Liquid"
-    properties["liquid"] = liquid
     properties["frost"] = frost
     properties["shape"] = shape
-    properties["lensRefraction"] = lensRefraction
-    properties["lensCurvature"] = lensCurvature
+    properties["refraction"] = refraction
+    properties["curve"] = curve
     properties["sharp"] = sharp
-    properties["tint"] = tint
   }
 
   override fun equals(other: Any?): Boolean {
@@ -84,38 +81,35 @@ internal class LiquidElement(
 
     other as LiquidElement
 
-    if (liquid != other.liquid) return false
+    if (liquidState != other.liquidState) return false
     if (frost != other.frost) return false
     if (shape != other.shape) return false
-    if (lensRefraction != other.lensRefraction) return false
-    if (lensCurvature != other.lensCurvature) return false
+    if (refraction != other.refraction) return false
+    if (curve != other.curve) return false
     if (sharp != other.sharp) return false
-    if (tint != other.tint) return false
 
     return true
   }
 
   override fun hashCode(): Int {
-    var result = liquid.hashCode()
+    var result = liquidState.hashCode()
     result = 31 * result + frost.hashCode()
     result = 31 * result + shape.hashCode()
-    result = 31 * result + lensRefraction.hashCode()
-    result = 31 * result + lensCurvature.hashCode()
+    result = 31 * result + refraction.hashCode()
+    result = 31 * result + curve.hashCode()
     result = 31 * result + sharp.hashCode()
-    result = 31 * result + tint.hashCode()
     return result
   }
 }
 
 @RequiresApi(33)
 internal class LiquidNode(
-  var liquid: Liquid?,
+  var liquidState: LiquidState?,
   var frost: Dp,
   var shape: Shape,
-  var lensRefraction: Float,
-  var lensCurvature: Float,
+  var refraction: Float,
+  var curve: Float,
   var sharp: Float,
-  var tint: Color,
 ) : Modifier.Node(),
   GlobalPositionAwareModifierNode,
   DrawModifierNode,
@@ -128,7 +122,10 @@ internal class LiquidNode(
   override val traverseKey: Any
     get() = LiquidKey
 
-  private val shader = RuntimeShader(LiquidShader)
+  private val liquidShader = RuntimeShader(LiquidShaderV2)
+  private val horizontalShader = RuntimeShader(HorizontalFrostShader)
+  private val verticalShader = RuntimeShader(VerticalFrostShader)
+
   private var cachedLayer: GraphicsLayer? = null
   private var bounds = Rect.Zero
   private var lastBounds = Rect.Zero
@@ -142,25 +139,22 @@ internal class LiquidNode(
   override fun onDetach() {
     cachedLayer?.let { layer -> currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(layer) }
     cachedLayer = null
+    liquefiables = emptyList()
+    bounds = Rect.Zero
+    lastBounds = Rect.Zero
     super.onDetach()
   }
 
   private fun invalidateIfNeeded() {
     if (!isAttached) return
 
-    val forbiddenSides = buildList {
-      traverseAncestors(LiquefiableNode.LiquefiableKey) {
-        (it as? LiquefiableNode)?.let { node -> add(node.liquefiable) }
-        true
-      }
-    }
-
+    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
     // This has room for improvement, but it allows nodes to be both a content and effect node while preventing infinite draws if a
     // parent `liquefiable` node has child `liquid` nodes.
-    val newSides = liquid?.liquefiables
+    val newSides = liquidState?.liquefiables
       .orEmpty()
       .asSequence()
-      .filterNot { it in forbiddenSides }
+      .filterNot { it == ancestor }
       .toList()
 
     val shouldInvalidate = newSides != liquefiables || bounds != lastBounds
@@ -168,7 +162,6 @@ internal class LiquidNode(
     liquefiables = newSides
     lastBounds = bounds
 
-    // Only invalidate if something actually changed
     if (shouldInvalidate) {
       invalidateDraw()
     }
@@ -177,12 +170,24 @@ internal class LiquidNode(
   override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
     if (!isAttached) return
 
-    bounds = Rect(coordinates.positionOnScreen(), coordinates.size.toSize())
+    val position = coordinates.positionOnScreen()
+    val size = coordinates.size.toSize()
+    // For a uniform blur, we have to sample outside of the node's actual size with the blur radius as padding.
+    val padding = with(requireDensity()) { frost.toPx() }
+    bounds = Rect(
+      left = position.x - padding,
+      top = position.y - padding,
+      right = position.x + size.width + padding,
+      bottom = position.y + size.height + padding,
+    )
+
     invalidateIfNeeded()
   }
 
   override fun ContentDrawScope.draw() {
-    if (liquefiables.isEmpty() || size.isEmpty()) {
+    if (!isAttached) return
+
+    if (size.minDimension.fastRoundToInt() < 1) {
       drawContent()
       return
     }
@@ -194,40 +199,50 @@ internal class LiquidNode(
 
     val density = currentValueOf(LocalDensity)
     val cornerRadius = shape.cornerRadiusPx(size, density)
-    val blur = with(density) { frost.toPx() }
+    val frostRadius = with(density) { frost.toPx() }
 
-    shader.apply {
-      setFloatUniform("blurRadius", blur)
-      setFloatUniform("resolution", size.width, size.height)
-      setFloatUniform("cornerRadius", cornerRadius)
-      setFloatUniform("lensRefraction", lensRefraction)
-      setFloatUniform("lensCurvature", lensCurvature)
-      setFloatUniform("sharp", sharp)
-      setColorUniform("tintColor", tint.toArgb())
-    }
-
-    val renderEffect = createRuntimeShaderEffect(shader, "content")
-
-    layer.record {
-      liquefiables
-        .asSequence()
-        .filter { bounds.overlaps(it.boundsOnScreen) }
-        .forEach { liquefiable ->
-          liquefiable.layer
-            ?.takeUnless { it.isReleased || it.size.isEmpty }
-            ?.let { liquefiableLayer ->
-              // Position content where it should appear on screen
-              val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - bounds.topLeft.orZero
-              translate(x, y) {
-                drawLayer(liquefiableLayer)
+    if (liquefiables.isNotEmpty()) {
+      layer.record(bounds.size.toIntSize()) {
+        liquefiables
+          .asSequence()
+          .filter { bounds.overlaps(it.boundsOnScreen) }
+          .forEach { liquefiable ->
+            liquefiable.layer
+              ?.takeUnless { it.isReleased || it.size.isEmpty }
+              ?.let { liquefiableLayer ->
+                // Position content where it should appear on screen
+                val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - bounds.topLeft.orZero
+                translate(x, y) {
+                  drawLayer(liquefiableLayer)
+                }
               }
-            }
-        }
+          }
+      }
     }
+
+    liquidShader.setLiquidUniforms(
+      bounds = bounds,
+      frostRadius = frostRadius,
+      cornerRadius = cornerRadius,
+      refraction = refraction,
+      curve = curve,
+      sharp = sharp,
+    )
+
+    val renderEffect = createRuntimeShaderEffect(liquidShader, "content")
+      .configureRenderEffect(
+        horizontalShader = horizontalShader,
+        verticalShader = verticalShader,
+        frostRadius = frostRadius,
+        cornerRadius = cornerRadius,
+        bounds = bounds,
+      )
 
     layer.clip = cornerRadius > 0f
-    layer.renderEffect = renderEffect.asComposeRenderEffect()
-    drawLayer(layer)
+    layer.renderEffect = renderEffect
+    translate(-frostRadius, -frostRadius) {
+      drawLayer(layer)
+    }
     drawContent()
   }
 

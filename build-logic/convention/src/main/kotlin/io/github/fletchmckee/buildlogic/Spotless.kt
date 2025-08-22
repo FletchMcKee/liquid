@@ -16,13 +16,19 @@ internal fun Project.configureSpotless() {
 
     kotlin {
       target("**/*.kt")
-      targetExclude("build/**/*.kt")
-      ktlint(ktlintVersion).editorConfigOverride(
-        mapOf(
-          "ktlint_standard_filename" to "disabled",
-          "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
-        ),
-      ).customRuleSets(listOf(composeRulesCoordinates))
+      targetExclude(
+        "build/**/*.kt",
+        // Apache 2-licensed files from Haze.
+        "../liquid/src/main/kotlin/io/github/fletchmckee/liquid/internal/Bitmask.kt",
+      )
+      ktlint(ktlintVersion)
+        .editorConfigOverride(
+          mapOf(
+            "ktlint_standard_filename" to "disabled",
+            "ktlint_standard_property-naming" to "disabled",
+            "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
+          ),
+        ).customRuleSets(listOf(composeRulesCoordinates))
       licenseHeaderFile(rootProject.file("spotless/copyright.txt"))
     }
 

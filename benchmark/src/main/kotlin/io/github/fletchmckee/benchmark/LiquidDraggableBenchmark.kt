@@ -33,9 +33,8 @@ class LiquidDraggableBenchmark {
       }
       device.waitForIdle()
     },
-  ) {
-    device.dragFigureEight()
-  }
+    measureBlock = { dragFigureEight() },
+  )
 
   @Test
   fun dragGlassBoxNoFrost() = benchmarkRule.measureRepeated(
@@ -50,9 +49,8 @@ class LiquidDraggableBenchmark {
       }
       device.waitForIdle()
     },
-  ) {
-    device.dragFigureEight()
-  }
+    measureBlock = { dragFigureEight() },
+  )
 
   @Test
   fun dragGlassBoxFrost10() = benchmarkRule.measureRepeated(
@@ -67,9 +65,24 @@ class LiquidDraggableBenchmark {
       }
       device.waitForIdle()
     },
-  ) {
-    device.dragFigureEight()
-  }
+    measureBlock = { dragFigureEight() },
+  )
+
+  @Test
+  fun dragFrostSlider() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = 5,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = {
+      startActivityAndWait { intent ->
+        intent.putExtra(INITIAL_FROST, 0f)
+      }
+      device.waitForIdle()
+    },
+    measureBlock = { dragFrostSlider() },
+  )
 
   private companion object Companion {
     const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.draggable"

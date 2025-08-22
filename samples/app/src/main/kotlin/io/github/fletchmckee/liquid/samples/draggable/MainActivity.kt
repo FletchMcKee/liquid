@@ -6,6 +6,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.ui.Modifier
 import io.github.fletchmckee.liquid.samples.draggable.theme.DraggableTheme
 import io.github.fletchmckee.liquid.samples.draggable.ui.LiquidGlassScreen
 
@@ -20,6 +25,9 @@ class MainActivity : ComponentActivity() {
         LiquidGlassScreen(
           useGlass = useGlass,
           initialFrost = initialFrost,
+          modifier = Modifier
+            .fillMaxSize()
+            .consumeWindowInsets(WindowInsets.systemBars),
         )
       }
     }

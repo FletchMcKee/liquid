@@ -28,7 +28,7 @@ public class Liquefiable {
 
 /**
  * Marks this modifier node as a recording surface whose rendered content can be sampled and displayed through another UI layer using a
- * [Liquid] effect.
+ * [LiquidState] effect.
  *
  * This enables visual effects like liquid glass by allowing sibling composables to reference and render the content "beneath"
  * them.
@@ -36,11 +36,11 @@ public class Liquefiable {
  * On Android 13 (API 33) and above, uses a shader-backed [LiquefiableElement] to capture this node's output.
  * On lower versions, no visual effect is applied and this is a no-op.
  *
- * @param liquid The shared [Liquid] instance that receives this node’s content for sampling.
+ * @param liquidState The shared [LiquidState] instance that receives this node’s content for sampling.
  */
 public fun Modifier.liquefiable(
-  liquid: Liquid,
+  liquidState: LiquidState,
 ) = this then when {
-  Build.VERSION.SDK_INT >= 33 -> LiquefiableElement(liquid)
+  Build.VERSION.SDK_INT >= 33 -> LiquefiableElement(liquidState)
   else -> Modifier
 }

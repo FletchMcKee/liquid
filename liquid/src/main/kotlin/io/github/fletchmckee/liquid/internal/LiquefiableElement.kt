@@ -19,15 +19,15 @@ import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.util.fastRoundToInt
 import io.github.fletchmckee.liquid.Liquefiable
-import io.github.fletchmckee.liquid.Liquid
+import io.github.fletchmckee.liquid.LiquidState
 
 internal class LiquefiableElement(
-  private val liquid: Liquid,
+  private val liquidState: LiquidState,
 ) : ModifierNodeElement<LiquefiableNode>() {
-  override fun create(): LiquefiableNode = LiquefiableNode(liquid)
+  override fun create(): LiquefiableNode = LiquefiableNode(liquidState)
 
   override fun update(node: LiquefiableNode) {
-    node.liquid = liquid
+    node.liquidState = liquidState
   }
 
   override fun equals(other: Any?): Boolean {
@@ -36,19 +36,18 @@ internal class LiquefiableElement(
 
     other as LiquefiableElement
 
-    return liquid == other.liquid
+    return liquidState == other.liquidState
   }
 
-  override fun hashCode(): Int = liquid.hashCode()
+  override fun hashCode(): Int = liquidState.hashCode()
 
   override fun InspectorInfo.inspectableProperties() {
     name = "liquefiable"
-    properties["liquid"] = liquid
   }
 }
 
 internal class LiquefiableNode(
-  var liquid: Liquid,
+  var liquidState: LiquidState,
 ) : Modifier.Node(),
   CompositionLocalConsumerModifierNode,
   DrawModifierNode,
@@ -64,10 +63,10 @@ internal class LiquefiableNode(
 
   override val shouldAutoInvalidate: Boolean = false
 
-  override fun onAttach() = liquid.addLiquefiable(liquefiable)
+  override fun onAttach() = liquidState.addLiquefiable(liquefiable)
 
   override fun onDetach() {
-    liquid.removeLiquefiable(liquefiable)
+    liquidState.removeLiquefiable(liquefiable)
     liquefiable.boundsOnScreen = Rect.Zero
     liquefiable.layer?.let { layer ->
       currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(layer)
@@ -93,10 +92,8 @@ internal class LiquefiableNode(
         contentLayer.record {
           this@draw.drawContent()
         }
-
-        // Draw the layer and then content.
+        // No need to call drawContent since we did in the recording.
         drawLayer(contentLayer)
-        drawContent()
       }
       else -> drawContent()
     }

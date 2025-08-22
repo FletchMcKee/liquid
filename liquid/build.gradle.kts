@@ -14,8 +14,6 @@ kotlin {
 }
 
 dependencies {
-  api(libs.compose.foundation)
   api(libs.compose.ui)
-  api(libs.compose.material3)
-  api(libs.compose.ui.graphics)
+  api(libs.compose.foundation)
 }
