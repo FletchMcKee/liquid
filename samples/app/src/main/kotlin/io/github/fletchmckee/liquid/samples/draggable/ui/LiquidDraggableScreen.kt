@@ -47,7 +47,7 @@ fun LiquidGlassScreen(
   modifier: Modifier = Modifier,
   windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
   initialFrost: Float = 0f,
-  useGlass: Boolean = true,
+  useLiquid: Boolean = true,
   usePager: Boolean = true,
   sliderContainerColor: Color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
 ) {
@@ -66,7 +66,7 @@ fun LiquidGlassScreen(
       usePager = usePager,
       modifier = Modifier
         .fillMaxSize()
-        .thenIf(useGlass) {
+        .thenIf(useLiquid) {
           liquefiable(liquidState)
         },
     )
@@ -78,7 +78,7 @@ fun LiquidGlassScreen(
         .padding(top = 48.dp, start = 32.dp)
         .zIndex(3f)
         .shadow(elevation = 2.dp, shape = CircleShape)
-        .thenIf(useGlass) {
+        .thenIf(useLiquid) {
           liquid(
             liquidState = liquidState,
             frost = 10.dp,
@@ -90,7 +90,7 @@ fun LiquidGlassScreen(
 
     LiquidSliders(
       liquidState = liquidState,
-      useGlass = useGlass,
+      useGlass = useLiquid,
       showSliders = showSliders,
       isLandscape = isLandscape,
       frostProvider = { blurRadius },

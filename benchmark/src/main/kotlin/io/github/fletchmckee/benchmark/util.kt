@@ -5,6 +5,7 @@ package io.github.fletchmckee.benchmark
 import android.graphics.Point
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.Until
 
 internal fun MacrobenchmarkScope.dragFigureEight(
@@ -37,7 +38,7 @@ internal fun MacrobenchmarkScope.dragFigureEight(
 internal fun MacrobenchmarkScope.dragFrostSlider(
   timeoutMs: Long = 2_000,
   speed: Int = 1_000,
-  iterations: Int = 2,
+  iterations: Int = 4,
 ) = repeat(iterations) {
   device.wait(Until.hasObject(By.res("frostSlider")), timeoutMs)
   val frostSlider = requireNotNull(device.findObject(By.res("frostSlider"))) {
@@ -60,5 +61,23 @@ internal fun MacrobenchmarkScope.dragFrostSlider(
 
   // Drag back to start.
   thumb.drag(start, speed)
+  device.waitForIdle()
+}
+
+fun MacrobenchmarkScope.flingElementDownThenUp(
+  testTag: String,
+  timeout: Long = 2_000,
+) {
+  device.wait(Until.hasObject(By.res(testTag)), timeout)
+  val element = requireNotNull(device.findObject(By.res(testTag))) {
+    "$testTag not found"
+  }
+  element.setGestureMargin(device.displayWidth / 5)
+
+  element.fling(Direction.DOWN)
+  element.fling(Direction.DOWN)
+  device.waitForIdle()
+  element.fling(Direction.UP)
+  element.fling(Direction.UP)
   device.waitForIdle()
 }

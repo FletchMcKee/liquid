@@ -29,7 +29,8 @@ class LiquidDraggableBenchmark {
     startupMode = StartupMode.WARM,
     setupBlock = {
       startActivityAndWait { intent ->
-        intent.putExtra(USE_GLASS, false)
+        intent.putExtra(DEMO_TYPE, "Drag")
+        intent.putExtra(USE_LIQUID, false)
       }
       device.waitForIdle()
     },
@@ -45,6 +46,7 @@ class LiquidDraggableBenchmark {
     startupMode = StartupMode.WARM,
     setupBlock = {
       startActivityAndWait { intent ->
+        intent.putExtra(DEMO_TYPE, "Drag")
         intent.putExtra(INITIAL_FROST, 0f)
       }
       device.waitForIdle()
@@ -61,6 +63,7 @@ class LiquidDraggableBenchmark {
     startupMode = StartupMode.WARM,
     setupBlock = {
       startActivityAndWait { intent ->
+        intent.putExtra(DEMO_TYPE, "Drag")
         intent.putExtra(INITIAL_FROST, 10f)
       }
       device.waitForIdle()
@@ -77,6 +80,7 @@ class LiquidDraggableBenchmark {
     startupMode = StartupMode.WARM,
     setupBlock = {
       startActivityAndWait { intent ->
+        intent.putExtra(DEMO_TYPE, "Drag")
         intent.putExtra(INITIAL_FROST, 0f)
       }
       device.waitForIdle()
@@ -84,9 +88,61 @@ class LiquidDraggableBenchmark {
     measureBlock = { dragFrostSlider() },
   )
 
+  @Test
+  fun scrollLiquidGridBaseline() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = 5,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = {
+      startActivityAndWait { intent ->
+        intent.putExtra(DEMO_TYPE, "Grid")
+        intent.putExtra(USE_LIQUID, false)
+      }
+      device.waitForIdle()
+    },
+    measureBlock = { flingElementDownThenUp("liquidGrid") },
+  )
+
+  @Test
+  fun scrollLiquidGridNoFrost() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = 5,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = {
+      startActivityAndWait { intent ->
+        intent.putExtra(DEMO_TYPE, "Grid")
+        intent.putExtra(INITIAL_FROST, 0f)
+      }
+      device.waitForIdle()
+    },
+    measureBlock = { flingElementDownThenUp("liquidGrid") },
+  )
+
+  @Test
+  fun scrollLiquidGridFrost10() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = 5,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = {
+      startActivityAndWait { intent ->
+        intent.putExtra(DEMO_TYPE, "Grid")
+        intent.putExtra(INITIAL_FROST, 10f)
+      }
+      device.waitForIdle()
+    },
+    measureBlock = { flingElementDownThenUp("liquidGrid") },
+  )
+
   private companion object Companion {
     const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.draggable"
-    const val USE_GLASS = "$PACKAGE_NAME.USE_GLASS"
+    const val DEMO_TYPE = "$PACKAGE_NAME.DEMO_TYPE"
+    const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"
   }
 }
