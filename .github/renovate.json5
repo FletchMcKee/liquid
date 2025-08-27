@@ -1,0 +1,23 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+  ],
+  ignorePresets: [
+    'workarounds:javaLTSVersions',
+  ],
+  customManagers: [
+    {
+      customType: 'regex',
+      managerFilePatterns: [
+        '/\\.java-version$/',
+      ],
+      matchStrings: [
+        '(?<currentValue>.*)\\n',
+      ],
+      datasourceTemplate: 'java-version',
+      depNameTemplate: 'java',
+      extractVersionTemplate: '^(?<version>\\d+)',
+    },
+  ],
+}
