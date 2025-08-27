@@ -11,9 +11,15 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.ui.Modifier
-import io.github.fletchmckee.liquid.samples.draggable.theme.DraggableTheme
-import io.github.fletchmckee.liquid.samples.draggable.ui.LiquidGlassScreen
-import io.github.fletchmckee.liquid.samples.draggable.ui.grid.LiquidGridScreen
+import coil3.ImageLoader
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
+import coil3.request.crossfade
+import io.github.fletchmckee.liquid.samples.draggable.demos.drag.LiquidDraggableScreen
+import io.github.fletchmckee.liquid.samples.draggable.demos.grid.LiquidGridScreen
+import io.github.fletchmckee.liquid.samples.draggable.theme.LiquidTheme
+import okio.Path.Companion.toOkioPath
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,11 +27,33 @@ class MainActivity : ComponentActivity() {
     enableEdgeToEdge()
     val demoType = enumValueOf<DemoType>(intent.getStringExtra(DEMO_TYPE) ?: "Drag")
     val useLiquid = intent.getBooleanExtra(USE_LIQUID, true)
-    val initialFrost = intent.getFloatExtra(INITIAL_FROST, 0f)
+    val initialFrost = intent.getFloatExtra(INITIAL_FROST, 10f)
     setContent {
-      DraggableTheme {
+      // Eventually I will look into a better setup, but I don't want the benchmarks performing a bunch of network requests.
+      setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+          .memoryCache {
+            MemoryCache.Builder()
+              .maxSizePercent(context, 0.25)
+              .build()
+          }
+          .diskCache {
+            DiskCache.Builder()
+              .directory(
+                context.cacheDir
+                  .resolve("image_cache")
+                  .toOkioPath(),
+              )
+              .maxSizePercent(0.05)
+              .build()
+          }
+          .crossfade(true)
+          .build()
+      }
+
+      LiquidTheme {
         when (demoType) {
-          DemoType.Drag -> LiquidGlassScreen(
+          DemoType.Drag -> LiquidDraggableScreen(
             useLiquid = useLiquid,
             initialFrost = initialFrost,
             modifier = Modifier
@@ -35,9 +63,7 @@ class MainActivity : ComponentActivity() {
           DemoType.Grid -> LiquidGridScreen(
             useLiquid = useLiquid,
             initialFrost = initialFrost,
-            modifier = Modifier
-              .fillMaxSize()
-              .consumeWindowInsets(WindowInsets.systemBars),
+            modifier = Modifier.fillMaxSize(),
           )
         }
       }
@@ -50,9 +76,6 @@ class MainActivity : ComponentActivity() {
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"
 
-    enum class DemoType {
-      Drag,
-      Grid,
-    }
+    enum class DemoType { Drag, Grid }
   }
 }

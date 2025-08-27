@@ -24,7 +24,7 @@ class LiquidDraggableBenchmark {
   fun dragBoxBaseline() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
-    iterations = 5,
+    iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = {
@@ -41,7 +41,7 @@ class LiquidDraggableBenchmark {
   fun dragGlassBoxNoFrost() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
-    iterations = 5,
+    iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = {
@@ -58,7 +58,7 @@ class LiquidDraggableBenchmark {
   fun dragGlassBoxFrost10() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
-    iterations = 5,
+    iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = {
@@ -75,7 +75,7 @@ class LiquidDraggableBenchmark {
   fun dragFrostSlider() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
-    iterations = 5,
+    iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = {
@@ -92,7 +92,7 @@ class LiquidDraggableBenchmark {
   fun scrollLiquidGridBaseline() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
-    iterations = 5,
+    iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = {
@@ -109,7 +109,7 @@ class LiquidDraggableBenchmark {
   fun scrollLiquidGridNoFrost() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
-    iterations = 5,
+    iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = {
@@ -126,7 +126,7 @@ class LiquidDraggableBenchmark {
   fun scrollLiquidGridFrost10() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
-    iterations = 5,
+    iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = {
@@ -140,6 +140,7 @@ class LiquidDraggableBenchmark {
   )
 
   private companion object Companion {
+    const val ITERATIONS = 15
     const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.draggable"
     const val DEMO_TYPE = "$PACKAGE_NAME.DEMO_TYPE"
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"

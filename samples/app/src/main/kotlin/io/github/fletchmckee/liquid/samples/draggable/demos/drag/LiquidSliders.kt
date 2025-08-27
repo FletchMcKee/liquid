@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package io.github.fletchmckee.liquid.samples.draggable.ui
+package io.github.fletchmckee.liquid.samples.draggable.demos.drag
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -54,7 +54,7 @@ import io.github.fletchmckee.liquid.samples.draggable.utils.thenIf
 @Composable
 fun BoxScope.LiquidSliders(
   liquidState: LiquidState,
-  useGlass: Boolean,
+  useLiquid: Boolean,
   showSliders: Boolean,
   isLandscape: Boolean,
   frostProvider: () -> Float,
@@ -63,8 +63,8 @@ fun BoxScope.LiquidSliders(
   onLensRefractionChange: (Float) -> Unit,
   curvatureProvider: () -> Float,
   onCurvatureChange: (Float) -> Unit,
-  sharpProvider: () -> Float,
-  onSharpChange: (Float) -> Unit,
+  edgeProvider: () -> Float,
+  onEdgeChange: (Float) -> Unit,
   modifier: Modifier = Modifier,
   shape: Shape = RoundedCornerShape(15),
   sliderContainerColor: Color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
@@ -84,17 +84,20 @@ fun BoxScope.LiquidSliders(
         change.consume()
       }
     }
-    .thenIf(useGlass) {
+    .thenIf(useLiquid) {
       liquefiable(liquidState)
     }
     .shadow(8.dp, shape)
-    .thenIf(useGlass) {
+    .thenIf(useLiquid) {
       liquid(
         liquidState = liquidState,
-        frost = 15.dp,
-        shape = shape,
-        curve = 0.35f,
-      )
+      ) {
+        this.frost = 15.dp
+        this.shape = shape
+        this.curve = 0.35f
+        this.refraction = 0.3f
+        this.edge = 0.05f
+      }
     }
     .background(color = sliderContainerColor, shape = shape),
 ) {
@@ -129,9 +132,9 @@ fun BoxScope.LiquidSliders(
     )
 
     LiquidSliderRow(
-      text = "Sharp:",
-      value = sharpProvider(),
-      onValueChange = onSharpChange,
+      text = "Edge:",
+      value = edgeProvider(),
+      onValueChange = onEdgeChange,
       valueRange = 0.0f..0.2f,
     )
   }

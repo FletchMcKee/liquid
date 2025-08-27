@@ -40,7 +40,7 @@ public class Liquefiable {
  */
 public fun Modifier.liquefiable(
   liquidState: LiquidState,
-) = this then when {
+): Modifier = this then when {
   Build.VERSION.SDK_INT >= 33 -> LiquefiableElement(liquidState)
   else -> Modifier
 }

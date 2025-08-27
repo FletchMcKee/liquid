@@ -14,12 +14,13 @@ internal val VerticalFrostShader by lazy(LazyThreadSafetyMode.NONE) {
   frostShader(true)
 }
 
+// Similar to Haze's shader, but adjusted with cornerRadii and a single shader.
 @Language("AGSL")
 internal fun frostShader(vertical: Boolean): String = """
   uniform shader content;
   uniform float4 effectRect;
   uniform float blurRadius;
-  uniform float cornerRadius;
+  uniform float4 cornerRadii;
 
   const float maxRadius = 150.0;
 
@@ -27,21 +28,34 @@ internal fun frostShader(vertical: Boolean): String = """
     return exp(-(x * x) / (2.0 * sigma * sigma));
   }
 
-  // SDF for rounded rectangle to respect shape boundaries
-  float roundedRectangleSDF(float2 position, float2 box, float radius) {
-    float2 q = abs(position) - box + float2(radius);
-    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - radius;
+  float shape(in float2 p, in float2 b, in half4 r) {
+    r.xy = (p.x > 0.0) ? r.xy : r.zw;
+    r.x = (p.y > 0.0) ? r.x : r.y;
+    float2 q = abs(p) - b + r.x;
+    return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r.x;
   }
 
-  bool isInsideShape(float2 coord, float2 rectCenter, float2 rectHalfSize) {
-    float2 localPos = coord - rectCenter;
-    return roundedRectangleSDF(localPos, rectHalfSize, cornerRadius) <= 0.0;
+  bool isInsideShape(float2 coord, float2 liquidSize, float minDim, float2 normalizedSize, half4 vr) {
+    float2 localCoord = coord - effectRect.xy;
+    float2 uv = localCoord / liquidSize;
+    float2 m2 = uv - 0.5;
+    float2 shapeCoord = m2 * normalizedSize;
+    float2 shapeSize = normalizedSize * 0.5;
+
+    float sdf = shape(shapeCoord, shapeSize, vr);
+    return sdf <= 0.0;
   }
 
   half4 main(float2 coord) {
-    float2 rectSize = effectRect.zw - effectRect.xy;
-    float2 rectCenter = effectRect.xy + rectSize * 0.5;
-    float2 rectHalfSize = rectSize * 0.5;
+    float2 liquidSize = effectRect.zw - effectRect.xy;
+    float minDim = min(liquidSize.x, liquidSize.y);
+    float2 normalizedSize = liquidSize / minDim;
+    half4 vr = half4(cornerRadii) / minDim;
+
+    if (!isInsideShape(coord, liquidSize, minDim, normalizedSize, vr)) {
+      // If outside the shape, just return the original content.
+      return content.eval(coord);
+    }
 
     float r = floor(blurRadius);
     float sigma = max(blurRadius / 2.0, 1.0);
@@ -61,18 +75,18 @@ internal fun frostShader(vertical: Boolean): String = """
       float2 coordMinus = coord - offset;
       float2 coordPlus = coord + offset;
 
-      if (isInsideShape(coordMinus, rectCenter, rectHalfSize)) {
+      if (isInsideShape(coordMinus, liquidSize, minDim, normalizedSize, vr)) {
         result += weight * content.eval(coordMinus);
         weightSum += weight;
       }
 
-      if (isInsideShape(coordPlus, rectCenter, rectHalfSize)) {
+      if (isInsideShape(coordPlus, liquidSize, minDim, normalizedSize, vr)) {
         result += weight * content.eval(coordPlus);
         weightSum += weight;
       }
     }
 
-    // Handle odd radius by sampling one more tap if necessary
+    // Handle odd radius by sampling one more tap if necessary.
     if (r < maxRadius && mod(r, 2.0) == 1.0) {
       float weight = gaussian(r, sigma);
       float2 offset = ${if (vertical) "float2(0.0, r)" else "float2(r, 0.0)"};
@@ -80,12 +94,12 @@ internal fun frostShader(vertical: Boolean): String = """
       float2 coordMinus = coord - offset;
       float2 coordPlus = coord + offset;
 
-      if (isInsideShape(coordMinus, rectCenter, rectHalfSize)) {
+      if (isInsideShape(coordMinus, liquidSize, minDim, normalizedSize, vr)) {
         result += weight * content.eval(coordMinus);
         weightSum += weight;
       }
 
-      if (isInsideShape(coordPlus, rectCenter, rectHalfSize)) {
+      if (isInsideShape(coordPlus, liquidSize, minDim, normalizedSize, vr)) {
         result += weight * content.eval(coordPlus);
         weightSum += weight;
       }

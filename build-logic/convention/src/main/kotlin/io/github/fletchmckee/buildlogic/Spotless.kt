@@ -16,11 +16,7 @@ internal fun Project.configureSpotless() {
 
     kotlin {
       target("**/*.kt")
-      targetExclude(
-        "build/**/*.kt",
-        // Apache 2-licensed files from Haze.
-        "../liquid/src/main/kotlin/io/github/fletchmckee/liquid/internal/Bitmask.kt",
-      )
+      targetExclude("build/**/*.kt")
       ktlint(ktlintVersion)
         .editorConfigOverride(
           mapOf(

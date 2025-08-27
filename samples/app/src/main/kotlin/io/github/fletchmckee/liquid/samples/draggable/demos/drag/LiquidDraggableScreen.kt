@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package io.github.fletchmckee.liquid.samples.draggable.ui
+package io.github.fletchmckee.liquid.samples.draggable.demos.drag
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -36,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.window.core.layout.WindowWidthSizeClass
+import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
@@ -43,8 +44,9 @@ import io.github.fletchmckee.liquid.samples.draggable.R
 import io.github.fletchmckee.liquid.samples.draggable.utils.thenIf
 
 @Composable
-fun LiquidGlassScreen(
+fun LiquidDraggableScreen(
   modifier: Modifier = Modifier,
+  liquidState: LiquidState = rememberLiquidState(),
   windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
   initialFrost: Float = 0f,
   useLiquid: Boolean = true,
@@ -53,11 +55,10 @@ fun LiquidGlassScreen(
 ) {
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
 
-  val liquidState = rememberLiquidState()
   var blurRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
   var refraction by rememberSaveable { mutableFloatStateOf(0.3f) }
   var curve by rememberSaveable { mutableFloatStateOf(0.4f) }
-  var sharp by rememberSaveable { mutableFloatStateOf(0.03f) }
+  var edge by rememberSaveable { mutableFloatStateOf(0.05f) }
 
   var showSliders by rememberSaveable { mutableStateOf(true) }
 
@@ -81,16 +82,17 @@ fun LiquidGlassScreen(
         .thenIf(useLiquid) {
           liquid(
             liquidState = liquidState,
-            frost = 10.dp,
-            shape = CircleShape,
-          )
+          ) {
+            frost = 10.dp
+            shape = CircleShape
+          }
         }
         .background(color = sliderContainerColor, shape = CircleShape),
     )
 
     LiquidSliders(
       liquidState = liquidState,
-      useGlass = useLiquid,
+      useLiquid = useLiquid,
       showSliders = showSliders,
       isLandscape = isLandscape,
       frostProvider = { blurRadius },
@@ -99,8 +101,8 @@ fun LiquidGlassScreen(
       onLensRefractionChange = { refraction = it },
       curvatureProvider = { curve },
       onCurvatureChange = { curve = it },
-      sharpProvider = { sharp },
-      onSharpChange = { sharp = it },
+      edgeProvider = { edge },
+      onEdgeChange = { edge = it },
       sliderContainerColor = sliderContainerColor,
     )
 
@@ -109,7 +111,7 @@ fun LiquidGlassScreen(
       frostProvider = { blurRadius },
       refractionProvider = { refraction },
       curveProvider = { curve },
-      sharpProvider = { sharp },
+      edgeProvider = { edge },
     )
   }
 }

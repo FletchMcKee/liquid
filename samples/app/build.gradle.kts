@@ -12,8 +12,6 @@ android {
     applicationId = "io.github.fletchmckee.liquid.samples.draggable"
     versionCode = 1
     versionName = "1.0"
-
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   buildTypes {
@@ -35,4 +33,6 @@ dependencies {
   implementation(libs.compose.material3)
   implementation(libs.compose.adaptive)
   implementation(libs.compose.adaptive.layout)
+  implementation(libs.coil.compose)
+  implementation(libs.coil.network.okhttp)
 }

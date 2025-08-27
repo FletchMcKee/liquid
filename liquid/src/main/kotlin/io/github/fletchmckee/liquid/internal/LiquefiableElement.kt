@@ -33,9 +33,7 @@ internal class LiquefiableElement(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (javaClass != other?.javaClass) return false
-
     other as LiquefiableElement
-
     return liquidState == other.liquidState
   }
 
@@ -53,24 +51,22 @@ internal class LiquefiableNode(
   DrawModifierNode,
   GlobalPositionAwareModifierNode,
   TraversableNode {
-
   companion object LiquefiableKey
+  override val traverseKey: Any = LiquefiableKey
 
-  override val traverseKey: Any
-    get() = LiquefiableKey
-
+  // Internal as the LiquidNode needs to access it for filtering out the nearest ancestor.
   internal val liquefiable = Liquefiable()
 
   override val shouldAutoInvalidate: Boolean = false
 
-  override fun onAttach() = liquidState.addLiquefiable(liquefiable)
+  override fun onAttach() {
+    liquidState.liquefiables += liquefiable
+  }
 
   override fun onDetach() {
-    liquidState.removeLiquefiable(liquefiable)
+    liquidState.liquefiables -= liquefiable
     liquefiable.boundsOnScreen = Rect.Zero
-    liquefiable.layer?.let { layer ->
-      currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(layer)
-    }
+    liquefiable.layer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     liquefiable.layer = null
   }
 
@@ -81,21 +77,19 @@ internal class LiquefiableNode(
   override fun ContentDrawScope.draw() {
     if (!isAttached) return
 
-    when {
-      size.minDimension.fastRoundToInt() >= 1 -> {
-        val contentLayer = liquefiable.layer?.takeUnless { it.isReleased }
-          ?: currentValueOf(LocalGraphicsContext)
-            .createGraphicsLayer()
-            .also { liquefiable.layer = it }
-
-        // Record the content into the layer
-        contentLayer.record {
-          this@draw.drawContent()
-        }
-        // No need to call drawContent since we did in the recording.
-        drawLayer(contentLayer)
-      }
-      else -> drawContent()
+    if (size.minDimension.fastRoundToInt() < 1) {
+      drawContent()
+      return
     }
+
+    val contentLayer = liquefiable.layer?.takeUnless { it.isReleased }
+      ?: currentValueOf(LocalGraphicsContext)
+        .createGraphicsLayer()
+        .also { liquefiable.layer = it }
+
+    // Record the content into the layer
+    contentLayer.record { this@draw.drawContent() }
+    // No need to call drawContent since we did so in the recording.
+    drawLayer(contentLayer)
   }
 }

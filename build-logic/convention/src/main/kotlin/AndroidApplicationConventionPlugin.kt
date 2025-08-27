@@ -21,6 +21,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
     extensions.configure<ApplicationExtension> {
       configureKotlinAndroid(this)
       defaultConfig.targetSdk = 36
+      defaultConfig.testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
       testOptions.animationsDisabled = true
     }
   }

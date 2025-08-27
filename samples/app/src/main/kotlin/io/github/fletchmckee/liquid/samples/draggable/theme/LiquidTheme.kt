@@ -11,14 +11,15 @@ private val DarkColorScheme = darkColorScheme(
   primary = Purple40,
   secondary = PurpleGrey40,
   tertiary = PurpleGrey80,
-  surfaceVariant = Purple80,
-  background = Color.DarkGray,
+  surfaceVariant = Ink60,
+  background = Ink,
+  onPrimary = FlawedWhite,
   onBackground = Color.White,
   onSurfaceVariant = Color(0xFF1C1B1F),
 )
 
 @Composable
-fun DraggableTheme(
+fun LiquidTheme(
   content: @Composable () -> Unit,
 ) = MaterialTheme(
   colorScheme = DarkColorScheme,

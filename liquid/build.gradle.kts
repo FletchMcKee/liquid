@@ -3,6 +3,7 @@
 plugins {
   alias(libs.plugins.liquid.android.library)
   alias(libs.plugins.liquid.android.library.compose)
+  alias(libs.plugins.binary.compatibility.validator)
 }
 
 android {
@@ -15,5 +16,5 @@ kotlin {
 
 dependencies {
   api(libs.compose.ui)
-  api(libs.compose.foundation)
+  implementation(libs.compose.foundation)
 }
