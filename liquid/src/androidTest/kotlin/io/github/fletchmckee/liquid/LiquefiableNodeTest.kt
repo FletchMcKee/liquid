@@ -11,15 +11,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.layer.GraphicsLayer
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SdkSuppress
 import assertk.assertThat
@@ -86,6 +88,7 @@ class LiquefiableNodeTest {
   @Test fun graphicsLayerRemainsUnchanged_boundsOnScreenUpdates() {
     val liquefiableNode = LiquefiableNode(liquidState)
     var offset by mutableStateOf(IntOffset.Zero)
+    var coords: LayoutCoordinates? = null
     rule.apply {
       setContent {
         CompositionLocalProvider(LocalDensity provides Density(1f)) {
@@ -94,7 +97,8 @@ class LiquefiableNodeTest {
               Modifier
                 .size(50.dp)
                 .offset { offset }
-                .elementOf(liquefiableNode),
+                .elementOf(liquefiableNode)
+                .onGloballyPositioned { coords = it },
             )
           }
         }
@@ -103,10 +107,9 @@ class LiquefiableNodeTest {
       lateinit var graphicsLayer: GraphicsLayer
       runOnIdle {
         assertThat(liquidState.liquefiables.size).isEqualTo(1)
+        val expectedBounds = Rect(coords!!.positionOnScreen(), coords.size.toSize())
         assertThat(liquefiableNode.liquefiable.boundsOnScreen)
-          .isEqualTo(
-            Rect(Offset.Zero, Size(50f, 50f)),
-          )
+          .isEqualTo(expectedBounds)
         graphicsLayer = liquefiableNode.liquefiable.layer!!
       }
       runOnIdle { offset = IntOffset(10, 10) }

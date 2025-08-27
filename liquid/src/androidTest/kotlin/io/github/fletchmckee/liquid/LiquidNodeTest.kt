@@ -13,9 +13,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
@@ -26,6 +29,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SdkSuppress
 import assertk.assertThat
@@ -115,6 +119,7 @@ class LiquidNodeTest {
     var offset by mutableStateOf(IntOffset(0, 0))
     var drawCount = 0
     var liquidBlockCount = 0
+    var coords: LayoutCoordinates? = null
     // Shared LiquidState
     val liquidNode = LiquidNode(liquidState) { liquidBlockCount++ }
     rule.apply {
@@ -122,7 +127,12 @@ class LiquidNodeTest {
         CompositionLocalProvider(LocalDensity provides Density(1f)) {
           Parent {
             if (showLiquefiable) {
-              SimpleLiquefiable(liquidState, Modifier.offset { offset })
+              SimpleLiquefiable(
+                liquidState,
+                Modifier
+                  .offset { offset }
+                  .onGloballyPositioned { coords = it },
+              )
             }
             Box(
               Modifier
@@ -138,12 +148,12 @@ class LiquidNodeTest {
         // onAttach and the Liquefiable with shared state being added.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
+        val expectedBounds = Rect(coords!!.positionOnScreen(), coords.size.toSize())
         assertThat(
           liquidNode.reusableScope.liquefiables
             .single()
-            .boundsOnScreen
-            .topLeft,
-        ).isEqualTo(Offset(0f, 0f))
+            .boundsOnScreen,
+        ).isEqualTo(expectedBounds)
       }
       runOnIdle { offset = IntOffset(10, 10) }
       runOnIdle {
@@ -152,24 +162,24 @@ class LiquidNodeTest {
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(3)
         // Verify that we do have the updated bounds.
+        val expectedBounds = Rect(coords!!.positionOnScreen(), coords.size.toSize())
         assertThat(
           liquidNode.reusableScope.liquefiables
             .single()
-            .boundsOnScreen
-            .topLeft,
-        ).isEqualTo(Offset(10f, 10f))
+            .boundsOnScreen,
+        ).isEqualTo(expectedBounds)
       }
       // Verify same position does not cause new draws
       runOnIdle { offset = IntOffset(10, 10) }
       runOnIdle {
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(3)
+        val expectedBounds = Rect(coords!!.positionOnScreen(), coords.size.toSize())
         assertThat(
           liquidNode.reusableScope.liquefiables
             .single()
-            .boundsOnScreen
-            .topLeft,
-        ).isEqualTo(Offset(10f, 10f))
+            .boundsOnScreen,
+        ).isEqualTo(expectedBounds)
         assertThat(liquidState.liquefiables.size).isEqualTo(1)
       }
       // Verify removal of the liquefiable.
