@@ -30,7 +30,7 @@ public class Liquefiable {
  * Marks this modifier node as a recording surface whose rendered content can be sampled and displayed through another UI layer using a
  * [LiquidState] effect.
  *
- * This enables visual effects like liquid glass by allowing sibling composables to reference and render the content "beneath"
+ * This enables the liquid effect by allowing sibling composables to reference and render the content "beneath"
  * them.
  *
  * On Android 13 (API 33) and above, uses a shader-backed [LiquefiableElement] to capture this node's output.

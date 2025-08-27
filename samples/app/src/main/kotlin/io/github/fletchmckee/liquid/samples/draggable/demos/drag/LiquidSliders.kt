@@ -58,16 +58,16 @@ fun BoxScope.LiquidSliders(
   showSliders: Boolean,
   isLandscape: Boolean,
   frostProvider: () -> Float,
-  onBlurChange: (Float) -> Unit,
+  onFrostChange: (Float) -> Unit,
   refractionProvider: () -> Float,
-  onLensRefractionChange: (Float) -> Unit,
+  onRefractionChange: (Float) -> Unit,
   curvatureProvider: () -> Float,
   onCurvatureChange: (Float) -> Unit,
   edgeProvider: () -> Float,
   onEdgeChange: (Float) -> Unit,
   modifier: Modifier = Modifier,
   shape: Shape = RoundedCornerShape(15),
-  sliderContainerColor: Color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+  sliderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) = AnimatedVisibility(
   visible = showSliders,
   enter = fadeIn(tween(1000)) + expandIn(tween(1000)),
@@ -89,9 +89,7 @@ fun BoxScope.LiquidSliders(
     }
     .shadow(8.dp, shape)
     .thenIf(useLiquid) {
-      liquid(
-        liquidState = liquidState,
-      ) {
+      liquid(liquidState) {
         this.frost = 15.dp
         this.shape = shape
         this.curve = 0.35f
@@ -109,7 +107,7 @@ fun BoxScope.LiquidSliders(
     LiquidSliderRow(
       text = "Frost:",
       value = frostProvider(),
-      onValueChange = onBlurChange,
+      onValueChange = onFrostChange,
       steps = 24,
       valueRange = 0f..50f,
       formatter = "%,.0f",
@@ -120,7 +118,7 @@ fun BoxScope.LiquidSliders(
     LiquidSliderRow(
       text = "Refraction:",
       value = refractionProvider(),
-      onValueChange = onLensRefractionChange,
+      onValueChange = onRefractionChange,
       valueRange = 0f..1f,
     )
 

@@ -57,8 +57,8 @@ internal inline val Offset.orZero: Offset get() = takeOrElse { Offset.Zero }
 internal inline infix fun Int.has(flag: Int): Boolean = (this and flag) != 0
 
 /**
- * Allows passing a [Shape] parameter to a composable that can be used for other GraphicsLayer requirements along with being used in our
- * liquid nodes.
+ * Allows passing a [Shape] parameter to a composable that can be used for other GraphicsLayer requirements
+ * along with being used in our liquid nodes.
  */
 internal fun Shape.cornerRadiusPx(size: Size, density: Density): FloatArray = when (this) {
   CircleShape -> {

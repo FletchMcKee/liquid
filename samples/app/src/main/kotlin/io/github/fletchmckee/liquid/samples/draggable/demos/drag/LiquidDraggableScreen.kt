@@ -80,9 +80,7 @@ fun LiquidDraggableScreen(
         .zIndex(3f)
         .shadow(elevation = 2.dp, shape = CircleShape)
         .thenIf(useLiquid) {
-          liquid(
-            liquidState = liquidState,
-          ) {
+          liquid(liquidState) {
             frost = 10.dp
             shape = CircleShape
           }
@@ -96,9 +94,9 @@ fun LiquidDraggableScreen(
       showSliders = showSliders,
       isLandscape = isLandscape,
       frostProvider = { blurRadius },
-      onBlurChange = { blurRadius = it },
+      onFrostChange = { blurRadius = it },
       refractionProvider = { refraction },
-      onLensRefractionChange = { refraction = it },
+      onRefractionChange = { refraction = it },
       curvatureProvider = { curve },
       onCurvatureChange = { curve = it },
       edgeProvider = { edge },

@@ -38,7 +38,7 @@ class LiquidDraggableBenchmark {
   )
 
   @Test
-  fun dragGlassBoxNoFrost() = benchmarkRule.measureRepeated(
+  fun dragLiquidBoxNoFrost() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -55,7 +55,7 @@ class LiquidDraggableBenchmark {
   )
 
   @Test
-  fun dragGlassBoxFrost10() = benchmarkRule.measureRepeated(
+  fun dragLiquidBoxFrost10() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,

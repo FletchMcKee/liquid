@@ -84,8 +84,8 @@ internal fun createRenderEffect(
     cornerRadii = cornerRadii,
   )
 
-  val horizontalBlur = createRuntimeShaderEffect(horizontalShader, "content")
-  val verticalBlur = createRuntimeShaderEffect(verticalShader, "content")
-  val blurEffect = createChainEffect(horizontalBlur, verticalBlur)
+  val horizontalFrost = createRuntimeShaderEffect(horizontalShader, "content")
+  val verticalFrost = createRuntimeShaderEffect(verticalShader, "content")
+  val blurEffect = createChainEffect(horizontalFrost, verticalFrost)
   return createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()
 }
