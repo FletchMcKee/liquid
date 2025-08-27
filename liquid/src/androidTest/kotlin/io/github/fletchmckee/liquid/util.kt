@@ -4,7 +4,10 @@ package io.github.fletchmckee.liquid
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -74,6 +77,11 @@ internal fun SimpleLiquefiable(
 internal fun Parent(
   modifier: Modifier = Modifier,
   content: @Composable () -> Unit,
-) = Box(modifier.size(200.dp)) {
+) = Box(
+  modifier
+    .size(200.dp)
+    // Prevents CI/CD emulators from interfering with boundsOnScreen tests.
+    .consumeWindowInsets(WindowInsets.systemBars),
+) {
   content()
 }
