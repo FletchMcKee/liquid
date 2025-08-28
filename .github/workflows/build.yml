@@ -44,6 +44,7 @@ jobs:
         run: ./gradlew assembleDebug
 
   androidTest:
+    name: "androidTest"
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -87,3 +88,25 @@ jobs:
           disk-size: 6000M
           heap-size: 600M
           script: ./gradlew connectedDebugAndroidTest --daemon
+
+  publish:
+    name: "publish"
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'fletchmckee/liquid' }}
+    needs:
+      - build
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version-file: .github/workflows/.java-version
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - run: ./gradlew publish --no-configuration-cache
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
