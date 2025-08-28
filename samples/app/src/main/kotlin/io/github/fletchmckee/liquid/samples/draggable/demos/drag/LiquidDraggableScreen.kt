@@ -55,7 +55,7 @@ fun LiquidDraggableScreen(
 ) {
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
 
-  var blurRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
+  var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
   var refraction by rememberSaveable { mutableFloatStateOf(0.3f) }
   var curve by rememberSaveable { mutableFloatStateOf(0.4f) }
   var edge by rememberSaveable { mutableFloatStateOf(0.05f) }
@@ -93,8 +93,8 @@ fun LiquidDraggableScreen(
       useLiquid = useLiquid,
       showSliders = showSliders,
       isLandscape = isLandscape,
-      frostProvider = { blurRadius },
-      onFrostChange = { blurRadius = it },
+      frostProvider = { frostRadius },
+      onFrostChange = { frostRadius = it },
       refractionProvider = { refraction },
       onRefractionChange = { refraction = it },
       curvatureProvider = { curve },
@@ -106,7 +106,7 @@ fun LiquidDraggableScreen(
 
     LiquidDraggableBox(
       liquidState = liquidState,
-      frostProvider = { blurRadius },
+      frostProvider = { frostRadius },
       refractionProvider = { refraction },
       curveProvider = { curve },
       edgeProvider = { edge },

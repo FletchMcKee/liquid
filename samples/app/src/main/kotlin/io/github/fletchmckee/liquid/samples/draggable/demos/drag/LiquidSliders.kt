@@ -36,7 +36,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -49,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
+import io.github.fletchmckee.liquid.samples.draggable.utils.safeShadow
 import io.github.fletchmckee.liquid.samples.draggable.utils.thenIf
 
 @Composable
@@ -87,7 +87,7 @@ fun BoxScope.LiquidSliders(
     .thenIf(useLiquid) {
       liquefiable(liquidState)
     }
-    .shadow(8.dp, shape)
+    .safeShadow(elevation = 8.dp, shape = shape)
     .thenIf(useLiquid) {
       liquid(liquidState) {
         this.frost = 15.dp

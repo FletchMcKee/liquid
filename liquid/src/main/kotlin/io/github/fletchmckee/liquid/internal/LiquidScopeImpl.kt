@@ -5,6 +5,7 @@ package io.github.fletchmckee.liquid.internal
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -12,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import io.github.fletchmckee.liquid.Liquefiable
 import io.github.fletchmckee.liquid.LiquidScope
 
-// These fields are configured internally so we don't expose as public API.
+// These fields are configured internally so we don't expose them as public API.
 internal interface InternalLiquidScope : LiquidScope {
   var size: Size
   var positionOnScreen: Offset
@@ -93,18 +94,24 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     refraction = 0f
     curve = 0f
     edge = 0f
+    size = Size.Unspecified
     positionOnScreen = Offset.Zero
     liquefiables = emptyList()
     // Keep this last.
     mutatedFields = 0
   }
 
-  internal fun paddedBounds(padding: Float = 0f): Rect = Rect(
-    left = positionOnScreen.x - padding,
-    top = positionOnScreen.y - padding,
-    right = positionOnScreen.x + size.width + padding,
-    bottom = positionOnScreen.y + size.height + padding,
-  )
+  internal fun paddedBounds(padding: Float = 0f): Rect {
+    // If size is unspecified, returning Rect.Zero will prevent the effect from being drawn.
+    if (size.isUnspecified) return Rect.Zero
+
+    return Rect(
+      left = positionOnScreen.x - padding,
+      top = positionOnScreen.y - padding,
+      right = positionOnScreen.x + size.width + padding,
+      bottom = positionOnScreen.y + size.height + padding,
+    )
+  }
 }
 
 @Suppress("ConstPropertyName")
@@ -121,10 +128,9 @@ internal object Fields {
   const val PositionOnScreen: Int = 0b1 shl 6
   const val Liquefiables: Int = 0b1 shl 7
 
-  // It seems counterintuitive that PositionOnScreen would not require recreating the RenderEffect, but our shader is written in a way
-  // where it is position agnostic as each Liquid node's position offset is Offset(frostRadius, frostRadius). We use the PositionOnScreen
-  // to translate the liquefiable nodes into the correct space, but it isn't a shader uniform.
-  // The size however is necessary for configuring the shader's `effectRect`, so when it changes, we have to recreate the RenderEffect.
+  // The shader is written in a way where it is position agnostic as each Liquid node's position offset is
+  // Offset(frostRadius, frostRadius). We use the PositionOnScreen to translate the liquefiable nodes into
+  // the correct space, but it isn't a shader uniform.
   const val RenderEffectFields: Int =
     Frost or
       Shape or

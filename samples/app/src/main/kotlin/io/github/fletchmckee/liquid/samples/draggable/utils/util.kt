@@ -34,7 +34,8 @@ internal fun Modifier.blendMode(blendMode: BlendMode): Modifier = this.drawWithC
   onDrawWithContent { drawLayer(layer) }
 }
 
-// May not need this anymore
+// There's likely a way to not have the shadow appear underneath transparent content,
+// but haven't figured that out yet.
 internal fun Modifier.safeShadow(
   elevation: Dp = 4.dp,
   shape: Shape = RoundedCornerShape(25.dp),

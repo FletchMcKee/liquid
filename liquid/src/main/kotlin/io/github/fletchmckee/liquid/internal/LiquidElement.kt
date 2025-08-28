@@ -39,39 +39,37 @@ import kotlin.collections.orEmpty
 @RequiresApi(33)
 internal class LiquidElement(
   private val liquidState: LiquidState,
-  private val liquidScope: LiquidScope.() -> Unit,
+  private val block: LiquidScope.() -> Unit,
 ) : ModifierNodeElement<LiquidNode>() {
   override fun create() = LiquidNode(
     liquidState = liquidState,
-    liquidScope = liquidScope,
+    block = block,
   )
 
   override fun update(node: LiquidNode) {
     node.liquidState = liquidState
-    node.liquidScope = liquidScope
+    node.block = block
     node.invalidateLiquidBlock()
   }
 
   override fun InspectorInfo.inspectableProperties() {
     name = "Liquid"
-    properties["liquidScope"] = liquidScope
+    properties["block"] = block
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-
-    other as LiquidElement
+    if (other !is LiquidElement) return false
 
     if (liquidState != other.liquidState) return false
-    if (liquidScope != other.liquidScope) return false
+    if (block !== other.block) return false
 
     return true
   }
 
   override fun hashCode(): Int {
     var result = liquidState.hashCode()
-    result = 31 * result + liquidScope.hashCode()
+    result = 31 * result + block.hashCode()
     return result
   }
 }
@@ -79,7 +77,7 @@ internal class LiquidElement(
 @RequiresApi(33)
 internal class LiquidNode(
   var liquidState: LiquidState?,
-  var liquidScope: LiquidScope.() -> Unit,
+  var block: LiquidScope.() -> Unit,
 ) : Modifier.Node(),
   GlobalPositionAwareModifierNode,
   DrawModifierNode,
@@ -89,15 +87,36 @@ internal class LiquidNode(
   private val horizontalShader = RuntimeShader(HorizontalFrostShader)
   private val verticalShader = RuntimeShader(VerticalFrostShader)
 
-  // Jetpack makes their reusable GraphicsLayer scope a nullable var created outside of the node. Not sure why, but something to keep in
-  // mind for potential performance improvements.
+  // Jetpack makes their reusable GraphicsLayer scope a nullable var created outside of the node.
+  // Not sure why, but something to keep in mind for potential performance improvements.
   @VisibleForTesting
   internal val reusableScope = LiquidScopeImpl()
 
-  // Recreating the GraphicsLayer or RenderEffect causes a lot of native allocations, so we're using an in-memory cache layer/effect.
-  // However we'll need to monitor this cached layer and effect as doing this could lead to unpredictable issues.
+  // Recreating the GraphicsLayer or RenderEffect causes many native allocations, so we're using an in-memory layer/effect.
+  // However we'll need to monitor this cached layer and effect as doing this may lead to unpredictable issues.
   private var cachedLayer: GraphicsLayer? = null
   private var cachedRenderEffect: RenderEffect? = null
+
+  internal fun invalidateLiquidBlock() {
+    if (!isAttached) return
+
+    block(reusableScope)
+
+    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
+    // Allows nodes to be both a content and effect node while preventing recursive draws.
+    reusableScope.liquefiables = liquidState?.liquefiables
+      .orEmpty()
+      .asSequence()
+      .filter { it != ancestor }
+      .toList()
+
+    invalidateDrawIfNeeded()
+  }
+
+  private fun obtainGraphicsLayer() = cachedLayer?.takeUnless { it.isReleased }
+    ?: currentValueOf(LocalGraphicsContext)
+      .createGraphicsLayer()
+      .also { cachedLayer = it }
 
   // We're handling all invalidations through bitwise operators.
   override val shouldAutoInvalidate: Boolean = false
@@ -111,22 +130,6 @@ internal class LiquidNode(
     cachedLayer = null
     cachedRenderEffect = null
     reusableScope.reset()
-  }
-
-  internal fun invalidateLiquidBlock() {
-    if (!isAttached) return
-
-    liquidScope(reusableScope)
-
-    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-    // This has room for improvement, but it allows nodes to be both a content and effect node while preventing recursive draws.
-    reusableScope.liquefiables = liquidState?.liquefiables
-      .orEmpty()
-      .asSequence()
-      .filter { it != ancestor }
-      .toList()
-
-    invalidateDrawIfNeeded()
   }
 
   override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
@@ -147,15 +150,12 @@ internal class LiquidNode(
     }
 
     try {
-      val layer = cachedLayer?.takeUnless { it.isReleased }
-        ?: currentValueOf(LocalGraphicsContext)
-          .createGraphicsLayer()
-          .also { cachedLayer = it }
+      val layer = obtainGraphicsLayer()
 
       val density = currentValueOf(LocalDensity)
-      val cornerRadii = reusableScope.shape.cornerRadiusPx(size, density)
+      val cornerRadii = reusableScope.shape.cornerRadiiPx(size, density)
       val frostRadius = reusableScope.frost.toPx()
-      // For a uniform frost, we have to sample outside of the node's actual size with the frost radius as padding.
+      // For a uniform frost, we sample outside of the node's actual size with the frost radius as padding.
       val bounds = reusableScope.paddedBounds(padding = frostRadius)
 
       recordLiquefiablesIntoLayer(

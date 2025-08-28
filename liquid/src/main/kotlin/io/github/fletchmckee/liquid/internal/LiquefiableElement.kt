@@ -32,9 +32,9 @@ internal class LiquefiableElement(
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (javaClass != other?.javaClass) return false
-    other as LiquefiableElement
-    return liquidState == other.liquidState
+    if (other !is LiquefiableElement) return false
+
+    return liquidState === other.liquidState
   }
 
   override fun hashCode(): Int = liquidState.hashCode()
@@ -57,6 +57,11 @@ internal class LiquefiableNode(
   // Internal as the LiquidNode needs to access it for filtering out the nearest ancestor.
   internal val liquefiable = Liquefiable()
 
+  private fun obtainGraphicsLayer() = liquefiable.layer?.takeUnless { it.isReleased }
+    ?: currentValueOf(LocalGraphicsContext)
+      .createGraphicsLayer()
+      .also { liquefiable.layer = it }
+
   override val shouldAutoInvalidate: Boolean = false
 
   override fun onAttach() {
@@ -65,9 +70,9 @@ internal class LiquefiableNode(
 
   override fun onDetach() {
     liquidState.liquefiables -= liquefiable
-    liquefiable.boundsOnScreen = Rect.Zero
     liquefiable.layer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     liquefiable.layer = null
+    liquefiable.boundsOnScreen = Rect.Zero
   }
 
   override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
@@ -82,10 +87,7 @@ internal class LiquefiableNode(
       return
     }
 
-    val contentLayer = liquefiable.layer?.takeUnless { it.isReleased }
-      ?: currentValueOf(LocalGraphicsContext)
-        .createGraphicsLayer()
-        .also { liquefiable.layer = it }
+    val contentLayer = obtainGraphicsLayer()
 
     // Record the content into the layer
     contentLayer.record { this@draw.drawContent() }

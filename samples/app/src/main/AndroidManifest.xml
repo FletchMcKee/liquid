@@ -10,7 +10,7 @@
     android:label="@string/app_name"
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
-    android:theme="@style/Theme.Draggable">
+    android:theme="@style/Theme.Liquid">
     <profileable
       android:shell="true"
       tools:targetApi="29" />
@@ -18,7 +18,7 @@
     <activity
       android:name=".MainActivity"
       android:exported="true"
-      android:theme="@style/Theme.Draggable">
+      android:theme="@style/Theme.Liquid">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
 
