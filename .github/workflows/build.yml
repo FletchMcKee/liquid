@@ -78,7 +78,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
           ls /dev/kvm
 
-      - name: Build projects and run instrumentation tests
+      - name: Run instrumentation tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
