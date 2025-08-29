@@ -6,6 +6,16 @@
 
 [Preview](https://github.com/user-attachments/assets/393aca99-6c26-45d0-9539-3b826ebce4c2)
 
+## Acknowledgements
+
+- The [Haze](https://github.com/chrisbanes/haze) library developed by [Chris Banes](https://github.com/chrisbanes) was a large source of
+inspiration, particularly for the use of content and effect `Modifier` nodes and blur techniques. Specifically, the
+[FrostShaders](./liquid/src/main/kotlin/io/github/fletchmckee/liquid/internal/shaders/FrostShaders.kt) available for the liquid nodes are
+derived from the [HazeShaders](https://github.com/chrisbanes/haze/blob/main/haze/src/commonMain/kotlin/dev/chrisbanes/haze/HazeShaders.kt)
+class.
+- The liquid lens effect was inspired by ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) with their 
+[Liquid Glass example](https://www.shadertoy.com/view/wcKSRD).
+
 ## License
 
 ```
