@@ -1,21 +1,21 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package io.github.fletchmckee.liquid.samples.draggable.demos.drag
+package io.github.fletchmckee.liquid.samples.app.demos.drag
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,13 +35,32 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import androidx.window.core.layout.WindowWidthSizeClass
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
-import io.github.fletchmckee.liquid.samples.draggable.R
-import io.github.fletchmckee.liquid.samples.draggable.utils.thenIf
+import io.github.fletchmckee.liquid.samples.app.R
+import io.github.fletchmckee.liquid.samples.app.utils.thenIf
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object Drag
+
+fun NavGraphBuilder.dragDestination(
+  useLiquid: Boolean = true,
+  initialFrost: Float = 10f,
+) = composable<Drag> {
+  LiquidDraggableScreen(
+    useLiquid = useLiquid,
+    initialFrost = initialFrost,
+    modifier = Modifier
+      .fillMaxSize()
+      .consumeWindowInsets(WindowInsets.systemBars),
+  )
+}
 
 @Composable
 fun LiquidDraggableScreen(
@@ -51,7 +70,7 @@ fun LiquidDraggableScreen(
   initialFrost: Float = 0f,
   useLiquid: Boolean = true,
   usePager: Boolean = true,
-  sliderContainerColor: Color = MaterialTheme.colorScheme.background.copy(alpha = 0.5f),
+  sliderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) {
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
 
@@ -101,7 +120,7 @@ fun LiquidDraggableScreen(
       onCurvatureChange = { curve = it },
       edgeProvider = { edge },
       onEdgeChange = { edge = it },
-      sliderContainerColor = sliderContainerColor,
+      containerColor = sliderContainerColor,
     )
 
     LiquidDraggableBox(

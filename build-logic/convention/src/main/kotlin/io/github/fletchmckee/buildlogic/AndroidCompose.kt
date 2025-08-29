@@ -18,10 +18,10 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
     dependencies {
       val bom = libs.findLibrary("compose-bom").get()
       "implementation"(platform(bom))
-      "androidTestImplementation"(platform(bom))
       "implementation"(libs.findLibrary("compose-tooling-preview").get())
       "debugImplementation"(libs.findLibrary("compose-tooling").get())
       "debugImplementation"(libs.findLibrary("compose-test-manifest").get())
+      "androidTestImplementation"(platform(bom))
       "androidTestImplementation"(libs.findLibrary("compose-junit4").get())
     }
   }
@@ -48,7 +48,6 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
       .relativeToRootProject("compose-reports")
       .let(reportsDestination::set)
 
-    // TODO
-    // stabilityConfigurationFiles.add(isolated.rootProject.projectDirectory.file("compose_compiler_config.conf"))
+    stabilityConfigurationFiles.add(isolated.rootProject.projectDirectory.file("compose_stability.conf"))
   }
 }

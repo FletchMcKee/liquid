@@ -61,7 +61,7 @@ internal class LiquidElement(
     if (this === other) return true
     if (other !is LiquidElement) return false
 
-    if (liquidState != other.liquidState) return false
+    if (liquidState !== other.liquidState) return false
     if (block !== other.block) return false
 
     return true
@@ -87,13 +87,10 @@ internal class LiquidNode(
   private val horizontalShader = RuntimeShader(HorizontalFrostShader)
   private val verticalShader = RuntimeShader(VerticalFrostShader)
 
-  // Jetpack makes their reusable GraphicsLayer scope a nullable var created outside of the node.
-  // Not sure why, but something to keep in mind for potential performance improvements.
   @VisibleForTesting
   internal val reusableScope = LiquidScopeImpl()
 
   // Recreating the GraphicsLayer or RenderEffect causes many native allocations, so we're using an in-memory layer/effect.
-  // However we'll need to monitor this cached layer and effect as doing this may lead to unpredictable issues.
   private var cachedLayer: GraphicsLayer? = null
   private var cachedRenderEffect: RenderEffect? = null
 
@@ -103,7 +100,7 @@ internal class LiquidNode(
     block(reusableScope)
 
     val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-    // Allows nodes to be both a content and effect node while preventing recursive draws.
+    // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
     reusableScope.liquefiables = liquidState?.liquefiables
       .orEmpty()
       .asSequence()
@@ -118,12 +115,16 @@ internal class LiquidNode(
       .createGraphicsLayer()
       .also { cachedLayer = it }
 
-  // We're handling all invalidations through bitwise operators.
+  private fun invalidateDrawIfNeeded() {
+    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
+      cachedRenderEffect = cachedRenderEffect.takeUnless { reusableScope.mutatedFields has Fields.RenderEffectFields }
+      invalidateDraw()
+    }
+  }
+
   override val shouldAutoInvalidate: Boolean = false
 
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
-
-  override fun onObservedReadsChanged() = invalidateLiquidBlock()
 
   override fun onDetach() {
     cachedLayer?.let { layer -> currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(layer) }
@@ -131,6 +132,8 @@ internal class LiquidNode(
     cachedRenderEffect = null
     reusableScope.reset()
   }
+
+  override fun onObservedReadsChanged() = invalidateLiquidBlock()
 
   override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
     if (!isAttached) return
@@ -178,20 +181,11 @@ internal class LiquidNode(
       layer.clip = reusableScope.shape != RectangleShape
       layer.renderEffect = renderEffect
       // Need to translate topLeft to account for the frostRadius padding we've added for blur sampling.
-      translate(-frostRadius, -frostRadius) {
-        drawLayer(layer)
-      }
+      translate(-frostRadius, -frostRadius) { drawLayer(layer) }
       // Necessary to call this since it isn't part of the recording.
       drawContent()
     } finally {
       reusableScope.mutatedFields = 0
-    }
-  }
-
-  private fun invalidateDrawIfNeeded() {
-    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
-      cachedRenderEffect = cachedRenderEffect.takeUnless { reusableScope.mutatedFields has Fields.RenderEffectFields }
-      invalidateDraw()
     }
   }
 }

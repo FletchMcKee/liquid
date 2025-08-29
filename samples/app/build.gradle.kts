@@ -3,13 +3,14 @@
 plugins {
   alias(libs.plugins.liquid.android.application)
   alias(libs.plugins.liquid.android.application.compose)
+  alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-  namespace = "io.github.fletchmckee.liquid.samples.draggable"
+  namespace = "io.github.fletchmckee.liquid.samples.app"
 
   defaultConfig {
-    applicationId = "io.github.fletchmckee.liquid.samples.draggable"
+    applicationId = "io.github.fletchmckee.liquid.samples.app"
     versionCode = 1
     versionName = "1.0"
   }
@@ -18,6 +19,7 @@ android {
     release {
       isMinifyEnabled = false
     }
+
     create("benchmark") {
       initWith(buildTypes.getByName("release"))
       signingConfig = signingConfigs.getByName("debug")
@@ -27,12 +29,22 @@ android {
   }
 }
 
+kotlin {
+  compilerOptions {
+    freeCompilerArgs.addAll(
+      "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
+    )
+  }
+}
+
 dependencies {
   implementation(projects.liquid)
   implementation(libs.activity.compose)
   implementation(libs.compose.material3)
   implementation(libs.compose.adaptive)
   implementation(libs.compose.adaptive.layout)
+  implementation(libs.compose.navigation)
+  implementation(libs.kotlinx.serialization)
   implementation(libs.coil.compose)
   implementation(libs.coil.network.okhttp)
 }

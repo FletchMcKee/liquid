@@ -6,7 +6,33 @@ import android.graphics.Point
 import androidx.benchmark.macro.MacrobenchmarkScope
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
+import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
+import io.github.fletchmckee.benchmark.LiquidBenchmark.Companion.INITIAL_FROST
+import io.github.fletchmckee.benchmark.LiquidBenchmark.Companion.START_DESTINATION
+import io.github.fletchmckee.benchmark.LiquidBenchmark.Companion.USE_LIQUID
+
+internal fun MacrobenchmarkScope.waitForObject(
+  testTag: String,
+  timeout: Long = 2_000,
+): UiObject2 {
+  device.wait(Until.hasObject(By.res(testTag)), timeout)
+  return requireNotNull(device.findObject(By.res(testTag))) { "$testTag not found" }
+}
+
+internal fun MacrobenchmarkScope.navigateTo(
+  startDestination: String,
+  useLiquid: Boolean = true,
+  initialFrost: Float = 0f,
+) {
+  startActivityAndWait { intent ->
+    intent.putExtra(START_DESTINATION, startDestination)
+    intent.putExtra(USE_LIQUID, useLiquid)
+    intent.putExtra(INITIAL_FROST, initialFrost)
+  }
+
+  device.waitForIdle()
+}
 
 internal fun MacrobenchmarkScope.dragFigureEight(
   repetitions: Int = 2,
@@ -36,19 +62,12 @@ internal fun MacrobenchmarkScope.dragFigureEight(
 }
 
 internal fun MacrobenchmarkScope.dragFrostSlider(
-  timeoutMs: Long = 2_000,
+  timeout: Long = 2_000,
   speed: Int = 1_000,
   iterations: Int = 4,
 ) = repeat(iterations) {
-  device.wait(Until.hasObject(By.res("frostSlider")), timeoutMs)
-  val frostSlider = requireNotNull(device.findObject(By.res("frostSlider"))) {
-    "frostSlider not found"
-  }
-
-  device.wait(Until.hasObject(By.res("frostThumb")), timeoutMs)
-  val thumb = requireNotNull(device.findObject(By.res("frostThumb"))) {
-    "frostThumb not found"
-  }
+  val frostSlider = waitForObject("frostSlider", timeout)
+  val thumb = waitForObject("frostThumb", timeout)
 
   val track = frostSlider.visibleBounds
   val y = track.centerY()
@@ -68,10 +87,7 @@ fun MacrobenchmarkScope.flingElementDownThenUp(
   testTag: String,
   timeout: Long = 2_000,
 ) {
-  device.wait(Until.hasObject(By.res(testTag)), timeout)
-  val element = requireNotNull(device.findObject(By.res(testTag))) {
-    "$testTag not found"
-  }
+  val element = waitForObject(testTag, timeout)
   element.setGestureMargin(device.displayWidth / 5)
 
   element.fling(Direction.DOWN)

@@ -116,7 +116,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
 
 @Suppress("ConstPropertyName")
 internal object Fields {
-  // RenderEffect fields - a change in these requires recreating the RenderEffect and invalidating the draw.
+  // A change in these requires recreating the RenderEffect and invalidating the draw.
   const val Frost: Int = 0b1
   const val Shape: Int = 0b1 shl 1
   const val Refraction: Int = 0b1 shl 2
@@ -128,9 +128,7 @@ internal object Fields {
   const val PositionOnScreen: Int = 0b1 shl 6
   const val Liquefiables: Int = 0b1 shl 7
 
-  // The shader is written in a way where it is position agnostic as each Liquid node's position offset is
-  // Offset(frostRadius, frostRadius). We use the PositionOnScreen to translate the liquefiable nodes into
-  // the correct space, but it isn't a shader uniform.
+  // PositionOnScreen isn't a shader uniform as it's only used to translate liquefiables into the correct space.
   const val RenderEffectFields: Int =
     Frost or
       Shape or
@@ -138,8 +136,6 @@ internal object Fields {
       Curve or
       Edge or
       Size
-
-  const val LayoutFields: Int = Size or PositionOnScreen
 
   const val InvalidateFlags: Int =
     RenderEffectFields or

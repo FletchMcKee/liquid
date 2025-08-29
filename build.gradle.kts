@@ -9,4 +9,5 @@ plugins {
   alias(libs.plugins.spotless) apply false
   alias(libs.plugins.android.test) apply false
   alias(libs.plugins.binary.compatibility.validator) apply false
+  alias(libs.plugins.kotlin.serialization) apply false
 }

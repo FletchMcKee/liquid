@@ -1,8 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package io.github.fletchmckee.liquid.samples.draggable.demos.drag
+package io.github.fletchmckee.liquid.samples.app.demos.drag
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -16,7 +14,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -28,9 +25,9 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,8 +45,8 @@ import androidx.compose.ui.unit.sp
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
-import io.github.fletchmckee.liquid.samples.draggable.utils.safeShadow
-import io.github.fletchmckee.liquid.samples.draggable.utils.thenIf
+import io.github.fletchmckee.liquid.samples.app.utils.safeShadow
+import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
 fun BoxScope.LiquidSliders(
@@ -67,7 +64,7 @@ fun BoxScope.LiquidSliders(
   onEdgeChange: (Float) -> Unit,
   modifier: Modifier = Modifier,
   shape: Shape = RoundedCornerShape(15),
-  sliderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+  containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) = AnimatedVisibility(
   visible = showSliders,
   enter = fadeIn(tween(1000)) + expandIn(tween(1000)),
@@ -97,7 +94,7 @@ fun BoxScope.LiquidSliders(
         this.edge = 0.05f
       }
     }
-    .background(color = sliderContainerColor, shape = shape),
+    .background(color = containerColor, shape = shape),
 ) {
   Column(
     modifier = Modifier.padding(16.dp),
@@ -139,18 +136,17 @@ fun BoxScope.LiquidSliders(
 }
 
 @Composable
-fun ColumnScope.LiquidSliderRow(
+fun LiquidSliderRow(
   text: String,
   value: Float,
   onValueChange: (Float) -> Unit,
   modifier: Modifier = Modifier,
   steps: Int = 19,
-  valueRange: ClosedFloatingPointRange<Float> = 0f..1f,
+  valueRange: FloatRange = 0f..1f,
   formatter: String = "%,.2f",
-  enabled: Boolean = true,
   sliderTestTag: String = "slider",
   thumbTestTag: String = "thumb",
-) {
+) = Column {
   Row(
     modifier = modifier
       .fillMaxWidth()
@@ -180,7 +176,6 @@ fun ColumnScope.LiquidSliderRow(
   }
 
   Slider(
-    enabled = enabled,
     value = value,
     onValueChange = onValueChange,
     steps = steps,
@@ -190,10 +185,13 @@ fun ColumnScope.LiquidSliderRow(
         Modifier
           .size(ButtonDefaults.IconSize)
           .clip(CircleShape)
-          .background(MaterialTheme.colorScheme.tertiary)
+          .background(MaterialTheme.colorScheme.primary)
           .testTag(thumbTestTag),
       )
     },
+    colors = SliderDefaults.colors(
+      activeTrackColor = MaterialTheme.colorScheme.secondary,
+    ),
     modifier = Modifier
       .fillMaxWidth()
       .padding(horizontal = 16.dp)
@@ -201,3 +199,5 @@ fun ColumnScope.LiquidSliderRow(
       .semantics { testTagsAsResourceId = true },
   )
 }
+
+typealias FloatRange = ClosedFloatingPointRange<Float>

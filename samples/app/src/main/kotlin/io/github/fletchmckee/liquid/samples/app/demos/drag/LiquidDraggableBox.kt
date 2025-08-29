@@ -1,6 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-package io.github.fletchmckee.liquid.samples.draggable.demos.drag
+package io.github.fletchmckee.liquid.samples.app.demos.drag
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -36,10 +36,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
-import io.github.fletchmckee.liquid.samples.draggable.utils.blendMode
-import io.github.fletchmckee.liquid.samples.draggable.utils.rememberShaderBrush
-import io.github.fletchmckee.liquid.samples.draggable.utils.safeShadow
-import io.github.fletchmckee.liquid.samples.draggable.utils.thenIf
+import io.github.fletchmckee.liquid.samples.app.utils.blendMode
+import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
+import io.github.fletchmckee.liquid.samples.app.utils.safeShadow
+import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.math.roundToInt
 
 @Composable

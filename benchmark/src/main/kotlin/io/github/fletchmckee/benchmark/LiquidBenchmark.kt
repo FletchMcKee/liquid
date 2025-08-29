@@ -27,13 +27,7 @@ class LiquidBenchmark {
     iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
-    setupBlock = {
-      startActivityAndWait { intent ->
-        intent.putExtra(DEMO_TYPE, "Drag")
-        intent.putExtra(USE_LIQUID, false)
-      }
-      device.waitForIdle()
-    },
+    setupBlock = { navigateTo(startDestination = "Drag", useLiquid = false) },
     measureBlock = { dragFigureEight() },
   )
 
@@ -44,13 +38,7 @@ class LiquidBenchmark {
     iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
-    setupBlock = {
-      startActivityAndWait { intent ->
-        intent.putExtra(DEMO_TYPE, "Drag")
-        intent.putExtra(INITIAL_FROST, 0f)
-      }
-      device.waitForIdle()
-    },
+    setupBlock = { navigateTo(startDestination = "Drag") },
     measureBlock = { dragFigureEight() },
   )
 
@@ -61,13 +49,7 @@ class LiquidBenchmark {
     iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
-    setupBlock = {
-      startActivityAndWait { intent ->
-        intent.putExtra(DEMO_TYPE, "Drag")
-        intent.putExtra(INITIAL_FROST, 10f)
-      }
-      device.waitForIdle()
-    },
+    setupBlock = { navigateTo(startDestination = "Drag", initialFrost = 10f) },
     measureBlock = { dragFigureEight() },
   )
 
@@ -78,13 +60,7 @@ class LiquidBenchmark {
     iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
-    setupBlock = {
-      startActivityAndWait { intent ->
-        intent.putExtra(DEMO_TYPE, "Drag")
-        intent.putExtra(INITIAL_FROST, 0f)
-      }
-      device.waitForIdle()
-    },
+    setupBlock = { navigateTo(startDestination = "Drag") },
     measureBlock = { dragFrostSlider() },
   )
 
@@ -95,13 +71,7 @@ class LiquidBenchmark {
     iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
-    setupBlock = {
-      startActivityAndWait { intent ->
-        intent.putExtra(DEMO_TYPE, "Grid")
-        intent.putExtra(USE_LIQUID, false)
-      }
-      device.waitForIdle()
-    },
+    setupBlock = { navigateTo(startDestination = "Grid", useLiquid = false) },
     measureBlock = { flingElementDownThenUp("liquidGrid") },
   )
 
@@ -112,13 +82,7 @@ class LiquidBenchmark {
     iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
-    setupBlock = {
-      startActivityAndWait { intent ->
-        intent.putExtra(DEMO_TYPE, "Grid")
-        intent.putExtra(INITIAL_FROST, 0f)
-      }
-      device.waitForIdle()
-    },
+    setupBlock = { navigateTo(startDestination = "Grid") },
     measureBlock = { flingElementDownThenUp("liquidGrid") },
   )
 
@@ -129,20 +93,14 @@ class LiquidBenchmark {
     iterations = ITERATIONS,
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
-    setupBlock = {
-      startActivityAndWait { intent ->
-        intent.putExtra(DEMO_TYPE, "Grid")
-        intent.putExtra(INITIAL_FROST, 10f)
-      }
-      device.waitForIdle()
-    },
+    setupBlock = { navigateTo(startDestination = "Grid", initialFrost = 10f) },
     measureBlock = { flingElementDownThenUp("liquidGrid") },
   )
 
-  private companion object Companion {
+  companion object Companion {
     const val ITERATIONS = 15
-    const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.draggable"
-    const val DEMO_TYPE = "$PACKAGE_NAME.DEMO_TYPE"
+    const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.app"
+    const val START_DESTINATION = "$PACKAGE_NAME.START_DESTINATION"
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"
   }

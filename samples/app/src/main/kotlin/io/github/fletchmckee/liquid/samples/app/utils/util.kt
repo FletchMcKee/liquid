@@ -1,6 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-package io.github.fletchmckee.liquid.samples.draggable.utils
+package io.github.fletchmckee.liquid.samples.app.utils
 
 import android.os.Build
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 // Used for benchmarks so that we can compare performance with none of the library's effects added.
 internal fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier): Modifier = if (condition) this.block() else this
 
-internal fun Modifier.blendMode(blendMode: BlendMode): Modifier = this.drawWithCache {
+internal fun Modifier.blendMode(blendMode: BlendMode): Modifier = drawWithCache {
   val layer = obtainGraphicsLayer()
   layer.apply {
     record { drawContent() }

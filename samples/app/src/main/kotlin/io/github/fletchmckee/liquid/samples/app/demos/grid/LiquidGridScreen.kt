@@ -1,6 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-package io.github.fletchmckee.liquid.samples.draggable.demos.grid
+package io.github.fletchmckee.liquid.samples.app.demos.grid
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,11 +31,28 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.composable
 import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.rememberLiquidState
-import io.github.fletchmckee.liquid.samples.draggable.utils.thenIf
+import io.github.fletchmckee.liquid.samples.app.utils.thenIf
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object Grid
+
+fun NavGraphBuilder.gridDestination(
+  useLiquid: Boolean = true,
+  initialFrost: Float = 10f,
+) = composable<Grid> {
+  LiquidGridScreen(
+    useLiquid = useLiquid,
+    initialFrost = initialFrost,
+    modifier = Modifier.fillMaxSize(),
+  )
+}
 
 @Composable
 fun LiquidGridScreen(
@@ -68,7 +85,9 @@ fun LiquidGridScreen(
       initialFrost = initialFrost,
     ) {
       Row(
-        modifier = Modifier.fillMaxWidth().padding(32.dp),
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(32.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Icon(
@@ -111,7 +130,7 @@ fun LiquidGrid(
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier,
 ) = LazyVerticalGrid(
-  columns = GridCells.Fixed(3),
+  columns = GridCells.Adaptive(128.dp),
   verticalArrangement = Arrangement.spacedBy(8.dp),
   horizontalArrangement = Arrangement.spacedBy(8.dp),
   contentPadding = contentPadding,
@@ -137,13 +156,13 @@ private fun ImageGrid(
     else -> index
   }
   AsyncImage(
-    model = "https://picsum.photos/id/$safeIndex/200/200",
+    model = "https://picsum.photos/id/$safeIndex/200/275",
     contentScale = ContentScale.Crop,
     placeholder = ColorPainter(Color.LightGray),
     error = ColorPainter(Color.Magenta),
     contentDescription = null,
     modifier = Modifier
       .fillMaxWidth()
-      .aspectRatio(1f),
+      .aspectRatio(8f / 11f),
   )
 }
