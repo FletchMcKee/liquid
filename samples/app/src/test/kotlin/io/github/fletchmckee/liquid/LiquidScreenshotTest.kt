@@ -42,9 +42,9 @@ class LiquidScreenshotTest {
       roborazziOptions = RoborazziOptions(
         compareOptions = RoborazziOptions.CompareOptions(
           changeThreshold = 0.01f, // 1% accepted difference
-        )
-      )
-    )
+        ),
+      ),
+    ),
   )
 
   @DelicateCoilApi
