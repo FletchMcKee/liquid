@@ -5,7 +5,7 @@ package io.github.fletchmckee.liquid.internal.shaders
 import org.intellij.lang.annotations.Language
 
 @Language("AGSL")
-internal val LiquidShader = """
+internal const val LiquidShader = """
   uniform shader content;
   uniform float4 effectRect;
   uniform float4 cornerRadii;
@@ -22,7 +22,7 @@ internal val LiquidShader = """
     return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r.x;
   }
 
-  float2 sdfNormal(float2 pos, float2 shapeSize, half4 vr) {
+  float2 computeSdfNormal(float2 pos, float2 shapeSize, half4 vr) {
     float eps = 0.001;
     float sdfX1 = shape(pos + float2(eps, 0.0), shapeSize, vr);
     float sdfX2 = shape(pos - float2(eps, 0.0), shapeSize, vr);
@@ -50,18 +50,26 @@ internal val LiquidShader = """
 
     float liquidMask = saturate(-sdf * (max(liquidSize.x, liquidSize.y) * 0.5));
     float transition = smoothstep(0.0, 1.0, liquidMask);
-    // The lens is most responsible for the overall effect.
-    // Sine creates a smooth curve from 0 to 1 as input goes from 0 (sin(0) = 0) to π/2 (sin(π/2) = 1).
-    // Credit to ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) for this lens formula.
-    // https://www.shadertoy.com/view/wcKSRD
-    float2 lens = m2 * sin(pow(saturate(-sdf / refraction), curve) * HALF_PI) + 0.5;
-    float2 lensCoord = effectRect.xy + lens * liquidSize;
 
-    half4 fragColor = content.eval(lensCoord);
+    half4 fragColor;
+    // Only apply lens effect if refraction and curve are both positive
+    if (refraction > 0.0 && curve > 0.0) {
+      // The lens is most responsible for the overall effect.
+      // Sine creates a smooth curve from 0 to 1 as input goes from 0 (sin(0) = 0) to π/2 (sin(π/2) = 1).
+      // Credit to ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) for this lens formula.
+      // https://www.shadertoy.com/view/wcKSRD
+      float2 lens = m2 * sin(pow(saturate(-sdf / refraction), curve) * HALF_PI) + 0.5;
+      float2 lensCoord = effectRect.xy + lens * liquidSize;
+      fragColor = content.eval(lensCoord);
+    } else {
+      // No lens effect, just use the original coordinates.
+      fragColor = content.eval(fragCoord);
+    }
+
     float edgeSmooth = smoothstep(-edge, 0.0, sdf);
 
     float2 lightDirection = float2(-0.3, -0.3);
-    float2 sdfNormal = sdfNormal(shapeCoord, shapeSize, vr);
+    float2 sdfNormal = computeSdfNormal(shapeCoord, shapeSize, vr);
 
     float nDotL = dot(sdfNormal, normalize(lightDirection));
     float edgeLightingTop = edgeSmooth * saturate(nDotL) * 0.2;
@@ -72,4 +80,4 @@ internal val LiquidShader = """
 
     return mix(content.eval(fragCoord), fragColor, transition);
   }
-""".trimIndent()
+"""

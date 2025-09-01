@@ -107,4 +107,4 @@ internal fun frostShader(vertical: Boolean): String = """
 
     return result / weightSum;
   }
-""".trimIndent()
+"""

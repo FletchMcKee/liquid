@@ -11,9 +11,11 @@ public interface LiquidScope {
   /**
    * The blur radius applied behind the liquid effect, giving the appearance of frost.
    *
-   * Useful when your [liquid] composable is expected to display text as the liquid effects alone can diminish readability.
+   * Useful when your [liquid] composable is expected to display text as the liquid effects alone can
+   * diminish legibility.
    *
-   * NOTE: This is the most expensive property in this scope as it creates two separate shaders for creating the frost effect.
+   * NOTE: This is the most expensive property in this scope as it creates two separate shaders for
+   * rendering the frost effect.
    *
    * Defaults to 0.dp. Negative values are ignored.
    */
@@ -27,7 +29,8 @@ public interface LiquidScope {
   public var shape: Shape
 
   /**
-   * Controls how much the background distorts through the lens. Setting this to 0 removes the liquid effect altogether,
+   * Controls how much the background distorts through the lens. Setting this to 0 removes the liquid
+   * effect altogether,
    * nullifying any [curve] value.
    *
    * Defaults to 0.25f.
@@ -36,7 +39,8 @@ public interface LiquidScope {
   public var refraction: Float
 
   /**
-   * Adjusts how strongly the lens curves at its center vs. edges. Setting this to 0 removes the liquid effect altogether,
+   * Adjusts how strongly the lens curves at its center vs. edges. Setting this to 0 removes the liquid
+   * effect altogether,
    * nullifying any [refraction] value.
    *
    * Defaults to 0.25f.

@@ -4,6 +4,7 @@ plugins {
   alias(libs.plugins.liquid.android.application)
   alias(libs.plugins.liquid.android.application.compose)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.roborazzi)
 }
 
 android {
@@ -47,4 +48,11 @@ dependencies {
   implementation(libs.kotlinx.serialization)
   implementation(libs.coil.compose)
   implementation(libs.coil.network.okhttp)
+  testImplementation(libs.roborazzi)
+  testImplementation(libs.roborazzi.compose)
+  testImplementation(libs.coil.test)
+}
+
+roborazzi {
+  outputDir.set(project.layout.projectDirectory.dir("screenshots"))
 }

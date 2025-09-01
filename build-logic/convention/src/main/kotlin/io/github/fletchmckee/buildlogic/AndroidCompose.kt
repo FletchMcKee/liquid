@@ -23,6 +23,7 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
       "debugImplementation"(libs.findLibrary("compose-test-manifest").get())
       "androidTestImplementation"(platform(bom))
       "androidTestImplementation"(libs.findLibrary("compose-junit4").get())
+      "testImplementation"(libs.findLibrary("compose-junit4").get())
     }
   }
 

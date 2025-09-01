@@ -20,8 +20,7 @@ class LiquidBenchmark {
   val benchmarkRule = MacrobenchmarkRule()
 
   // Has none of the effects applied to provide a baseline comparison.
-  @Test
-  fun dragBoxBaseline() = benchmarkRule.measureRepeated(
+  @Test fun dragBoxBaseline() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -31,8 +30,7 @@ class LiquidBenchmark {
     measureBlock = { dragFigureEight() },
   )
 
-  @Test
-  fun dragLiquidBoxNoFrost() = benchmarkRule.measureRepeated(
+  @Test fun dragLiquidBoxNoFrost() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -42,8 +40,7 @@ class LiquidBenchmark {
     measureBlock = { dragFigureEight() },
   )
 
-  @Test
-  fun dragLiquidBoxFrost10() = benchmarkRule.measureRepeated(
+  @Test fun dragLiquidBoxFrost10() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -53,8 +50,7 @@ class LiquidBenchmark {
     measureBlock = { dragFigureEight() },
   )
 
-  @Test
-  fun dragFrostSlider() = benchmarkRule.measureRepeated(
+  @Test fun dragFrostSlider() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -64,8 +60,7 @@ class LiquidBenchmark {
     measureBlock = { dragFrostSlider() },
   )
 
-  @Test
-  fun scrollLiquidGridBaseline() = benchmarkRule.measureRepeated(
+  @Test fun scrollLiquidGridBaseline() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -75,8 +70,7 @@ class LiquidBenchmark {
     measureBlock = { flingElementDownThenUp("liquidGrid") },
   )
 
-  @Test
-  fun scrollLiquidGridNoFrost() = benchmarkRule.measureRepeated(
+  @Test fun scrollLiquidGridNoFrost() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -86,8 +80,7 @@ class LiquidBenchmark {
     measureBlock = { flingElementDownThenUp("liquidGrid") },
   )
 
-  @Test
-  fun scrollLiquidGridFrost10() = benchmarkRule.measureRepeated(
+  @Test fun scrollLiquidGridFrost10() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,
@@ -98,7 +91,7 @@ class LiquidBenchmark {
   )
 
   companion object Companion {
-    const val ITERATIONS = 15
+    const val ITERATIONS = 5
     const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.app"
     const val START_DESTINATION = "$PACKAGE_NAME.START_DESTINATION"
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"

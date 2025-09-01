@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -18,7 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -113,7 +116,7 @@ private fun DemosList(
       .fillMaxSize()
       .padding(padding)
       .padding(horizontal = 24.dp),
-    verticalArrangement = Arrangement.spacedBy(16.dp),
+    verticalArrangement = Arrangement.spacedBy(20.dp),
   ) {
     DemoItem(
       name = "Drag",
@@ -133,6 +136,7 @@ private fun DemoItem(
   onClick: () -> Unit,
 ) = Row(
   modifier = Modifier
+    .fillMaxWidth()
     .clickable(
       interactionSource = remember { MutableInteractionSource() },
       indication = null,
@@ -141,6 +145,9 @@ private fun DemoItem(
 ) {
   Text(
     text = name,
-    style = MaterialTheme.typography.titleMedium,
+    style = MaterialTheme.typography.titleMedium.copy(
+      fontSize = 20.sp,
+      fontWeight = FontWeight.Normal,
+    ),
   )
 }

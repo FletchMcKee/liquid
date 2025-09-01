@@ -25,7 +25,8 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   bounds: Rect,
 ) {
   if (liquefiables.isEmpty()) return
-
+  // We avoid unnecessary liquidScope invalidations by observing the mutableState boundsOnScreen
+  // and layers here.
   layer.record(bounds.size.toIntSize()) {
     liquefiables
       .asSequence()
@@ -45,17 +46,6 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   }
 }
 
-internal inline val IntSize?.isEmpty: Boolean get() = when {
-  this == null -> true
-  width <= 0 || height <= 0 -> true
-  else -> false
-}
-
-internal inline val Offset.orZero: Offset get() = takeOrElse { Offset.Zero }
-
-@Suppress("NOTHING_TO_INLINE")
-internal inline infix fun Int.has(flag: Int): Boolean = (this and flag) != 0
-
 /**
  * Allows passing a [Shape] parameter to a composable that can be used for other GraphicsLayer requirements
  * along with being used in our liquid nodes.
@@ -66,7 +56,7 @@ internal fun Shape.cornerRadiiPx(size: Size, density: Density): FloatArray = whe
     floatArrayOf(radius, radius, radius, radius)
   }
   is RoundedCornerShape -> {
-    // Unlike the effectRect that is LRTB, the shader's cornerRadii is quadrant based where the order is:
+    // Unlike the effectRect that is LTRB, the shader's cornerRadii is quadrant based where the order is:
     // bottomEnd, topEnd, bottomStart, topStart.
     floatArrayOf(
       bottomEnd.toPx(size, density),
@@ -77,3 +67,14 @@ internal fun Shape.cornerRadiiPx(size: Size, density: Density): FloatArray = whe
   }
   else -> floatArrayOf(0f, 0f, 0f, 0f)
 }
+
+internal inline val IntSize?.isEmpty: Boolean get() = when {
+  this == null -> true
+  width <= 0 || height <= 0 -> true
+  else -> false
+}
+
+internal inline val Offset.orZero: Offset get() = takeOrElse { Offset.Zero }
+
+@Suppress("NOTHING_TO_INLINE")
+internal inline infix fun Int.has(flag: Int): Boolean = (this and flag) != 0

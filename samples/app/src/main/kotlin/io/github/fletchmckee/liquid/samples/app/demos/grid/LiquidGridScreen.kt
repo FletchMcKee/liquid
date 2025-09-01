@@ -4,24 +4,29 @@ package io.github.fletchmckee.liquid.samples.app.demos.grid
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
@@ -31,98 +36,84 @@ import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
-import kotlinx.serialization.Serializable
-
-@Serializable
-data object Grid
-
-fun NavGraphBuilder.gridDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<Grid> {
-  LiquidGridScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
-    modifier = Modifier.fillMaxSize(),
-  )
-}
 
 @Composable
 fun LiquidGridScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
   useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = LiquidScaffold(
-  topAppBar = {
-    LiquidTopAppBar(
-      liquidState = liquidState,
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    ) {
-      Text(
-        text = "Liquid Vertical Grid",
-        textAlign = TextAlign.Start,
-        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-        color = MaterialTheme.colorScheme.onBackground,
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(horizontal = 24.dp),
-      )
-    }
-  },
-  bottomAppBar = {
-    LiquidBottomAppBar(
-      liquidState = liquidState,
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    ) {
-      Row(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(32.dp),
-        verticalAlignment = Alignment.CenterVertically,
+  initialFrost: Float = 0f,
+) {
+  var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
+
+  LiquidScaffold(
+    topAppBar = {
+      LiquidTopAppBar(
+        liquidState = liquidState,
+        useLiquid = useLiquid,
+        frostProvider = { frostRadius },
       ) {
-        Icon(
-          imageVector = Icons.Default.Favorite,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.weight(1f),
-        )
-        Icon(
-          imageVector = Icons.Default.CheckCircle,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.weight(1f),
-        )
-        Icon(
-          imageVector = Icons.Default.Delete,
-          contentDescription = null,
-          tint = MaterialTheme.colorScheme.primary,
-          modifier = Modifier.weight(1f),
+        Text(
+          text = "Liquid Vertical Grid",
+          textAlign = TextAlign.Start,
+          style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+          color = MaterialTheme.colorScheme.onBackground,
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
         )
       }
-    }
-  },
-  modifier = modifier,
-) { padding ->
-  LiquidGrid(
-    contentPadding = padding,
-    modifier = Modifier
-      .fillMaxSize()
-      .testTag("liquidGrid")
-      .semantics { testTagsAsResourceId = true }
-      .thenIf(useLiquid) {
-        liquefiable(liquidState)
-      },
-  )
+    },
+    bottomAppBar = {
+      LiquidBottomAppBar(
+        liquidState = liquidState,
+        useLiquid = useLiquid,
+        frostProvider = { frostRadius },
+      ) {
+        Slider(
+          value = frostRadius,
+          onValueChange = { frostRadius = it },
+          valueRange = 0f..50f,
+          thumb = {
+            Box(
+              Modifier
+                .size(ButtonDefaults.IconSize)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primary),
+            )
+          },
+          track = { state ->
+            SliderDefaults.Track(
+              sliderState = state,
+              drawStopIndicator = null,
+              drawTick = { _, _ -> },
+              modifier = Modifier.height(8.dp),
+            )
+          },
+          modifier = Modifier
+            .padding(horizontal = 24.dp, vertical = 16.dp)
+            .fillMaxWidth(),
+        )
+      }
+    },
+    modifier = modifier,
+  ) { padding ->
+    LiquidGrid(
+      contentPadding = padding,
+      modifier = Modifier
+        .fillMaxSize()
+        .testTag("liquidGrid")
+        .semantics { testTagsAsResourceId = true }
+        .thenIf(useLiquid) {
+          liquefiable(liquidState)
+        },
+    )
+  }
 }
 
 @Composable
@@ -130,11 +121,11 @@ fun LiquidGrid(
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier,
 ) = LazyVerticalGrid(
-  columns = GridCells.Adaptive(128.dp),
+  columns = GridCells.Adaptive(120.dp),
   verticalArrangement = Arrangement.spacedBy(8.dp),
   horizontalArrangement = Arrangement.spacedBy(8.dp),
   contentPadding = contentPadding,
-  // Need to add a background of some kind, otherwise the gaps between the grids isn't sampled in the liquid effect.
+  // Need to add a background of some kind, otherwise the gaps between the grids aren't sampled in the liquid effect.
   modifier = modifier
     .background(MaterialTheme.colorScheme.background)
     .padding(horizontal = 8.dp),
@@ -145,9 +136,7 @@ fun LiquidGrid(
 }
 
 @Composable
-private fun ImageGrid(
-  index: Int,
-) {
+private fun ImageGrid(index: Int) {
   // Appears these don't exist with picsum.
   val safeIndex = when (index) {
     86 -> 110
@@ -163,6 +152,8 @@ private fun ImageGrid(
     contentDescription = null,
     modifier = Modifier
       .fillMaxWidth()
-      .aspectRatio(8f / 11f),
+      .aspectRatio(8f / 11f)
+      .testTag("imageGrid$index")
+      .semantics { testTagsAsResourceId = true },
   )
 }

@@ -5,11 +5,8 @@ package io.github.fletchmckee.liquid.samples.app.demos.drag
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -35,8 +32,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import androidx.window.core.layout.WindowWidthSizeClass
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
@@ -44,23 +39,6 @@ import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
-import kotlinx.serialization.Serializable
-
-@Serializable
-data object Drag
-
-fun NavGraphBuilder.dragDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<Drag> {
-  LiquidDraggableScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
-    modifier = Modifier
-      .fillMaxSize()
-      .consumeWindowInsets(WindowInsets.systemBars),
-  )
-}
 
 @Composable
 fun LiquidDraggableScreen(
@@ -70,7 +48,7 @@ fun LiquidDraggableScreen(
   initialFrost: Float = 0f,
   useLiquid: Boolean = true,
   usePager: Boolean = true,
-  sliderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+  sliderContainerColor: Color = MaterialTheme.colorScheme.surface,
 ) {
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
 
@@ -167,15 +145,13 @@ private fun PagerBackground(
 fun SettingsButton(
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
+) = IconButton(
+  modifier = modifier,
+  onClick = onClick,
 ) {
-  IconButton(
-    modifier = modifier,
-    onClick = onClick,
-  ) {
-    Icon(
-      imageVector = Icons.Default.Settings,
-      contentDescription = "Sliders visibility button",
-      tint = MaterialTheme.colorScheme.onBackground,
-    )
-  }
+  Icon(
+    imageVector = Icons.Default.Settings,
+    contentDescription = "Sliders visibility button",
+    tint = MaterialTheme.colorScheme.onBackground,
+  )
 }

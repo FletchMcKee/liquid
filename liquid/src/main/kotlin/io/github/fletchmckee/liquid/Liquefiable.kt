@@ -7,23 +7,26 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import io.github.fletchmckee.liquid.internal.LiquefiableElement
 
 @Stable
-public class Liquefiable {
+internal class Liquefiable {
   internal var layer: GraphicsLayer? by mutableStateOf(null)
 
   internal var boundsOnScreen: Rect by mutableStateOf(Rect.Zero)
 
-  override fun toString(): String = """
+  override fun toString(): String = Snapshot.withoutReadObservation {
+    """
     Liquefiable(
       layer=$layer,
       boundsOnScreen=$boundsOnScreen,
     )
-  """.trimIndent()
+    """.trimIndent()
+  }
 }
 
 /**

@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -86,7 +87,7 @@ fun BoxScope.LiquidDraggableBox(
   ) {
     Text(
       text = "Drag",
-      color = MaterialTheme.colorScheme.onBackground,
+      color = Color.White,
       style = MaterialTheme.typography.headlineLarge.merge(
         fontSize = 28.sp,
         fontWeight = FontWeight.Bold,

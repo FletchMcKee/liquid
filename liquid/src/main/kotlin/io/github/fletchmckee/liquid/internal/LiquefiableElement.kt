@@ -80,8 +80,6 @@ internal class LiquefiableNode(
   }
 
   override fun ContentDrawScope.draw() {
-    if (!isAttached) return
-
     if (size.minDimension.fastRoundToInt() < 1) {
       drawContent()
       return

@@ -46,9 +46,9 @@ fun LiquidScaffold(
 @Composable
 fun LiquidTopAppBar(
   liquidState: LiquidState,
+  frostProvider: () -> Float,
   modifier: Modifier = Modifier,
   useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
   title: @Composable () -> Unit = {},
   navigationIcon: @Composable () -> Unit = {},
   actions: @Composable RowScope.() -> Unit = {},
@@ -74,10 +74,10 @@ fun LiquidTopAppBar(
       .fillMaxWidth()
       .thenIf(useLiquid) {
         liquid(liquidState) {
-          this.frost = initialFrost.dp
+          this.frost = frostProvider().dp
           this.shape = shape
-          this.refraction = 0.25f
-          this.curve = 0.1f
+          this.refraction = 0.4f
+          this.curve = 0.15f
           this.edge = 0.1f
         }
       }
@@ -92,9 +92,9 @@ fun LiquidTopAppBar(
 @Composable
 fun LiquidBottomAppBar(
   liquidState: LiquidState,
+  frostProvider: () -> Float,
   modifier: Modifier = Modifier,
   useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
   shape: Shape = RoundedCornerShape(35),
   content: @Composable () -> Unit = {},
 ) = Row(
@@ -104,10 +104,10 @@ fun LiquidBottomAppBar(
     .safeShadow(elevation = 4.dp, shape = shape)
     .thenIf(useLiquid) {
       liquid(liquidState) {
-        this.frost = initialFrost.dp
+        this.frost = frostProvider().dp
         this.shape = shape
-        this.refraction = 0.25f
-        this.curve = 0.1f
+        this.refraction = 0.4f
+        this.curve = 0.15f
         this.edge = 0.1f
       }
     }

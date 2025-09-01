@@ -3,6 +3,8 @@
 package io.github.fletchmckee.buildlogic
 
 import com.android.build.api.dsl.CommonExtension
+import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.HasUnitTestBuilder
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.assign
@@ -48,7 +50,25 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
     }
   }
 
+  androidComponents {
+    beforeVariants(selector().withBuildType("release")) { variantBuilder ->
+      (variantBuilder as? HasUnitTestBuilder)?.apply {
+        enableUnitTest = false
+      }
+    }
+
+    beforeVariants(selector().withBuildType("benchmark")) { variantBuilder ->
+      (variantBuilder as? HasUnitTestBuilder)?.apply {
+        enableUnitTest = false
+      }
+    }
+  }
+
   dependencies {
     "coreLibraryDesugaring"(libs.findLibrary("android.desugarJdkLibs").get())
   }
+}
+
+private fun Project.androidComponents(action: AndroidComponentsExtension<*, *, *>.() -> Unit) {
+  extensions.configure(AndroidComponentsExtension::class.java, action)
 }

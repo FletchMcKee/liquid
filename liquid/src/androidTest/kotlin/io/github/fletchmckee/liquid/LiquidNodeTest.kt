@@ -9,11 +9,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -37,6 +39,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import assertk.assertions.isZero
 import io.github.fletchmckee.liquid.internal.LiquidNode
 import kotlin.test.Test
 import org.junit.Before
@@ -80,7 +83,7 @@ class LiquidNodeTest {
     }
   }
 
-  @Test fun differingLiquidStates_whenLiquefiableBoundsChange_liquidNodeNotInvalidated() {
+  @Test fun differingLiquidStates_liquefiableBoundsChange_liquidNodeNotInvalidated() {
     var offset by mutableStateOf(IntOffset(0))
     var drawCount = 0
     var liquidBlockCount = 0
@@ -114,7 +117,7 @@ class LiquidNodeTest {
     }
   }
 
-  @Test fun sharedLiquidStates_whenLiquefiableBoundsChange_liquidNodeInvalidated() {
+  @Test fun sharedLiquidStates_liquefiableBoundsChange_liquidNodeInvalidated() {
     var showLiquefiable by mutableStateOf(true)
     var offset by mutableStateOf(IntOffset(0, 0))
     var drawCount = 0
@@ -194,44 +197,152 @@ class LiquidNodeTest {
     }
   }
 
-  @Test fun liquidNode_reactsToFrostChanges() = runLiquidScopeTest(
-    initialValue = 0.dp,
-    changedValue = 10.dp,
-    finalValue = 20.dp,
-  ) { frost ->
-    this.frost = frost
+  @Test fun removedLiquidNode_liquefiableBoundsChange_notInvalidated() {
+    var showLiquid by mutableStateOf(true)
+    var offset by mutableStateOf(IntOffset(0, 0))
+    var drawCount = 0
+    var liquidBlockCount = 0
+    val liquidNode = LiquidNode(liquidState) { liquidBlockCount++ }
+    rule.apply {
+      setContent {
+        Parent {
+          SimpleLiquefiable(
+            liquidState,
+            Modifier.offset { offset },
+          )
+          if (showLiquid) {
+            Box(
+              Modifier
+                .size(100.dp)
+                .elementOf(liquidNode)
+                .drawBehind { drawCount++ },
+            )
+          }
+        }
+      }
+
+      runOnIdle {
+        // onAttach and the Liquefiable with shared state being added.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+      }
+      runOnIdle { showLiquid = false }
+      runOnIdle {
+        // Verify no draws or invalidations occurred and that the reusableScope's has been reset.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+        assertThat(liquidNode.reusableScope.size).isEqualTo(Size.Unspecified)
+        assertThat(liquidNode.reusableScope.liquefiables).isEmpty()
+      }
+      runOnIdle { offset = IntOffset(10, 10) }
+      runOnIdle {
+        // Verify the liquidNode is no longer observing liquefiable changes.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+      }
+      runOnIdle { showLiquid = true }
+      runOnIdle {
+        // Verify incremented draw/liquidBlockCounts and the same liquefiable is now observed.
+        assertThat(liquidBlockCount).isEqualTo(3)
+        assertThat(drawCount).isEqualTo(3)
+        assertThat(liquidNode.reusableScope.liquefiables.single())
+          .isEqualTo(liquidState.liquefiables.single())
+      }
+    }
   }
 
-  @Test fun liquidNode_reactsToShapeChanges() = runLiquidScopeTest(
-    initialValue = RectangleShape,
-    changedValue = RoundedCornerShape(10),
-    finalValue = CircleShape,
-  ) { shape ->
-    this.shape = shape
+  @Test fun removedLiquidNode_liquidScopeParameterChange_notInvalidated() {
+    var showLiquid by mutableStateOf(true)
+    var curve by mutableFloatStateOf(0.25f)
+    var drawCount = 0
+    var liquidBlockCount = 0
+    val liquidNode = LiquidNode(liquidState) {
+      this.curve = curve
+      liquidBlockCount++
+    }
+    rule.apply {
+      setContent {
+        Parent {
+          SimpleLiquefiable(liquidState)
+          if (showLiquid) {
+            Box(
+              Modifier
+                .size(100.dp)
+                .elementOf(liquidNode)
+                .drawBehind { drawCount++ },
+            )
+          }
+        }
+      }
+
+      runOnIdle {
+        // onAttach and Liquefiable being added.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+      }
+      runOnIdle { showLiquid = false }
+      runOnIdle {
+        // Verify no draws or invalidations occurred and that the reusableScope's has been reset.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+        assertThat(liquidNode.reusableScope.size).isEqualTo(Size.Unspecified)
+        assertThat(liquidNode.reusableScope.liquefiables).isEmpty()
+        assertThat(liquidNode.reusableScope.curve).isZero()
+      }
+      runOnIdle { curve = 0.5f }
+      runOnIdle {
+        // Verify the liquidNode is no longer observing its own parameter changes.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+        assertThat(liquidNode.reusableScope.curve).isZero()
+      }
+      runOnIdle { showLiquid = true }
+      runOnIdle {
+        // Verify incremented draw/liquidBlockCounts and the curve matches the updated value.
+        assertThat(liquidBlockCount).isEqualTo(3)
+        assertThat(drawCount).isEqualTo(3)
+        assertThat(liquidNode.reusableScope.liquefiables.single())
+          .isEqualTo(liquidState.liquefiables.single())
+        assertThat(liquidNode.reusableScope.curve).isEqualTo(0.5f)
+      }
+    }
   }
 
-  @Test fun liquidNode_reactsToRefractionChanges() = runLiquidScopeTest(
-    initialValue = 0.25f,
-    changedValue = 0f,
-    finalValue = 0.5f,
-  ) { refraction ->
-    this.refraction = refraction
-  }
+  @Test fun nearestAncestorLiquefiable_filteredOutOfLiquidNodeLiquefiables() {
+    var drawCount = 0
+    var liquidBlockCount = 0
+    val liquidNode = LiquidNode(liquidState) { liquidBlockCount++ }
+    rule.apply {
+      setContent {
+        CompositionLocalProvider(LocalDensity provides Density(1f)) {
+          Parent {
+            SimpleLiquefiable(liquidState, Modifier.size(50.dp))
+            Box(
+              Modifier
+                .size(100.dp)
+                .liquefiable(liquidState)
+                .elementOf(liquidNode)
+                .drawBehind { drawCount++ },
+            )
+          }
+        }
+      }
 
-  @Test fun liquidNode_reactsToCurveChanges() = runLiquidScopeTest(
-    initialValue = 0.25f,
-    changedValue = 0f,
-    finalValue = 0.5f,
-  ) { curve ->
-    this.curve = curve
-  }
-
-  @Test fun liquidNode_reactsToEdgeChanges() = runLiquidScopeTest(
-    initialValue = 0f,
-    changedValue = 0.1f,
-    finalValue = 0.2f,
-  ) { edge ->
-    this.edge = edge
+      runOnIdle {
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+        // The state will still contain the nearest ancestor, but the liquidNode's reusableScope should not.
+        assertThat(liquidState.liquefiables.size).isEqualTo(2)
+        assertThat(liquidNode.reusableScope.liquefiables.size).isEqualTo(1)
+        // Verify the correct liquefiable remains. The nearest ancestor that was filtered would have Size(100f, 100f).
+        assertThat(
+          liquidNode.reusableScope.liquefiables
+            .single()
+            .boundsOnScreen
+            .size,
+        ).isEqualTo(Size(50f, 50f))
+      }
+    }
   }
 
   @Test fun liquidNode_notInBoundsOfLiquefiable_doesNotRenderLiquefiable() {
@@ -289,6 +400,46 @@ class LiquidNodeTest {
         .captureToImage()
         .assertContainsColor(Color.Red)
     }
+  }
+
+  @Test fun liquidNode_reactsToFrostChanges() = runLiquidScopeTest(
+    initialValue = 0.dp,
+    changedValue = 10.dp,
+    finalValue = 20.dp,
+  ) { frost ->
+    this.frost = frost
+  }
+
+  @Test fun liquidNode_reactsToShapeChanges() = runLiquidScopeTest(
+    initialValue = RectangleShape,
+    changedValue = RoundedCornerShape(10),
+    finalValue = CircleShape,
+  ) { shape ->
+    this.shape = shape
+  }
+
+  @Test fun liquidNode_reactsToRefractionChanges() = runLiquidScopeTest(
+    initialValue = 0.25f,
+    changedValue = 0f,
+    finalValue = 0.5f,
+  ) { refraction ->
+    this.refraction = refraction
+  }
+
+  @Test fun liquidNode_reactsToCurveChanges() = runLiquidScopeTest(
+    initialValue = 0.25f,
+    changedValue = 0f,
+    finalValue = 0.5f,
+  ) { curve ->
+    this.curve = curve
+  }
+
+  @Test fun liquidNode_reactsToEdgeChanges() = runLiquidScopeTest(
+    initialValue = 0f,
+    changedValue = 0.1f,
+    finalValue = 0.2f,
+  ) { edge ->
+    this.edge = edge
   }
 
   private fun <T> runLiquidScopeTest(

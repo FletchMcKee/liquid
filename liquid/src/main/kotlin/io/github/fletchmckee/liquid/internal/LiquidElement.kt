@@ -41,10 +41,7 @@ internal class LiquidElement(
   private val liquidState: LiquidState,
   private val block: LiquidScope.() -> Unit,
 ) : ModifierNodeElement<LiquidNode>() {
-  override fun create() = LiquidNode(
-    liquidState = liquidState,
-    block = block,
-  )
+  override fun create() = LiquidNode(liquidState, block)
 
   override fun update(node: LiquidNode) {
     node.liquidState = liquidState
@@ -90,7 +87,6 @@ internal class LiquidNode(
   @VisibleForTesting
   internal val reusableScope = LiquidScopeImpl()
 
-  // Recreating the GraphicsLayer or RenderEffect causes many native allocations, so we're using an in-memory layer/effect.
   private var cachedLayer: GraphicsLayer? = null
   private var cachedRenderEffect: RenderEffect? = null
 
@@ -99,8 +95,8 @@ internal class LiquidNode(
 
     block(reusableScope)
 
-    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
     // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
+    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
     reusableScope.liquefiables = liquidState?.liquefiables
       .orEmpty()
       .asSequence()
@@ -117,11 +113,14 @@ internal class LiquidNode(
 
   private fun invalidateDrawIfNeeded() {
     if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
+      // As long as the uniforms in the RenderEffect's shader haven't changed, we can reuse the same RenderEffect
+      // and avoid expensive native allocations.
       cachedRenderEffect = cachedRenderEffect.takeUnless { reusableScope.mutatedFields has Fields.RenderEffectFields }
       invalidateDraw()
     }
   }
 
+  // We handle all necessary invalidations in LiquidScopeImpl.
   override val shouldAutoInvalidate: Boolean = false
 
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
@@ -145,8 +144,6 @@ internal class LiquidNode(
   }
 
   override fun ContentDrawScope.draw() {
-    if (!isAttached) return
-
     if (size.minDimension.fastRoundToInt() < 1) {
       drawContent()
       return

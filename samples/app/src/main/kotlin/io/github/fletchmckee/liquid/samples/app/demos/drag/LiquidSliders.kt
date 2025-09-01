@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -64,7 +65,7 @@ fun BoxScope.LiquidSliders(
   onEdgeChange: (Float) -> Unit,
   modifier: Modifier = Modifier,
   shape: Shape = RoundedCornerShape(15),
-  containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+  containerColor: Color = MaterialTheme.colorScheme.surface,
 ) = AnimatedVisibility(
   visible = showSliders,
   enter = fadeIn(tween(1000)) + expandIn(tween(1000)),
@@ -189,9 +190,14 @@ fun LiquidSliderRow(
           .testTag(thumbTestTag),
       )
     },
-    colors = SliderDefaults.colors(
-      activeTrackColor = MaterialTheme.colorScheme.secondary,
-    ),
+    track = { state ->
+      SliderDefaults.Track(
+        sliderState = state,
+        drawStopIndicator = null,
+        drawTick = { _, _ -> },
+        modifier = Modifier.height(8.dp),
+      )
+    },
     modifier = Modifier
       .fillMaxWidth()
       .padding(horizontal = 16.dp)

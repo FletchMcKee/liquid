@@ -22,7 +22,7 @@ internal fun Modifier.liquidBackup(
   start: Offset = Offset.Zero,
   end: Offset = Offset.Infinite,
   tileMode: TileMode = TileMode.Clamp,
-) = this.drawBehind {
+) = drawBehind {
   val strokeWidth = width.toPx()
   val outline = shape.createOutline(size, layoutDirection, this)
   drawOutline(

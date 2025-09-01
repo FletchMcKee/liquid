@@ -88,11 +88,21 @@ fun MacrobenchmarkScope.flingElementDownThenUp(
   timeout: Long = 2_000,
 ) {
   val element = waitForObject(testTag, timeout)
-  element.setGestureMargin(device.displayWidth / 5)
+  val horizontalMargin = device.displayWidth / 5
+  val bottomMargin = device.displayHeight / 3
+  // The Slider interferes with the fling action, so setting a larger bottom margin to
+  // avoid missed scrolls.
+  element.setGestureMargins(
+    horizontalMargin,
+    0,
+    horizontalMargin,
+    bottomMargin,
+  )
 
   element.fling(Direction.DOWN)
   element.fling(Direction.DOWN)
   device.waitForIdle()
+
   element.fling(Direction.UP)
   element.fling(Direction.UP)
   device.waitForIdle()
