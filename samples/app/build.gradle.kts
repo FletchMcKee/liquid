@@ -50,6 +50,8 @@ dependencies {
   implementation(libs.coil.network.okhttp)
   testImplementation(libs.roborazzi)
   testImplementation(libs.roborazzi.compose)
+  testImplementation(libs.roborazzi.rule)
+  testImplementation(libs.roborazzi.core)
   testImplementation(libs.coil.test)
 }
 

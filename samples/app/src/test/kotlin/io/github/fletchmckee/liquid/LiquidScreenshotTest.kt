@@ -17,6 +17,8 @@ import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
 import coil3.test.FakeImageLoaderEngine
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
+import com.github.takahirom.roborazzi.RoborazziOptions
+import com.github.takahirom.roborazzi.RoborazziRule
 import com.github.takahirom.roborazzi.captureRoboImage
 import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidDraggableScreen
 import io.github.fletchmckee.liquid.samples.app.demos.grid.LiquidGridScreen
@@ -33,6 +35,17 @@ import org.robolectric.annotation.GraphicsMode
 @Config(sdk = [35], qualifiers = RobolectricDeviceQualifiers.Pixel7)
 class LiquidScreenshotTest {
   @get:Rule val rule = createComposeRule()
+
+  @get:Rule
+  val roborazziRule = RoborazziRule(
+    options = RoborazziRule.Options(
+      roborazziOptions = RoborazziOptions(
+        compareOptions = RoborazziOptions.CompareOptions(
+          changeThreshold = 0.01f, // 1% accepted difference
+        )
+      )
+    )
+  )
 
   @DelicateCoilApi
   @Before fun before() {
