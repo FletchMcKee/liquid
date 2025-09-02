@@ -14,6 +14,7 @@ internal const val LiquidShader = """
   uniform float edge;
 
   const float HALF_PI = 1.57079633;
+  const float EPSILON = 0.001;
 
   float shape(in float2 p, in float2 b, in half4 r) {
     r.xy = (p.x > 0.0) ? r.xy : r.zw; // xy is right quadrant, zw is left
@@ -23,11 +24,10 @@ internal const val LiquidShader = """
   }
 
   float2 computeSdfNormal(float2 pos, float2 shapeSize, half4 vr) {
-    float eps = 0.001;
-    float sdfX1 = shape(pos + float2(eps, 0.0), shapeSize, vr);
-    float sdfX2 = shape(pos - float2(eps, 0.0), shapeSize, vr);
-    float sdfY1 = shape(pos + float2(0.0, eps), shapeSize, vr);
-    float sdfY2 = shape(pos - float2(0.0, eps), shapeSize, vr);
+    float sdfX1 = shape(pos + float2(EPSILON, 0.0), shapeSize, vr);
+    float sdfX2 = shape(pos - float2(EPSILON, 0.0), shapeSize, vr);
+    float sdfY1 = shape(pos + float2(0.0, EPSILON), shapeSize, vr);
+    float sdfY2 = shape(pos - float2(0.0, EPSILON), shapeSize, vr);
     return normalize(float2(sdfX1 - sdfX2, sdfY1 - sdfY2));
   }
 

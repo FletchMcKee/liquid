@@ -90,7 +90,7 @@ class LiquidBenchmark {
     measureBlock = { flingElementDownThenUp("liquidGrid") },
   )
 
-  companion object Companion {
+  companion object {
     const val ITERATIONS = 5
     const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.app"
     const val START_DESTINATION = "$PACKAGE_NAME.START_DESTINATION"

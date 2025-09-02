@@ -59,8 +59,8 @@ fun BoxScope.LiquidSliders(
   onFrostChange: (Float) -> Unit,
   refractionProvider: () -> Float,
   onRefractionChange: (Float) -> Unit,
-  curvatureProvider: () -> Float,
-  onCurvatureChange: (Float) -> Unit,
+  curveProvider: () -> Float,
+  onCurveChange: (Float) -> Unit,
   edgeProvider: () -> Float,
   onEdgeChange: (Float) -> Unit,
   modifier: Modifier = Modifier,
@@ -121,9 +121,9 @@ fun BoxScope.LiquidSliders(
     )
 
     LiquidSliderRow(
-      text = "Curvature:",
-      value = curvatureProvider(),
-      onValueChange = onCurvatureChange,
+      text = "Curve:",
+      value = curveProvider(),
+      onValueChange = onCurveChange,
       valueRange = 0f..1f,
     )
 
