@@ -1,7 +1,6 @@
 [versions]
 activityCompose = "1.10.1"
 agp = "8.13.0"
-androidDesugarJdkLibs = "2.1.5"
 androidXTest = "1.7.0"
 assertk = "0.28.1"
 benchmark = "1.4.0"
@@ -26,7 +25,6 @@ uiautomator = "2.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidXTest" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
