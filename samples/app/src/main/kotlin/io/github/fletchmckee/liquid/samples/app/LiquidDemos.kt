@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,11 @@ import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.drag.dragDestination
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
 import io.github.fletchmckee.liquid.samples.app.demos.grid.gridDestination
+import io.github.fletchmckee.liquid.samples.app.demos.many.Many
+import io.github.fletchmckee.liquid.samples.app.demos.many.manyNavigation
+import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
+import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.stickyHeaderDestination
+import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import kotlinx.serialization.Serializable
 import okio.Path.Companion.toOkioPath
 
@@ -95,6 +101,16 @@ fun LiquidDemos(
       useLiquid = useLiquid,
       initialFrost = initialFrost,
     )
+
+    stickyHeaderDestination(
+      useLiquid = useLiquid,
+      initialFrost = initialFrost,
+    )
+
+    manyNavigation(
+      useLiquid,
+      initialFrost,
+    )
   }
 }
 
@@ -114,6 +130,7 @@ private fun DemosList(
   Column(
     modifier = Modifier
       .fillMaxSize()
+      .background(rememberShaderBrush())
       .padding(padding)
       .padding(horizontal = 24.dp),
     verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -126,6 +143,16 @@ private fun DemosList(
     DemoItem(
       name = "Grid",
       onClick = { navController.navigate(Grid) },
+    )
+
+    DemoItem(
+      name = "Sticky Header",
+      onClick = { navController.navigate(StickyHeader) },
+    )
+
+    DemoItem(
+      name = "500 Liquid Nodes",
+      onClick = { navController.navigate(Many) },
     )
   }
 }

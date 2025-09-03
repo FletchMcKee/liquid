@@ -39,7 +39,6 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import assertk.assertions.isZero
 import io.github.fletchmckee.liquid.internal.LiquidNode
 import kotlin.test.Test
 import org.junit.Before
@@ -148,7 +147,7 @@ class LiquidNodeTest {
       }
 
       runOnIdle {
-        // onAttach and the Liquefiable with shared state being added.
+        // onAttach and the Liquefiable being added.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
         val expectedBounds = Rect(coords!!.positionOnScreen(), coords.size.toSize())
@@ -222,13 +221,13 @@ class LiquidNodeTest {
       }
 
       runOnIdle {
-        // onAttach and the Liquefiable with shared state being added.
+        // onAttach and the Liquefiable being added.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
       }
       runOnIdle { showLiquid = false }
       runOnIdle {
-        // Verify no draws or invalidations occurred and that the reusableScope's has been reset.
+        // Verify no draws/invalidations occurred and the reusableScope has been reset.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
         assertThat(liquidNode.reusableScope.size).isEqualTo(Size.Unspecified)
@@ -282,19 +281,17 @@ class LiquidNodeTest {
       }
       runOnIdle { showLiquid = false }
       runOnIdle {
-        // Verify no draws or invalidations occurred and that the reusableScope's has been reset.
+        // Verify no draws/invalidations occurred and the reusableScope has been reset.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
         assertThat(liquidNode.reusableScope.size).isEqualTo(Size.Unspecified)
         assertThat(liquidNode.reusableScope.liquefiables).isEmpty()
-        assertThat(liquidNode.reusableScope.curve).isZero()
       }
       runOnIdle { curve = 0.5f }
       runOnIdle {
         // Verify the liquidNode is no longer observing its own parameter changes.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
-        assertThat(liquidNode.reusableScope.curve).isZero()
       }
       runOnIdle { showLiquid = true }
       runOnIdle {

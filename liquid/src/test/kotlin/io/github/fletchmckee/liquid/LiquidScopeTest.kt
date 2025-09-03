@@ -40,10 +40,10 @@ class LiquidScopeTest {
     scope.reset()
     assertThat(scope.frost).isEqualTo(0.dp)
     assertThat(scope.shape).isEqualTo(RectangleShape)
-    // We have a default value of 0.25f for refraction and curve as the effect is obsolete when these
-    // values are 0. However reset sets them to zero, but reset is only called in onDetach as of now.
-    assertThat(scope.refraction).isEqualTo(0f)
-    assertThat(scope.curve).isEqualTo(0f)
+    // We have to reset to the default values. Otherwise if users rely on the default values and
+    // use a LazyColumn where items are detached and re-attached frequently, the effect would disappear.
+    assertThat(scope.refraction).isEqualTo(0.25f)
+    assertThat(scope.curve).isEqualTo(0.25f)
     assertThat(scope.edge).isEqualTo(0f)
     assertThat(scope.size).isEqualTo(Size.Unspecified)
     assertThat(scope.positionOnScreen).isEqualTo(Offset.Zero)

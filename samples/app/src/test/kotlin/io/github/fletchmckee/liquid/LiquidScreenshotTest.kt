@@ -2,6 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid
 
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.Shader
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.test.hasTestTag
@@ -11,7 +15,8 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import coil3.ColorImage
+import coil3.Canvas
+import coil3.Image
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
@@ -22,6 +27,8 @@ import com.github.takahirom.roborazzi.RoborazziRule
 import com.github.takahirom.roborazzi.captureRoboImage
 import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidDraggableScreen
 import io.github.fletchmckee.liquid.samples.app.demos.grid.LiquidGridScreen
+import io.github.fletchmckee.liquid.samples.app.demos.many.ManyLiquidNodesScreen
+import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.LiquidStickyHeaderScreen
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import org.junit.Before
 import org.junit.Rule
@@ -43,15 +50,18 @@ class LiquidScreenshotTest {
         compareOptions = RoborazziOptions.CompareOptions(
           changeThreshold = 0.01f, // 1% accepted difference
         ),
+        recordOptions = RoborazziOptions.RecordOptions(
+          resizeScale = 0.5,
+        ),
       ),
     ),
   )
 
   @DelicateCoilApi
   @Before fun before() {
-    // Avoid network requests and async responses altering which images are set.
+    // Avoids network requests and async responses altering which images are set.
     val engine = FakeImageLoaderEngine.Builder()
-      .default(ColorImage(Color.Blue.toArgb()))
+      .default(GradientImage(Color.Blue.toArgb(), Color.Red.toArgb()))
       .build()
     val imageLoader = ImageLoader.Builder(ApplicationProvider.getApplicationContext())
       .components { add(engine) }
@@ -59,56 +69,20 @@ class LiquidScreenshotTest {
     SingletonImageLoader.setUnsafe(imageLoader)
   }
 
-  @Test fun capture_drag_no_frost() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidDraggableScreen()
-        }
-      }
-
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
+  @Test fun capture_drag_no_frost() = runScreenshotTest {
+    LiquidDraggableScreen()
   }
 
-  @Test fun capture_drag_10_dp_frost() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidDraggableScreen(initialFrost = 10f)
-        }
-      }
-
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
+  @Test fun capture_drag_10_dp_frost() = runScreenshotTest {
+    LiquidDraggableScreen(initialFrost = 10f)
   }
 
-  @Test fun capture_grid_no_frost() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidGridScreen()
-        }
-      }
-
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
+  @Test fun capture_grid_no_frost() = runScreenshotTest {
+    LiquidGridScreen()
   }
 
-  @Test fun capture_grid_10_dp_frost() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidGridScreen(initialFrost = 10f)
-        }
-      }
-
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
+  @Test fun capture_grid_10_dp_frost() = runScreenshotTest {
+    LiquidGridScreen(initialFrost = 10f)
   }
 
   @Test fun capture_grid_no_frost_scrolled() {
@@ -141,5 +115,87 @@ class LiquidScreenshotTest {
       waitForIdle()
       onRoot().captureRoboImage()
     }
+  }
+
+  @Test fun capture_sticky_header_no_frost_scrolled() {
+    rule.apply {
+      setContent {
+        LiquidTheme(darkMode = true) {
+          LiquidStickyHeaderScreen()
+        }
+      }
+
+      waitForIdle()
+      // Scrolls to the bottom.
+      onNodeWithTag("stickyHeaderList").performScrollToNode(hasTestTag("imageItem99"))
+      waitForIdle()
+      onRoot().captureRoboImage()
+    }
+  }
+
+  @Test fun capture_sticky_header_10_dp_frost_scrolled() {
+    rule.apply {
+      setContent {
+        LiquidTheme(darkMode = true) {
+          LiquidStickyHeaderScreen(initialFrost = 10f)
+        }
+      }
+
+      waitForIdle()
+      // Scrolls to the bottom.
+      onNodeWithTag("stickyHeaderList").performScrollToNode(hasTestTag("imageItem99"))
+      waitForIdle()
+      onRoot().captureRoboImage()
+    }
+  }
+
+  @Test fun capture_many_liquid_nodes_no_frost() = runScreenshotTest {
+    ManyLiquidNodesScreen()
+  }
+
+  @Test fun capture_many_liquid_nodes_10_dp_frost() = runScreenshotTest {
+    ManyLiquidNodesScreen(initialFrost = 10f)
+  }
+
+  private fun runScreenshotTest(
+    darkMode: Boolean = true,
+    content: @Composable () -> Unit,
+  ) {
+    rule.apply {
+      setContent {
+        LiquidTheme(darkMode = darkMode) {
+          content()
+        }
+      }
+
+      waitForIdle()
+      onRoot().captureRoboImage()
+    }
+  }
+}
+
+// The liquid effect mainly works by displacing pixels near edges to other coordinates. So if we have a single
+// color we can't really tell if the effect is working.
+class GradientImage(
+  private val startColor: Int,
+  private val endColor: Int,
+  override val width: Int = 100,
+  override val height: Int = 100,
+  override val size: Long = 0,
+  override val shareable: Boolean = true,
+) : Image {
+  override fun draw(canvas: Canvas) {
+    val paint = Paint().apply {
+      shader = LinearGradient(
+        0f,
+        0f,
+        width.toFloat(),
+        height.toFloat(),
+        startColor,
+        endColor,
+        Shader.TileMode.CLAMP,
+      )
+    }
+    canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
   }
 }
