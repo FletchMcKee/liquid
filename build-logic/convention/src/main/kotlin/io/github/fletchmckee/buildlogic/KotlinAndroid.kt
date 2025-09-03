@@ -9,7 +9,6 @@ import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
@@ -18,7 +17,7 @@ internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension<*, 
     compileSdk = 36
 
     defaultConfig {
-      minSdk = 26
+      minSdk = 23
     }
 
     compileOptions {
