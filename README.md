@@ -4,7 +4,9 @@
 
 **Liquid** is an Android library that provides 'Liquid Glass' effects for Jetpack Compose.
 
-[Preview](https://github.com/user-attachments/assets/393aca99-6c26-45d0-9539-3b826ebce4c2)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/7e2b19e9-99e2-4f90-bafd-8447345edbcc" width="400" />
+</div>
 
 ## Acknowledgements
 
