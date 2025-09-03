@@ -18,7 +18,7 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension<*,
     dependencies {
       val bom = libs.findLibrary("compose-bom").get()
       "implementation"(platform(bom))
-      "implementation"(libs.findLibrary("compose-tooling-preview").get())
+      "debugImplementation"(libs.findLibrary("compose-tooling-preview").get())
       "debugImplementation"(libs.findLibrary("compose-tooling").get())
       "debugImplementation"(libs.findLibrary("compose-test-manifest").get())
       "androidTestImplementation"(platform(bom))
