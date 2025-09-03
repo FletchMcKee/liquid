@@ -1,7 +1,8 @@
 # Change Log
 
-## [Unreleased]
+## [0.1.0-alpha01] - 2025-09-03
 
-Initial Release
+Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/000000...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/0.1.0-alpha01...HEAD
+[0.1.0-alpha01]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-alpha01
