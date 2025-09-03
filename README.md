@@ -1,6 +1,8 @@
 # Liquid
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.fletchmckee.liquid/liquid)](https://search.maven.org/search?q=g:io.github.fletchmckee.liquid)
 ![Build status](https://github.com/fletchmckee/liquid/actions/workflows/build.yml/badge.svg)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
 
 **Liquid** is an Android library that provides 'Liquid Glass' effects for Jetpack Compose.
 
