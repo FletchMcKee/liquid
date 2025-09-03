@@ -53,7 +53,8 @@ fun BoxScope.LiquidDraggableBox(
   modifier: Modifier = Modifier,
   shape: Shape = RoundedCornerShape(25),
   useLiquid: Boolean = true,
-  shaderBrush: ShaderBrush = rememberShaderBrush(),
+  colors: List<Color> = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent),
+  shaderBrush: ShaderBrush = rememberShaderBrush(colors),
 ) {
   var dragOffset by remember { mutableStateOf(Offset.Zero) }
 

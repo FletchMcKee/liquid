@@ -67,7 +67,12 @@ class LiquidBenchmark {
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = { navigateTo(startDestination = "Grid", useLiquid = false) },
-    measureBlock = { flingElementDownThenUp("liquidGrid") },
+    measureBlock = {
+      flingElementDownThenUp(
+        testTag = "liquidGrid",
+        gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
+      )
+    },
   )
 
   @Test fun scrollLiquidGridNoFrost() = benchmarkRule.measureRepeated(
@@ -77,7 +82,12 @@ class LiquidBenchmark {
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = { navigateTo(startDestination = "Grid") },
-    measureBlock = { flingElementDownThenUp("liquidGrid") },
+    measureBlock = {
+      flingElementDownThenUp(
+        testTag = "liquidGrid",
+        gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
+      )
+    },
   )
 
   @Test fun scrollLiquidGridFrost10() = benchmarkRule.measureRepeated(
@@ -87,7 +97,72 @@ class LiquidBenchmark {
     compilationMode = CompilationMode.DEFAULT,
     startupMode = StartupMode.WARM,
     setupBlock = { navigateTo(startDestination = "Grid", initialFrost = 10f) },
-    measureBlock = { flingElementDownThenUp("liquidGrid") },
+    measureBlock = {
+      flingElementDownThenUp(
+        testTag = "liquidGrid",
+        gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
+      )
+    },
+  )
+
+  @Test fun scrollLiquidStickHeaderBaseline() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = ITERATIONS,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = { navigateTo(startDestination = "StickyHeader", useLiquid = false) },
+    measureBlock = { flingElementDownThenUp("stickyHeaderList") },
+  )
+
+  @Test fun scrollLiquidStickyHeaderNoFrost() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = ITERATIONS,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = { navigateTo(startDestination = "StickyHeader") },
+    measureBlock = { flingElementDownThenUp("stickyHeaderList") },
+  )
+
+  @Test fun scrollLiquidStickyHeaderFrost10() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = ITERATIONS,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = { navigateTo(startDestination = "StickyHeader", initialFrost = 10f) },
+    measureBlock = { flingElementDownThenUp("stickyHeaderList") },
+  )
+
+  @Test fun scrollManyLiquidNodesBaseline() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = ITERATIONS,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = { navigateTo(startDestination = "Many", useLiquid = false) },
+    measureBlock = { flingElementDownThenUp("liquidNodesList") },
+  )
+
+  @Test fun scrollManyLiquidNodesNoFrost() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = ITERATIONS,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = { navigateTo(startDestination = "Many") },
+    measureBlock = { flingElementDownThenUp("liquidNodesList") },
+  )
+
+  @Test fun scrollManyLiquidNodesFrost10() = benchmarkRule.measureRepeated(
+    packageName = PACKAGE_NAME,
+    metrics = listOf(FrameTimingMetric()),
+    iterations = ITERATIONS,
+    compilationMode = CompilationMode.DEFAULT,
+    startupMode = StartupMode.WARM,
+    setupBlock = { navigateTo(startDestination = "Many", initialFrost = 10f) },
+    measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
 
   companion object {

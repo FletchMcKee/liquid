@@ -53,8 +53,8 @@ internal fun frostShader(vertical: Boolean): String = """
     half4 vr = half4(cornerRadii) / minDim;
 
     if (!isInsideShape(coord, liquidSize, minDim, normalizedSize, vr)) {
-      // If outside the shape, just return the original content.
-      return content.eval(coord);
+      // If outside the shape, just return as transparent.
+      return half4(0.0);
     }
 
     float r = floor(blurRadius);

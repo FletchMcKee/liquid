@@ -91,8 +91,8 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   internal fun reset() {
     frost = 0.dp
     shape = RectangleShape
-    refraction = 0f
-    curve = 0f
+    refraction = 0.25f
+    curve = 0.25f
     edge = 0f
     size = Size.Unspecified
     positionOnScreen = Offset.Zero

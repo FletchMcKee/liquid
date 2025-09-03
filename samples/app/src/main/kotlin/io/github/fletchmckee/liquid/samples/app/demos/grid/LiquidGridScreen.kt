@@ -40,6 +40,7 @@ import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
@@ -52,6 +53,7 @@ fun LiquidGridScreen(
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
 
   LiquidScaffold(
+    modifier = modifier,
     topAppBar = {
       LiquidTopAppBar(
         liquidState = liquidState,
@@ -101,7 +103,6 @@ fun LiquidGridScreen(
         )
       }
     },
-    modifier = modifier,
   ) { padding ->
     LiquidGrid(
       contentPadding = padding,
@@ -127,11 +128,11 @@ fun LiquidGrid(
   contentPadding = contentPadding,
   // Need to add a background of some kind, otherwise the gaps between the grids aren't sampled in the liquid effect.
   modifier = modifier
-    .background(MaterialTheme.colorScheme.background)
+    .background(rememberShaderBrush())
     .padding(horizontal = 8.dp),
 ) {
-  items(count = 100, key = { it + 10 }) { index ->
-    ImageGrid(index + 10) // First 10 images are rather boring.
+  items(count = 100, key = { it }) { index ->
+    ImageGrid(index)
   }
 }
 
@@ -139,13 +140,13 @@ fun LiquidGrid(
 private fun ImageGrid(index: Int) {
   // Appears these don't exist with picsum.
   val safeIndex = when (index) {
-    86 -> 110
-    97 -> 111
-    105 -> 112
+    76 -> 110
+    87 -> 111
+    95 -> 112
     else -> index
-  }
+  }.plus(10) // First 10 images are of a laptop.
   AsyncImage(
-    model = "https://picsum.photos/id/$safeIndex/200/275",
+    model = "https://picsum.photos/id/$safeIndex/300/300",
     contentScale = ContentScale.Crop,
     placeholder = ColorPainter(Color.LightGray),
     error = ColorPainter(Color.Magenta),

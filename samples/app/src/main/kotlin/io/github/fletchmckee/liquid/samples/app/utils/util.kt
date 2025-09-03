@@ -4,6 +4,7 @@ package io.github.fletchmckee.liquid.samples.app.utils
 
 import android.os.Build
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -46,7 +47,7 @@ internal fun Modifier.safeShadow(
 
 @Composable
 internal fun rememberShaderBrush(
-  colors: List<Color> = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent),
+  colors: List<Color> = listOf(MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.primary),
 ): ShaderBrush = remember(colors) {
   object : ShaderBrush() {
     override fun createShader(size: Size): Shader = LinearGradientShader(

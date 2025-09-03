@@ -8,6 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
+import io.github.fletchmckee.liquid.samples.app.demos.many.Many
+import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 
 class MainActivity : ComponentActivity() {
@@ -35,6 +37,8 @@ class MainActivity : ComponentActivity() {
       StartDestination.DemosList -> DemosList
       StartDestination.Drag -> Drag
       StartDestination.Grid -> Grid
+      StartDestination.StickyHeader -> StickyHeader
+      StartDestination.Many -> Many
     }
   }
 
@@ -44,6 +48,6 @@ class MainActivity : ComponentActivity() {
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"
 
-    enum class StartDestination { DemosList, Drag, Grid }
+    enum class StartDestination { DemosList, Drag, Grid, StickyHeader, Many }
   }
 }

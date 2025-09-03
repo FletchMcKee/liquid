@@ -1,10 +1,29 @@
 # Liquid
 
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.fletchmckee.liquid/liquid)](https://search.maven.org/search?q=g:io.github.fletchmckee.liquid)
 ![Build status](https://github.com/fletchmckee/liquid/actions/workflows/build.yml/badge.svg)
+![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
 
 **Liquid** is an Android library that provides 'Liquid Glass' effects for Jetpack Compose.
 
-[Preview](https://github.com/user-attachments/assets/393aca99-6c26-45d0-9539-3b826ebce4c2)
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/7e2b19e9-99e2-4f90-bafd-8447345edbcc" width="400" />
+</div>
+
+## Getting Started
+
+```gradle
+repositories {
+  mavenCentral() // Release versions
+  maven {
+    url = uri("https://central.sonatype.com/repository/maven-snapshots/") // Snapshot versions
+  }
+}
+
+dependencies {
+  implementation("io.github.fletchmckee.liquid:liquid:0.1.0-alpha")
+}
+```
 
 ## Acknowledgements
 
@@ -13,7 +32,7 @@ inspiration, particularly for the use of content and effect `Modifier` nodes and
 [FrostShaders](./liquid/src/main/kotlin/io/github/fletchmckee/liquid/internal/shaders/FrostShaders.kt) available for the liquid nodes are
 derived from the [HazeShaders](https://github.com/chrisbanes/haze/blob/main/haze/src/commonMain/kotlin/dev/chrisbanes/haze/HazeShaders.kt)
 class.
-- The liquid lens effect was inspired by ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) with their 
+- The liquid lens effect was inspired by ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) with their
 [Liquid Glass example](https://www.shadertoy.com/view/wcKSRD).
 
 ## License
