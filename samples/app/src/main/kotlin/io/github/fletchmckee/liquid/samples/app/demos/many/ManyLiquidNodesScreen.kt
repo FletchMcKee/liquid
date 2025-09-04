@@ -3,6 +3,7 @@
 package io.github.fletchmckee.liquid.samples.app.demos.many
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
@@ -36,7 +38,9 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
+import io.github.fletchmckee.liquid.samples.app.theme.FlawedWhite50
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
+import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
@@ -105,6 +109,8 @@ private fun LiquidNodeRow(
   useLiquid: Boolean,
   initialFrost: Float,
   shape: Shape = RoundedCornerShape(15),
+  gradientColors: List<Color> = listOf(FlawedWhite50, Color.Transparent, FlawedWhite50),
+  shaderBrush: ShaderBrush = rememberShaderBrush(gradientColors),
 ) = Row(
   modifier = Modifier
     .fillMaxWidth()
@@ -116,6 +122,7 @@ private fun LiquidNodeRow(
         this.shape = shape
       }
     }
+    .background(shaderBrush, shape)
     .testTag("liquidNode$index")
     .semantics { testTagsAsResourceId = true },
   verticalAlignment = Alignment.CenterVertically,

@@ -3,7 +3,6 @@
 package io.github.fletchmckee.liquid.samples.app.demos.drag
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -80,9 +79,9 @@ fun LiquidDraggableScreen(
           liquid(liquidState) {
             frost = 10.dp
             shape = CircleShape
+            tint = sliderContainerColor
           }
-        }
-        .background(color = sliderContainerColor, shape = CircleShape),
+        },
     )
 
     LiquidSliders(

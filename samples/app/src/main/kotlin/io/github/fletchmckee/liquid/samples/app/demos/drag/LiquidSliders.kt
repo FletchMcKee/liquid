@@ -93,9 +93,9 @@ fun BoxScope.LiquidSliders(
         this.curve = 0.35f
         this.refraction = 0.3f
         this.edge = 0.05f
+        this.tint = containerColor
       }
-    }
-    .background(color = containerColor, shape = shape),
+    },
 ) {
   Column(
     modifier = Modifier.padding(16.dp),

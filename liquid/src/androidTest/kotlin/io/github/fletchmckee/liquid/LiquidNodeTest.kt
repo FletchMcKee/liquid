@@ -305,6 +305,49 @@ class LiquidNodeTest {
     }
   }
 
+  @Test fun liquidNodeDrawPasses_reactToArgbChanges_notTintChanges() {
+    var tint by mutableStateOf(Color.Unspecified)
+    var drawCount = 0
+    var liquidBlockCount = 0
+    val liquidNode = LiquidNode(liquidState) {
+      this.tint = tint
+      liquidBlockCount++
+    }
+    rule.apply {
+      setContent {
+        Parent {
+          SimpleLiquefiable(liquidState)
+          Box(
+            Modifier
+              .size(100.dp)
+              .elementOf(liquidNode)
+              .drawBehind { drawCount++ },
+          )
+        }
+      }
+
+      runOnIdle {
+        // onAttach and Liquefiable being added.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+      }
+      // Different tint but same argb value.
+      runOnIdle { tint = Color.Transparent }
+      runOnIdle {
+        // The liquidBlockCount will increment as we did provide a different tint.
+        assertThat(liquidBlockCount).isEqualTo(3)
+        // But it should not `invalidateDraw`
+        assertThat(drawCount).isEqualTo(2)
+      }
+      runOnIdle { tint = Color.Red }
+      runOnIdle {
+        // Now we should have incremented draw/liquidBlockCounts
+        assertThat(liquidBlockCount).isEqualTo(4)
+        assertThat(drawCount).isEqualTo(3)
+      }
+    }
+  }
+
   @Test fun nearestAncestorLiquefiable_filteredOutOfLiquidNodeLiquefiables() {
     var drawCount = 0
     var liquidBlockCount = 0
@@ -437,6 +480,14 @@ class LiquidNodeTest {
     finalValue = 0.2f,
   ) { edge ->
     this.edge = edge
+  }
+
+  @Test fun liquidNode_reactsToTintChanges() = runLiquidScopeTest(
+    initialValue = Color.Red,
+    changedValue = Color.Green,
+    finalValue = Color.Blue,
+  ) { tint ->
+    this.tint = tint
   }
 
   private fun <T> runLiquidScopeTest(

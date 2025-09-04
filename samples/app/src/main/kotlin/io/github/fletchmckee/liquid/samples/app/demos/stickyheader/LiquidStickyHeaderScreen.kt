@@ -128,6 +128,7 @@ private fun StickyHeaderList(
   initialFrost: Float,
   contentPaddingValues: PaddingValues,
   shape: Shape = RoundedCornerShape(15),
+  stickyHeaderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
@@ -153,9 +154,9 @@ private fun StickyHeaderList(
               this.curve = 0.15f
               this.edge = 0.05f
               this.shape = shape
+              this.tint = stickyHeaderContainerColor
             }
-          }
-          .background(MaterialTheme.colorScheme.surfaceVariant, shape),
+          },
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Text(

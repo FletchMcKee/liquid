@@ -3,6 +3,7 @@
 package io.github.fletchmckee.liquid
 
 import androidx.annotation.FloatRange
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -30,8 +31,7 @@ public interface LiquidScope {
 
   /**
    * Controls how much the background distorts through the lens. Setting this to 0 removes the liquid
-   * effect altogether,
-   * nullifying any [curve] value.
+   * effect altogether, nullifying any [curve] value.
    *
    * Defaults to 0.25f.
    */
@@ -40,8 +40,7 @@ public interface LiquidScope {
 
   /**
    * Adjusts how strongly the lens curves at its center vs. edges. Setting this to 0 removes the liquid
-   * effect altogether,
-   * nullifying any [refraction] value.
+   * effect altogether, nullifying any [refraction] value.
    *
    * Defaults to 0.25f.
    */
@@ -58,4 +57,17 @@ public interface LiquidScope {
    */
   @setparam:FloatRange(from = 0.0)
   public var edge: Float
+
+  /**
+   * Optional tint color applied to the liquid effect.
+   *
+   * This is mainly a convenience property if you want the effect to carry a background color without
+   * needing to wrap it in a separate call to [androidx.compose.foundation.background].
+   *
+   * NOTE: If the alpha of the provided color is 1.0, the liquid effect will be nullified with only
+   * the edge lighting being rendered if provided.
+   *
+   * Defaults to [Color.Unspecified]
+   */
+  public var tint: Color
 }

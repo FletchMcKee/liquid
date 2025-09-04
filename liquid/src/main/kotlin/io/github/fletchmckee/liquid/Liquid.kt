@@ -8,6 +8,7 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
@@ -66,6 +67,7 @@ private class DefaultLiquidScope : LiquidScope {
   override var refraction: Float = 0.25f
   override var curve: Float = 0.25f
   override var edge: Float = 0f
+  override var tint: Color = Color.Unspecified
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true

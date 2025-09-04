@@ -12,6 +12,7 @@ internal const val LiquidShader = """
   uniform float refraction;
   uniform float curve;
   uniform float edge;
+  layout(color) uniform half4 tint;
 
   const float HALF_PI = 1.57079633;
   const float EPSILON = 0.001;
@@ -77,6 +78,8 @@ internal const val LiquidShader = """
 
     fragColor.rgb += edgeLightingTop;
     fragColor.rgb += edgeLightingBottom;
+    // Apply the provided tint.
+    fragColor.rgb = mix(fragColor.rgb, tint.rgb, tint.a);
 
     return mix(content.eval(fragCoord), fragColor, transition);
   }

@@ -4,7 +4,6 @@ package io.github.fletchmckee.liquid.samples.app.demos.grid
 
 import android.os.Build
 import android.view.RoundedCorner
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -49,6 +48,7 @@ fun LiquidTopAppBar(
   frostProvider: () -> Float,
   modifier: Modifier = Modifier,
   useLiquid: Boolean = true,
+  containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
   title: @Composable () -> Unit = {},
   navigationIcon: @Composable () -> Unit = {},
   actions: @Composable RowScope.() -> Unit = {},
@@ -79,9 +79,9 @@ fun LiquidTopAppBar(
           this.refraction = 0.4f
           this.curve = 0.15f
           this.edge = 0.1f
+          this.tint = containerColor
         }
-      }
-      .background(color = MaterialTheme.colorScheme.surfaceVariant, shape = shape),
+      },
     title = title,
     navigationIcon = navigationIcon,
     actions = actions,
@@ -96,6 +96,7 @@ fun LiquidBottomAppBar(
   modifier: Modifier = Modifier,
   useLiquid: Boolean = true,
   shape: Shape = RoundedCornerShape(35),
+  containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
   content: @Composable () -> Unit = {},
 ) = Row(
   modifier = modifier
@@ -109,9 +110,9 @@ fun LiquidBottomAppBar(
         this.refraction = 0.4f
         this.curve = 0.15f
         this.edge = 0.1f
+        this.tint = containerColor
       }
-    }
-    .background(color = MaterialTheme.colorScheme.surfaceVariant, shape = shape),
+    },
 ) {
   content()
 }

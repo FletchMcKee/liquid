@@ -83,7 +83,7 @@ fun BoxScope.LiquidDraggableBox(
           this.curve = curveProvider()
           this.edge = edgeProvider()
         }
-      }
+      } // Brushes aren't supported in liquid at the moment but may be added later.
       .background(brush = shaderBrush, shape = shape),
   ) {
     Text(

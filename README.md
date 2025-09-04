@@ -34,6 +34,8 @@ derived from the [HazeShaders](https://github.com/chrisbanes/haze/blob/main/haze
 class.
 - The liquid lens effect was inspired by ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) with their
 [Liquid Glass example](https://www.shadertoy.com/view/wcKSRD).
+- Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](./samples/app/src/main/res/drawable-nodpi/northern_lights.webp)
+- Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](./samples/app/src/main/res/drawable-nodpi/ny_city.webp).
 
 ## License
 

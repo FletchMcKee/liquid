@@ -20,6 +20,7 @@ internal fun RuntimeShader.setLiquidUniforms(
   refraction: Float,
   curve: Float,
   edge: Float,
+  argbColor: Int,
 ) {
   setFloatUniform(
     "effectRect",
@@ -32,6 +33,7 @@ internal fun RuntimeShader.setLiquidUniforms(
   setFloatUniform("refraction", refraction)
   setFloatUniform("curve", curve)
   setFloatUniform("edge", edge)
+  setColorUniform("tint", argbColor)
 }
 
 internal fun RuntimeShader.setFrostUniforms(
@@ -66,6 +68,7 @@ internal fun createRenderEffect(
     refraction = reusableScope.refraction,
     curve = reusableScope.curve,
     edge = reusableScope.edge,
+    argbColor = reusableScope.argbColor,
   )
   val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
   if (frostRadius <= 0f) {
