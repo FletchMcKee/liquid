@@ -78,7 +78,6 @@ private fun LiquidNodesList(
   liquidState: LiquidState,
   useLiquid: Boolean,
   initialFrost: Float,
-  numbers: List<Int> = (0..500).toList(),
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
@@ -89,7 +88,7 @@ private fun LiquidNodesList(
   verticalArrangement = Arrangement.spacedBy(16.dp),
 ) {
   items(
-    items = numbers,
+    count = 500,
     key = { it },
     contentType = { "liquidNodeRow" },
   ) { index ->
