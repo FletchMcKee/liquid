@@ -4,7 +4,8 @@ package io.github.fletchmckee.liquid.samples.app.theme
 
 import androidx.compose.ui.graphics.Color
 
-val LiquidPurple = Color(0xFF594bd3)
+val LiquidPurple = Color(0xFF594BD3)
+val LiquidLightPurple = Color(0xFFA6A1D1)
 val LiquidGreen = Color(0xFF02C4BC)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 

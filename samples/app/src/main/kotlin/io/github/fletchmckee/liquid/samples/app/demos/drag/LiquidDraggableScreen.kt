@@ -46,11 +46,10 @@ fun LiquidDraggableScreen(
   windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
   initialFrost: Float = 0f,
   useLiquid: Boolean = true,
-  usePager: Boolean = true,
   sliderContainerColor: Color = MaterialTheme.colorScheme.surface,
 ) {
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
-
+  // Liquid shader properties
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
   var refraction by rememberSaveable { mutableFloatStateOf(0.3f) }
   var curve by rememberSaveable { mutableFloatStateOf(0.4f) }
@@ -60,28 +59,16 @@ fun LiquidDraggableScreen(
 
   Box(modifier) {
     PagerBackground(
-      usePager = usePager,
-      modifier = Modifier
-        .fillMaxSize()
-        .thenIf(useLiquid) {
-          liquefiable(liquidState)
-        },
+      liquidState = liquidState,
+      useLiquid = useLiquid,
     )
 
     SettingsButton(
+      liquidState = liquidState,
       onClick = { showSliders = !showSliders },
-      modifier = Modifier
-        .align(Alignment.TopStart)
-        .padding(top = 48.dp, start = 32.dp)
-        .zIndex(3f)
-        .shadow(elevation = 2.dp, shape = CircleShape)
-        .thenIf(useLiquid) {
-          liquid(liquidState) {
-            frost = 10.dp
-            shape = CircleShape
-            tint = sliderContainerColor
-          }
-        },
+      useLiquid = useLiquid,
+      containerColor = sliderContainerColor,
+      modifier = Modifier.align(Alignment.TopStart),
     )
 
     LiquidSliders(
@@ -112,40 +99,49 @@ fun LiquidDraggableScreen(
 
 @Composable
 private fun PagerBackground(
-  usePager: Boolean,
-  modifier: Modifier = Modifier,
+  liquidState: LiquidState,
+  useLiquid: Boolean,
   pagerState: PagerState = rememberPagerState { 3 },
-) = when {
-  usePager -> HorizontalPager(
-    state = pagerState,
-    modifier = modifier,
-  ) { page ->
-    val drawable = when (page) {
-      0 -> painterResource(R.drawable.moon_and_stars)
-      1 -> painterResource(R.drawable.northern_lights)
-      else -> painterResource(R.drawable.ny_city)
-    }
-    Image(
-      painter = drawable,
-      contentDescription = null,
-      contentScale = ContentScale.Crop,
-      modifier = Modifier.fillMaxSize(),
-    )
+) = HorizontalPager(
+  state = pagerState,
+  modifier = Modifier
+    .fillMaxSize()
+    .thenIf(useLiquid) {
+      liquefiable(liquidState)
+    },
+) { page ->
+  val drawable = when (page) {
+    0 -> painterResource(R.drawable.moon_and_stars)
+    1 -> painterResource(R.drawable.northern_lights)
+    else -> painterResource(R.drawable.ny_city)
   }
-  else -> Image(
-    painter = painterResource(R.drawable.moon_and_stars),
+  Image(
+    painter = drawable,
     contentDescription = null,
     contentScale = ContentScale.Crop,
-    modifier = modifier,
+    modifier = Modifier.fillMaxSize(),
   )
 }
 
 @Composable
-fun SettingsButton(
+private fun SettingsButton(
+  liquidState: LiquidState,
   onClick: () -> Unit,
+  useLiquid: Boolean,
+  containerColor: Color,
   modifier: Modifier = Modifier,
 ) = IconButton(
-  modifier = modifier,
+  modifier = modifier
+    .padding(top = 48.dp, start = 32.dp)
+    .zIndex(3f)
+    .shadow(elevation = 2.dp, shape = CircleShape)
+    .thenIf(useLiquid) {
+      liquid(liquidState) {
+        frost = 10.dp
+        shape = CircleShape
+        tint = containerColor
+      }
+    },
   onClick = onClick,
 ) {
   Icon(

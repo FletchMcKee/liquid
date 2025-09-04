@@ -69,7 +69,7 @@ fun BoxScope.LiquidSliders(
 ) = AnimatedVisibility(
   visible = showSliders,
   enter = fadeIn(tween(1000)) + expandIn(tween(1000)),
-  exit = shrinkOut(tween(1000)) + fadeOut(tween(1000)),
+  exit = fadeOut(tween(1000)) + shrinkOut(tween(1000)),
   modifier = modifier
     .align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter)
     .fillMaxWidth(if (isLandscape) 0.4f else 1f)
@@ -103,7 +103,7 @@ fun BoxScope.LiquidSliders(
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     LiquidSliderRow(
-      text = "Frost:",
+      text = "Frost",
       value = frostProvider(),
       onValueChange = onFrostChange,
       steps = 24,
@@ -114,21 +114,21 @@ fun BoxScope.LiquidSliders(
     )
 
     LiquidSliderRow(
-      text = "Refraction:",
+      text = "Refraction",
       value = refractionProvider(),
       onValueChange = onRefractionChange,
       valueRange = 0f..1f,
     )
 
     LiquidSliderRow(
-      text = "Curve:",
+      text = "Curve",
       value = curveProvider(),
       onValueChange = onCurveChange,
       valueRange = 0f..1f,
     )
 
     LiquidSliderRow(
-      text = "Edge:",
+      text = "Edge",
       value = edgeProvider(),
       onValueChange = onEdgeChange,
       valueRange = 0.0f..0.2f,

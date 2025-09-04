@@ -12,6 +12,8 @@
 
 ## Getting Started
 
+**Make sure that you have `mavenCentral()` in your list of repositories and add Liquid to your dependencies:**
+
 ```gradle
 repositories {
   mavenCentral() // Release versions
