@@ -4,7 +4,10 @@
 ![Build status](https://github.com/fletchmckee/liquid/actions/workflows/build.yml/badge.svg)
 ![Android](https://img.shields.io/badge/Android-3DDC84?style=flat&logo=android&logoColor=white)
 
-**Liquid** is an Android library that provides 'Liquid Glass' effects for Jetpack Compose.
+**Liquid** is an Android library that brings “Liquid Glass”-style effects to Jetpack Compose.
+It lets you refract, frost (blur), and curve the content behind your UI elements, creating dynamic frosted glass, lens, and liquid-like effects. 
+
+Powered by RuntimeShaders, Android Graphics Shading Language (AGSL) and modern Compose ModifierNodeElement APIs, it delivers GPU-accelerated visuals to your Compose UI.
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/de63e6ae-e662-477d-b0c1-a26f4aad2a2d" width="400" />
