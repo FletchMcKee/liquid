@@ -64,7 +64,7 @@ internal fun MacrobenchmarkScope.dragFigureEight(
 internal fun MacrobenchmarkScope.dragFrostSlider(
   timeout: Long = 2_000,
   speed: Int = 1_000,
-  iterations: Int = 4,
+  iterations: Int = 6,
 ) = repeat(iterations) {
   val frostSlider = waitForObject("frostSlider", timeout)
   val thumb = waitForObject("frostThumb", timeout)

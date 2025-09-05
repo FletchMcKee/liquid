@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNotEqualTo
+import assertk.assertions.isNotZero
 import assertk.assertions.isZero
 import io.github.fletchmckee.liquid.internal.Fields
 import io.github.fletchmckee.liquid.internal.LiquidScopeImpl
@@ -63,8 +63,8 @@ class LiquidScopeTest {
     assertThat(scope.frost).isEqualTo(10.dp)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Frost)
     // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotEqualTo(0)
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `shape mutations observed`() {
@@ -72,8 +72,8 @@ class LiquidScopeTest {
     assertThat(scope.shape).isEqualTo(CircleShape)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Shape)
     // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotEqualTo(0)
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `refraction mutations observed`() {
@@ -81,8 +81,8 @@ class LiquidScopeTest {
     assertThat(scope.refraction).isEqualTo(0.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Refraction)
     // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotEqualTo(0)
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `curve mutations observed`() {
@@ -90,8 +90,8 @@ class LiquidScopeTest {
     assertThat(scope.curve).isEqualTo(0.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Curve)
     // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotEqualTo(0)
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `edge mutations observed`() {
@@ -99,8 +99,8 @@ class LiquidScopeTest {
     assertThat(scope.edge).isEqualTo(0.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Edge)
     // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotEqualTo(0)
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `tint mutations observed`() {
@@ -109,8 +109,8 @@ class LiquidScopeTest {
     assertThat(scope.argbColor).isEqualTo(-65536)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Tint)
     // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotEqualTo(0)
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `different tints with same argb value do not invalidate`() {
@@ -128,8 +128,8 @@ class LiquidScopeTest {
     assertThat(scope.size).isEqualTo(Size(width = 50f, height = 50f))
     assertThat(scope.mutatedFields).isEqualTo(Fields.Size)
     // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotEqualTo(0)
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `positionOnScreen mutations observed`() {
@@ -139,7 +139,7 @@ class LiquidScopeTest {
     // Verify the RenderEffect is not flagged.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isZero()
     // However the InvalidateFlags should be flagged.
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `liquefiables mutations observed`() {
@@ -150,7 +150,7 @@ class LiquidScopeTest {
     // Verify the RenderEffect is not flagged.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isZero()
     // However the InvalidateFlags should be flagged.
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotEqualTo(0)
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
   @Test fun `paddedBounds pads correctly`() {

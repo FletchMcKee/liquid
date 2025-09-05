@@ -150,8 +150,8 @@ private fun StickyHeaderList(
           .thenIf(useLiquid) {
             liquid(liquidState) {
               this.frost = initialFrost.dp
-              this.refraction = 0.4f
-              this.curve = 0.15f
+              this.refraction = 0.25f
+              this.curve = 0.1f
               this.edge = 0.05f
               this.shape = shape
               this.tint = stickyHeaderContainerColor

@@ -17,7 +17,7 @@ internal const val LiquidShader = """
   const float HALF_PI = 1.57079633;
   const float EPSILON = 0.001;
 
-  float shape(in float2 p, in float2 b, in half4 r) {
+  float computeSdf(in float2 p, in float2 b, in half4 r) {
     r.xy = (p.x > 0.0) ? r.xy : r.zw; // xy is right quadrant, zw is left
     r.x = (p.y > 0.0) ? r.x : r.y; // x is bottom quadrant, y is top
     float2 q = abs(p) - b + r.x;
@@ -25,10 +25,10 @@ internal const val LiquidShader = """
   }
 
   float2 computeSdfNormal(float2 pos, float2 shapeSize, half4 vr) {
-    float sdfX1 = shape(pos + float2(EPSILON, 0.0), shapeSize, vr);
-    float sdfX2 = shape(pos - float2(EPSILON, 0.0), shapeSize, vr);
-    float sdfY1 = shape(pos + float2(0.0, EPSILON), shapeSize, vr);
-    float sdfY2 = shape(pos - float2(0.0, EPSILON), shapeSize, vr);
+    float sdfX1 = computeSdf(pos + float2(EPSILON, 0.0), shapeSize, vr);
+    float sdfX2 = computeSdf(pos - float2(EPSILON, 0.0), shapeSize, vr);
+    float sdfY1 = computeSdf(pos + float2(0.0, EPSILON), shapeSize, vr);
+    float sdfY2 = computeSdf(pos - float2(0.0, EPSILON), shapeSize, vr);
     return normalize(float2(sdfX1 - sdfX2, sdfY1 - sdfY2));
   }
 
@@ -40,16 +40,23 @@ internal const val LiquidShader = """
     float2 uv = localCoord / liquidSize;
     float2 m2 = uv - 0.5;
 
-    float minDim = min(liquidSize.x, liquidSize.y);
-    float2 normalizedSize = liquidSize / minDim;
+    // The shapeSdf is normalized by minDimension to preserve aspect ratio.
+    float minDimension = min(liquidSize.x, liquidSize.y);
+    float2 shapeSize = liquidSize / minDimension;
+    float2 shapeCoord = m2 * shapeSize;
+    half4 shapeVr = half4(cornerRadii) / minDimension;
+    float shapeSdf = computeSdf(shapeCoord, shapeSize * 0.5, shapeVr);
 
-    float2 shapeCoord = m2 * normalizedSize;
-    float2 shapeSize = normalizedSize * 0.5;
-    // Scale corner radii to normalized space.
-    half4 vr = half4(cornerRadii) / minDim;
-    float sdf = shape(shapeCoord, shapeSize, vr);
+    // The lensSdf is normalized by maxDimension to create uniform square distortion.
+    // This prevents stretching artifacts in rectangular shapes.
+    float maxDimension = max(liquidSize.x, liquidSize.y);
+    float2 lensSize = liquidSize / maxDimension;
+    float2 lensCoord = m2 * lensSize;
+    half4 lensVr = half4(cornerRadii) / maxDimension;
+    float lensSdf = computeSdf(lensCoord, lensSize * 0.5, lensVr);
 
-    float liquidMask = saturate(-sdf * (max(liquidSize.x, liquidSize.y) * 0.5));
+    // Using maxDimension for a sharper transition.
+    float liquidMask = saturate(-shapeSdf * maxDimension);
     float transition = smoothstep(0.0, 1.0, liquidMask);
 
     half4 fragColor;
@@ -59,19 +66,20 @@ internal const val LiquidShader = """
       // Sine creates a smooth curve from 0 to 1 as input goes from 0 (sin(0) = 0) to π/2 (sin(π/2) = 1).
       // Credit to ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) for this lens formula.
       // https://www.shadertoy.com/view/wcKSRD
-      float2 lens = m2 * sin(pow(saturate(-sdf / refraction), curve) * HALF_PI) + 0.5;
-      float2 lensCoord = effectRect.xy + lens * liquidSize;
-      fragColor = content.eval(lensCoord);
+      float2 lens = m2 * sin(pow(saturate(-lensSdf / refraction), curve) * HALF_PI) + 0.5;
+      float2 sampleCoord = effectRect.xy + lens * liquidSize;
+      fragColor = content.eval(sampleCoord);
     } else {
       // No lens effect, just use the original coordinates.
       fragColor = content.eval(fragCoord);
     }
 
-    float edgeSmooth = smoothstep(-edge, 0.0, sdf);
-
+    float edgeSmooth = smoothstep(-edge, 0.0, shapeSdf);
     float2 lightDirection = float2(-0.3, -0.3);
-    float2 sdfNormal = computeSdfNormal(shapeCoord, shapeSize, vr);
+    float2 sdfNormal = computeSdfNormal(shapeCoord, shapeSize * 0.5, shapeVr);
 
+    // Apple's liquid glass effects generally seem to have lighting from two opposite corners which is why for now
+    // we have edgeLightingTop and its opposite edgeLightingBottom.
     float nDotL = dot(sdfNormal, normalize(lightDirection));
     float edgeLightingTop = edgeSmooth * saturate(nDotL) * 0.2;
     float edgeLightingBottom = edgeSmooth * saturate(-nDotL) * 0.2;
