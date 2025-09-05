@@ -15,7 +15,7 @@ Powered by RuntimeShaders, Android Graphics Shading Language (AGSL) and modern C
 
 ## Getting Started
 
-**Add `mavenCentral()` and Liquid in your list of repositories and dependencies:**
+**Add `mavenCentral()` and Liquid to your list of repositories and dependencies:**
 
 ```gradle
 repositories {
