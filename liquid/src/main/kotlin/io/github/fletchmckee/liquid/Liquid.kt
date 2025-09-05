@@ -78,6 +78,7 @@ private class DefaultLiquidScope : LiquidScope {
     if (edge != other.edge) return false
     if (frost != other.frost) return false
     if (shape != other.shape) return false
+    if (tint != other.tint) return false
 
     return true
   }
@@ -88,6 +89,7 @@ private class DefaultLiquidScope : LiquidScope {
     result = 31 * result + edge.hashCode()
     result = 31 * result + frost.hashCode()
     result = 31 * result + shape.hashCode()
+    result = 31 * result + tint.hashCode()
     return result
   }
 }

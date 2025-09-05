@@ -4,8 +4,8 @@ package io.github.fletchmckee.liquid.internal.shaders
 
 import org.intellij.lang.annotations.Language
 
-// This is all heavily inspired by
-// [Haze](https://github.com/chrisbanes/haze/blob/main/haze/src/commonMain/kotlin/dev/chrisbanes/haze/HazeShaders.kt)
+// Derived from Haze's
+// [HazeShader](https://github.com/chrisbanes/haze/blob/1.6.10/haze/src/commonMain/kotlin/dev/chrisbanes/haze/HazeShaders.kt)
 internal val HorizontalFrostShader by lazy(LazyThreadSafetyMode.NONE) {
   frostShader(false)
 }
