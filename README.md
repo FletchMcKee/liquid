@@ -29,6 +29,35 @@ dependencies {
   implementation("io.github.fletchmckee.liquid:liquid:0.1.0-alpha")
 }
 ```
+## Usage
+
+A modifier node can’t see pixels drawn behind it or by its ancestors. Liquid mirrors the approach popularized by [Haze](https://github.com/chrisbanes/haze) via the shared state/source/effect pattern:
+
+- Shared state - The `LiquidState` manages tracking all source nodes that should be shared with the effect nodes. 
+- Source - You explicitly tag composables whose output should be sampled with `Modifier.liquefiable(liquidState)`. These are recorded into a GraphicsLayer (API 31+).
+- Effect - `Modifier.liquid(liquidState)` renders that layer through AGSL shaders and draws the liquid effect upon the sampled content.
+
+Below is a simple example of how to coordinate this logic:
+
+```kotlin
+@Composable
+fun LiquidScreen(
+  modifier: Modifier = Modifier,
+  liquidState: LiquidState = rememberLiquidState(),
+) = Box(modifier) {
+  ImageBackground(
+    Modifier
+      .fillMaxSize()
+      .liquefiable(liquidState)
+  )
+
+  LiquidButton(
+    Modifier
+      .align(Alignment.TopStart)
+      .liquid(liquidState) 
+  )
+}
+```
 
 ## Acknowledgements
 
