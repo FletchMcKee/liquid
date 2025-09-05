@@ -39,6 +39,7 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
+import assertk.assertions.isZero
 import io.github.fletchmckee.liquid.internal.LiquidNode
 import kotlin.test.Test
 import org.junit.Before
@@ -77,7 +78,7 @@ class LiquidNodeTest {
         assertThat(scope.shape).isEqualTo(RectangleShape)
         assertThat(scope.refraction).isEqualTo(0.25f)
         assertThat(scope.curve).isEqualTo(0.25f)
-        assertThat(scope.edge).isEqualTo(0f)
+        assertThat(scope.edge).isZero()
       }
     }
   }
