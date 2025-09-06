@@ -33,11 +33,11 @@ dependencies {
 
 A modifier node can’t see pixels drawn behind it or by its ancestors. Liquid mirrors the approach popularized by [Haze](https://github.com/chrisbanes/haze) via the shared state/source/effect pattern:
 
-- Shared state - The `LiquidState` manages tracking all source nodes that should be shared with the effect nodes. 
-- Source - You explicitly tag composables whose output should be sampled with `Modifier.liquefiable(liquidState)`. These are recorded into a GraphicsLayer (API 31+).
-- Effect - `Modifier.liquid(liquidState)` renders that layer through AGSL shaders and draws the liquid effect upon the sampled content.
+- **Shared state** - The `LiquidState` manages tracking all source nodes that should be shared with the effect nodes. 
+- **Source** - You explicitly tag composables whose output should be sampled with `Modifier.liquefiable(liquidState)`. These are recorded into a GraphicsLayer (API 31+).
+- **Effect** - `Modifier.liquid(liquidState)` renders those layers through AGSL shaders and draws the liquid effect upon the sampled content.
 
-Below is a simple example of how to coordinate this logic:
+Below is a simple example of how to coordinate this pattern:
 
 ```kotlin
 @Composable
@@ -45,19 +45,52 @@ fun LiquidScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
 ) = Box(modifier) {
+  // Source background to be sampled.
   ImageBackground(
     Modifier
       .fillMaxSize()
-      .liquefiable(liquidState)
+      .liquefiable(liquidState),
   )
-
+  // Effect button that samples the background to create the liquid effect.
   LiquidButton(
     Modifier
       .align(Alignment.TopStart)
-      .liquid(liquidState) 
+      .liquid(liquidState),
   )
 }
 ```
+> [!IMPORTANT]
+> A `liquid` node cannot have ancestor `liquefiable` nodes outside of its own `Modifier` chain using the same `LiquidState`. Doing so will result in a fatal `SIGSEGV` exception.
+> 
+> **Do**
+> ```kotlin
+> // The two nodes are applied to the same modifier chain so this is fine.
+> // But make sure to place the `liquefiable` before the `liquid` modifier.
+> @Composable
+> fun LiquefiableAndLiquid(
+>   modifier: Modifier = Modifier,
+>   liquidState: LiquidState = rememberLiquidState(),
+> ) = Box(
+>   modifier
+>     .liquefiable(liquidState)
+>     .liquid(liquidState),
+> ) {
+>   // Some UI content that should be liquefiable but also applies its own liquid effect.
+>   // See LiquidSliders in :samples:app as an example.
+> }
+> ```
+> 
+> **Don't**
+> ```kotlin
+> @Composable
+> fun LiquefiableWithLiquidChild(
+>   modifier: Modifier = Modifier,
+>   liquidState: LiquidState = rememberLiquidState(),
+> ) = Box( modifier.liquefiable(liquidState)) {
+>   // Will cause recursive draws!
+>   Box(Modifier.liquid(liquidState))
+> }
+> ```
 
 ## Acknowledgements
 
