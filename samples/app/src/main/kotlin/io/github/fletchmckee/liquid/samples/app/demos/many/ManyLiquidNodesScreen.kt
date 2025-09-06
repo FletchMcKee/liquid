@@ -84,12 +84,12 @@ private fun LiquidNodesList(
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
-    .padding(horizontal = 32.dp)
+    .padding(horizontal = 24.dp)
     .clipToBounds()
     .testTag("liquidNodesList")
     .semantics { testTagsAsResourceId = true },
   contentPadding = WindowInsets.systemBars.asPaddingValues(),
-  verticalArrangement = Arrangement.spacedBy(16.dp),
+  verticalArrangement = Arrangement.spacedBy(24.dp),
 ) {
   items(
     count = 500,
@@ -117,10 +117,12 @@ private fun LiquidNodeRow(
 ) = Row(
   modifier = Modifier
     .fillMaxWidth()
-    .aspectRatio(2f)
+    .aspectRatio(3.5f)
     .thenIf(useLiquid) {
       liquid(liquidState) {
         this.frost = initialFrost.dp
+        this.refraction = 0.2f
+        this.curve = 0.15f
         this.edge = 0.05f
         this.shape = shape
       }
@@ -140,7 +142,7 @@ private fun LiquidNodeRow(
     textAlign = TextAlign.Center,
     modifier = Modifier
       .fillMaxWidth()
-      .padding(12.dp)
+      .padding(16.dp)
       // Helps improve the text legibility on light surfaces.
       .blendMode(BlendMode.Difference),
   )
