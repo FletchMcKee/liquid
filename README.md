@@ -106,6 +106,12 @@ fun LiquefiableWithLiquidChild(
 }
 ```
 
+#### Rotation, Skew and Scale animations
+
+The current effects are built to handle alpha and translation changes, however handling rotation, skew and scale animations is not yet supported. 
+Your liquid effect nodes can do all of those animations, it's just that the liquefiable source nodes that are rendered into the effect nodes will not be drawn accurately.
+This will require complex matrix transformations and while this is possible and a future goal, it is not yet supported.
+
 ## Acknowledgements
 
 - The [Haze](https://github.com/chrisbanes/haze) library developed by [Chris Banes](https://github.com/chrisbanes) was a large source of
