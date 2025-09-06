@@ -60,12 +60,12 @@ fun LiquidScreen(
 }
 ```
 > [!IMPORTANT]
-> A `liquid` node cannot have ancestor `liquefiable` nodes outside of its own `Modifier` chain using the same `LiquidState`. Doing so will result in a fatal `SIGSEGV` exception.
+> A `liquid` node cannot have ancestor `liquefiable` nodes outside of its own Modifier chain using the same `LiquidState`. Doing so will result in a fatal SIGSEGV exception.
 > 
 > **Do**
 > ```kotlin
-> // The two nodes are applied to the same modifier chain so this is fine.
-> // But make sure to place the `liquefiable` before the `liquid` modifier.
+> // The two nodes are applied to the same modifier chain.
+> // Make sure to place the `liquefiable` before the `liquid` modifier.
 > @Composable
 > fun LiquefiableAndLiquid(
 >   modifier: Modifier = Modifier,
@@ -75,7 +75,7 @@ fun LiquidScreen(
 >     .liquefiable(liquidState)
 >     .liquid(liquidState),
 > ) {
->   // Some UI content that should be liquefiable but also applies its own liquid effect.
+>   // Some UI content.
 >   // See LiquidSliders in :samples:app as an example.
 > }
 > ```
@@ -86,7 +86,7 @@ fun LiquidScreen(
 > fun LiquefiableWithLiquidChild(
 >   modifier: Modifier = Modifier,
 >   liquidState: LiquidState = rememberLiquidState(),
-> ) = Box( modifier.liquefiable(liquidState)) {
+> ) = Box(modifier.liquefiable(liquidState)) {
 >   // Will cause recursive draws!
 >   Box(Modifier.liquid(liquidState))
 > }
