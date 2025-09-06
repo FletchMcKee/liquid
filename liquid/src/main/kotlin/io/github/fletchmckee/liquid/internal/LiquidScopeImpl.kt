@@ -169,4 +169,26 @@ internal object Fields {
     RenderEffectFields or
       PositionOnScreen or
       Liquefiables
+
+  // //////////////////////////
+  // Remove once minSdk is 33.
+  // //////////////////////////
+  const val PreTiramisuInvalidateFlags: Int =
+    Frost or
+      Shape or
+      Edge or
+      Size or
+      Tint or
+      PositionOnScreen or
+      Liquefiables
+
+  // //////////////////////////
+  // Remove once minSdk is 31.
+  // //////////////////////////
+  const val PreSnowConeInvalidateFlags: Int =
+    Shape or
+      Edge or
+      Size or
+      Tint or
+      PositionOnScreen
 }

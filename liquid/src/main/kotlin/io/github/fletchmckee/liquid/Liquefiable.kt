@@ -30,20 +30,22 @@ internal class Liquefiable {
 }
 
 /**
- * Marks this modifier node as a recording surface whose rendered content can be sampled and displayed through another UI layer using a
- * [LiquidState] effect.
+ * Marks this modifier node as a recording surface whose rendered content can be sampled and displayed through
+ * another UI layer using a [LiquidState] effect.
  *
- * This enables the liquid effect by allowing sibling composables to reference and render the content "beneath"
- * them.
+ * This enables the liquid effect by allowing sibling composables to reference and render the content beneath them.
  *
- * On Android 13 (API 33) and above, uses a shader-backed [LiquefiableElement] to capture this node's output.
- * On lower versions, no visual effect is applied and this is a no-op.
+ * API 31+ - Uses a [LiquefiableElement] to record this node's output for [liquid] nodes to render their effect.
+ * API 30 and lower - No-op.
+ *
+ * NOTE: Make sure to place any draw modifiers (ex. [androidx.compose.ui.draw.shadow] or [androidx.compose.foundation.background])
+ * after this liquefiable node. Otherwise these draw modifiers won't be part of the recording.
  *
  * @param liquidState The shared [LiquidState] instance that receives this node’s content for sampling.
  */
 public fun Modifier.liquefiable(
   liquidState: LiquidState,
 ): Modifier = this then when {
-  Build.VERSION.SDK_INT >= 33 -> LiquefiableElement(liquidState)
+  Build.VERSION.SDK_INT >= 31 -> LiquefiableElement(liquidState)
   else -> Modifier
 }

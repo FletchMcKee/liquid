@@ -8,13 +8,8 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import io.github.fletchmckee.liquid.internal.LiquidBackupElement
 import io.github.fletchmckee.liquid.internal.LiquidElement
-import io.github.fletchmckee.liquid.internal.liquidBackup
 
 /**
  * State manager of recorded [Liquefiable] nodes to be rendered into [liquid] effect nodes.
@@ -38,10 +33,15 @@ public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
 /**
  * Applies the Liquid effect, sampling pixels recorded in [liquidState].
  *
- * Uses RuntimeShaders and RenderEffects on API 33+ for the liquid effect.
- * On lower API levels, it falls back to a lightweight visual backup that draws a similar edge effect.
+ * API 33+ - Has full support, the liquid effect is only rendered for these devices as it uses
+ * [android.graphics.RuntimeShader] for the effect.
+ * API 31-32 - The [LiquidScope.refraction] and [LiquidScope.curve] values are ignored, but will render
+ * the frost effect if provided along with a lightweight visual backup that draws a similar edge effect.
+ * API 30 and lower - The [LiquidScope.frost] is also ignored as there is no support for the RenderEffect.
+ * Will draw a lightweight backup to the edge effect along with the other provided values.
  *
- * NOTE: [block] can be invoked multiple times, which is why it's important for performance to minimize work done inside of it.
+ * NOTE: [block] can be invoked multiple times, which is why it's important for performance to minimize
+ * work done inside of it.
  *
  * @param liquidState Shared state that tracks the set of [Liquefiable] sources to sample.
  * @param block A [LiquidScope] block where you define the effect properties.
@@ -54,42 +54,8 @@ public fun Modifier.liquid(
     liquidState = liquidState,
     block = block,
   )
-  else -> Modifier.liquidBackup(
-    width = 2.dp,
-    shape = DefaultLiquidScope().apply(block).shape,
+  else -> LiquidBackupElement(
+    liquidState = liquidState,
+    block = block,
   )
-}
-
-// This is only used for API 32 and lower so that the provided shape is used.
-private class DefaultLiquidScope : LiquidScope {
-  override var frost: Dp = 0.dp
-  override var shape: Shape = RectangleShape
-  override var refraction: Float = 0.25f
-  override var curve: Float = 0.25f
-  override var edge: Float = 0f
-  override var tint: Color = Color.Unspecified
-
-  override fun equals(other: Any?): Boolean {
-    if (this === other) return true
-    if (other !is DefaultLiquidScope) return false
-
-    if (refraction != other.refraction) return false
-    if (curve != other.curve) return false
-    if (edge != other.edge) return false
-    if (frost != other.frost) return false
-    if (shape != other.shape) return false
-    if (tint != other.tint) return false
-
-    return true
-  }
-
-  override fun hashCode(): Int {
-    var result = refraction.hashCode()
-    result = 31 * result + curve.hashCode()
-    result = 31 * result + edge.hashCode()
-    result = 31 * result + frost.hashCode()
-    result = 31 * result + shape.hashCode()
-    result = 31 * result + tint.hashCode()
-    return result
-  }
 }

@@ -33,7 +33,7 @@ internal class LiquefiableElement(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is LiquefiableElement) return false
-
+    // Use referential equality as it's unnecessary to perform structural equality checks.
     return liquidState === other.liquidState
   }
 

@@ -4,7 +4,7 @@ package io.github.fletchmckee.liquid.internal.shaders
 
 import org.intellij.lang.annotations.Language
 
-@Language("AGSL")
+@Language(value = "AGSL")
 internal const val LiquidShader = """
   uniform shader content;
   uniform float4 effectRect;
@@ -34,7 +34,7 @@ internal const val LiquidShader = """
 
   half4 main(float2 fragCoord) {
     float2 liquidSize = effectRect.zw - effectRect.xy;
-    // The fragCoord is larger than the effect coordinates as the frostRadius has been added as additional padding.
+    // Convert from absolute fragment coordinates to local coordinates relative to the effect bounds.
     float2 localCoord = fragCoord - effectRect.xy;
 
     float2 uv = localCoord / liquidSize;
@@ -60,9 +60,8 @@ internal const val LiquidShader = """
     float transition = smoothstep(0.0, 1.0, liquidMask);
 
     half4 fragColor;
-    // Only apply lens effect if refraction and curve are both positive
+    // Only apply lens effect if refraction and curve are both positive.
     if (refraction > 0.0 && curve > 0.0) {
-      // The lens is most responsible for the overall effect.
       // Sine creates a smooth curve from 0 to 1 as input goes from 0 (sin(0) = 0) to π/2 (sin(π/2) = 1).
       // Credit to ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) for this lens formula.
       // https://www.shadertoy.com/view/wcKSRD

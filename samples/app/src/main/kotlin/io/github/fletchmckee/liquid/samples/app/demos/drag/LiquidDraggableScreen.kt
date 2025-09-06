@@ -140,6 +140,7 @@ private fun SettingsButton(
         frost = 10.dp
         shape = CircleShape
         tint = containerColor
+        edge = 0.05f
       }
     },
   onClick = onClick,

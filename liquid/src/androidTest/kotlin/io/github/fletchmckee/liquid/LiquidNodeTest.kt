@@ -415,6 +415,46 @@ class LiquidNodeTest {
     }
   }
 
+  @Test fun parentInvalidations_unaffectedByLiquidScopeParameterChanges() {
+    var refraction by mutableFloatStateOf(0.25f)
+    var parentCompositionCount = 0
+    var drawCount = 0
+    var liquidBlockCount = 0
+    val liquidNode = LiquidNode(liquidState) {
+      this.refraction = refraction
+      liquidBlockCount++
+    }
+    rule.apply {
+      setContent {
+        Parent {
+          parentCompositionCount++
+          SimpleLiquefiable(liquidState)
+          Box(
+            Modifier
+              .size(100.dp)
+              .elementOf(liquidNode)
+              .drawBehind { drawCount++ },
+          )
+        }
+      }
+
+      runOnIdle {
+        // onAttach and Liquefiable being added.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+        assertThat(parentCompositionCount).isEqualTo(1)
+      }
+      runOnIdle { refraction = 0.5f }
+      runOnIdle {
+        // Verify incremented draw/liquidBlockCounts, but the parentCompositionCount should remain at one
+        // since the refraction state read is deferred to our LiquidScope block.
+        assertThat(liquidBlockCount).isEqualTo(3)
+        assertThat(drawCount).isEqualTo(3)
+        assertThat(parentCompositionCount).isEqualTo(1)
+      }
+    }
+  }
+
   @Test fun liquidNode_inBoundsOfLiquefiable_doesRenderLiquefiable() {
     val liquidNode = LiquidNode(liquidState) {}
     rule.apply {

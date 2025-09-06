@@ -37,7 +37,7 @@ import org.junit.Rule
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-@SdkSuppress(minSdkVersion = 33)
+@SdkSuppress(minSdkVersion = 31)
 class LiquefiableNodeTest {
   @get:Rule val rule = createComposeRule()
 

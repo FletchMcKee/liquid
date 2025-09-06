@@ -15,7 +15,7 @@ internal val VerticalFrostShader by lazy(LazyThreadSafetyMode.NONE) {
 }
 
 // Similar to Haze's shader, but adjusted with cornerRadii and a single shader.
-@Language("AGSL")
+@Language(value = "AGSL")
 internal fun frostShader(vertical: Boolean): String = """
   uniform shader content;
   uniform float4 effectRect;

@@ -34,7 +34,6 @@ import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
 import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
 import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
 import io.github.fletchmckee.liquid.internal.shaders.createRenderEffect
-import kotlin.collections.orEmpty
 
 @RequiresApi(33)
 internal class LiquidElement(
@@ -57,7 +56,7 @@ internal class LiquidElement(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is LiquidElement) return false
-
+    // Use referential equality as it's unnecessary to perform structural equality checks.
     if (liquidState !== other.liquidState) return false
     if (block !== other.block) return false
 
@@ -73,13 +72,15 @@ internal class LiquidElement(
 
 @RequiresApi(33)
 internal class LiquidNode(
-  var liquidState: LiquidState?,
+  var liquidState: LiquidState,
   var block: LiquidScope.() -> Unit,
 ) : Modifier.Node(),
   GlobalPositionAwareModifierNode,
   DrawModifierNode,
   CompositionLocalConsumerModifierNode,
   ObserverModifierNode {
+  // RuntimeShaders are created once per node instance rather than in draw() to avoid expensive native allocations.
+  // This requires separate Node classes for API 33+ and fallback, but the performance gain is worth it.
   private val liquidShader = RuntimeShader(LiquidShader)
   private val horizontalShader = RuntimeShader(HorizontalFrostShader)
   private val verticalShader = RuntimeShader(VerticalFrostShader)
@@ -97,8 +98,7 @@ internal class LiquidNode(
 
     // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
     val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-    reusableScope.liquefiables = liquidState?.liquefiables
-      .orEmpty()
+    reusableScope.liquefiables = liquidState.liquefiables
       .asSequence()
       .filter { it != ancestor }
       .toList()
@@ -126,7 +126,7 @@ internal class LiquidNode(
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
 
   override fun onDetach() {
-    cachedLayer?.let { layer -> currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(layer) }
+    cachedLayer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     cachedLayer = null
     cachedRenderEffect = null
     reusableScope.reset()
@@ -151,7 +151,6 @@ internal class LiquidNode(
 
     try {
       val layer = obtainGraphicsLayer()
-
       val density = currentValueOf(LocalDensity)
       val cornerRadii = reusableScope.shape.cornerRadiiPx(size, density)
       val frostRadius = reusableScope.frost.toPx()

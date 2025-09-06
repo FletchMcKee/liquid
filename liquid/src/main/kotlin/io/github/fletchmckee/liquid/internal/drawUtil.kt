@@ -8,13 +8,20 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.takeOrElse
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toIntSize
 import io.github.fletchmckee.liquid.Liquefiable
 import kotlin.sequences.forEach
@@ -78,3 +85,38 @@ internal inline val Offset.orZero: Offset get() = takeOrElse { Offset.Zero }
 
 @Suppress("NOTHING_TO_INLINE")
 internal inline infix fun Int.has(flag: Int): Boolean = (this and flag) != 0
+
+// Only used for LiquidBackupElement.
+internal fun Outline.asPath(): Path = when (this) {
+  is Outline.Rectangle -> Path().apply { addRect(rect) }
+  is Outline.Rounded -> Path().apply { addRoundRect(roundRect) }
+  is Outline.Generic -> path
+}
+
+// This won't be that accurate, but we should at least provide an edge-like inner border using gradients
+// if the user provided a value.
+internal fun ContentDrawScope.drawBackupEdgeEffect(shapePath: Path) = clipPath(shapePath) {
+  val strokeWidth = 4.dp.toPx()
+  val radius = size.minDimension
+  // Light at topLeft corner
+  drawPath(
+    path = shapePath,
+    brush = Brush.radialGradient(
+      colors = listOf(Color(0x4DFFFFFF), Color.Transparent),
+      center = Offset.Zero,
+      radius = radius,
+    ),
+    style = Stroke(width = strokeWidth),
+  )
+
+  // Light at bottomRight corner
+  drawPath(
+    path = shapePath,
+    brush = Brush.radialGradient(
+      colors = listOf(Color(0x4DFFFFFF), Color.Transparent),
+      center = Offset(size.width, size.height),
+      radius = radius,
+    ),
+    style = Stroke(width = strokeWidth),
+  )
+}

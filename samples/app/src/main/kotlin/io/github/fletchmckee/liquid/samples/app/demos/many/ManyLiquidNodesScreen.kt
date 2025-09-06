@@ -7,12 +7,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,6 +41,7 @@ import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
 import io.github.fletchmckee.liquid.samples.app.theme.FlawedWhite50
+import io.github.fletchmckee.liquid.samples.app.theme.LiquidPurple
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
@@ -81,10 +84,11 @@ private fun LiquidNodesList(
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
-    .padding(horizontal = 48.dp)
+    .padding(horizontal = 32.dp)
     .clipToBounds()
     .testTag("liquidNodesList")
     .semantics { testTagsAsResourceId = true },
+  contentPadding = WindowInsets.systemBars.asPaddingValues(),
   verticalArrangement = Arrangement.spacedBy(16.dp),
 ) {
   items(
@@ -108,12 +112,12 @@ private fun LiquidNodeRow(
   useLiquid: Boolean,
   initialFrost: Float,
   shape: Shape = RoundedCornerShape(15),
-  gradientColors: List<Color> = listOf(FlawedWhite50, Color.Transparent, FlawedWhite50),
+  gradientColors: List<Color> = listOf(LiquidPurple, Color.Transparent, FlawedWhite50),
   shaderBrush: ShaderBrush = rememberShaderBrush(gradientColors),
 ) = Row(
   modifier = Modifier
     .fillMaxWidth()
-    .aspectRatio(1f)
+    .aspectRatio(2f)
     .thenIf(useLiquid) {
       liquid(liquidState) {
         this.frost = initialFrost.dp
