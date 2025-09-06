@@ -26,14 +26,14 @@ repositories {
 }
 
 dependencies {
-  implementation("io.github.fletchmckee.liquid:liquid:0.1.0-alpha")
+  implementation("io.github.fletchmckee.liquid:liquid:0.1.0-alpha2")
 }
 ```
 ## Usage
 
 A modifier node can’t see pixels drawn behind it or by its ancestors. Liquid mirrors the approach popularized by [Haze](https://github.com/chrisbanes/haze) via the shared state/source/effect pattern:
 
-- **Shared state** - The `LiquidState` manages tracking all source nodes that should be shared with the effect nodes. 
+- **Shared state** - The `LiquidState` manages tracking all source nodes that should be shared with the effect nodes.
 - **Source** - You explicitly tag composables whose output should be sampled with `Modifier.liquefiable(liquidState)`. These are recorded into a GraphicsLayer (API 31+).
 - **Effect** - `Modifier.liquid(liquidState)` renders those layers through AGSL shaders and draws the liquid effect upon the sampled content.
 
@@ -67,7 +67,7 @@ fun LiquidScreen(
 
 #### Node Hierarchy
 
-The `liquid` modifier cannot be used on nodes that are descendants of `liquefiable` nodes due to how the rendering pipeline works. 
+The `liquid` modifier cannot be used on nodes that are descendants of `liquefiable` nodes due to how the rendering pipeline works.
 
 When a liquid node renders, it follows this process:
 
@@ -108,7 +108,7 @@ fun LiquefiableWithLiquidChild(
 
 #### Rotation, Skew and Scale animations
 
-The current effects are built to handle alpha and translation changes, however handling rotation, skew and scale animations is not yet supported. 
+The current effects are built to handle alpha and translation changes, however handling rotation, skew and scale animations is not yet supported.
 Your liquid effect nodes can do all of those animations, it's just that the liquefiable source nodes that are rendered into the effect nodes will not be drawn accurately.
 This will require complex matrix transformations and while this is possible and a future goal, it is not yet supported.
 
