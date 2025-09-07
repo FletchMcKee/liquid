@@ -43,14 +43,14 @@ internal class LiquidBackupElement(
   }
 
   override fun InspectorInfo.inspectableProperties() {
-    name = "Liquid"
+    name = "LiquidBackup"
     properties["block"] = block
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is LiquidBackupElement) return false
-    // Use referential equality as it's unnecessary to perform structural equality checks.
+    // Unnecessary to perform structural equality checks.
     if (liquidState !== other.liquidState) return false
     if (block !== other.block) return false
 
