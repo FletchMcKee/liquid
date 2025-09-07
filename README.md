@@ -107,7 +107,9 @@ fun LiquefiableAndLiquid(
 fun LiquefiableWithLiquidDescendant(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
-) = Box(modifier.liquefiable(liquidState)) {
+) = Box(
+  modifier.liquefiable(liquidState)
+) {
   // Will cause recursive draws!
   Box(Modifier.liquid(liquidState))
 }
