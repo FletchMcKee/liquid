@@ -65,7 +65,7 @@ fun LiquidScreen(
 
 ## Limitations
 
-### SDK Level
+#### SDK Level
 
 The minimum API level that will display the liquid effects is 33 (Android 13). This is essentially a RuntimeShader library, so this limits what is possible for API 32 and lower.
 
