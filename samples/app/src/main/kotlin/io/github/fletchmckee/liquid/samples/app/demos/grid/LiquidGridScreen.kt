@@ -40,8 +40,11 @@ import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.utils.BlueRedGradient
+import io.github.fletchmckee.liquid.samples.app.utils.isCI
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
+import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 
 @Composable
 fun LiquidGridScreen(
@@ -137,24 +140,18 @@ fun LiquidGrid(
 }
 
 @Composable
-private fun ImageGrid(index: Int) {
-  // Appears these don't exist with picsum.
-  val safeIndex = when (index) {
-    76 -> 110
-    87 -> 111
-    95 -> 112
-    else -> index
-  }.plus(10) // First 10 images are of a laptop.
-  AsyncImage(
-    model = "https://picsum.photos/id/$safeIndex/300/300",
-    contentScale = ContentScale.Crop,
-    placeholder = ColorPainter(Color.LightGray),
-    error = ColorPainter(Color.Magenta),
-    contentDescription = null,
-    modifier = Modifier
-      .fillMaxWidth()
-      .aspectRatio(8f / 11f)
-      .testTag("imageGrid$index")
-      .semantics { testTagsAsResourceId = true },
-  )
-}
+private fun ImageGrid(index: Int) = AsyncImage(
+  model = when {
+    isCI -> BlueRedGradient
+    else -> "https://picsum.photos/id/${index.toPicsumId()}/300/300"
+  },
+  contentScale = ContentScale.Crop,
+  placeholder = ColorPainter(Color.LightGray),
+  error = ColorPainter(Color.Magenta),
+  contentDescription = null,
+  modifier = Modifier
+    .fillMaxWidth()
+    .aspectRatio(8f / 11f)
+    .testTag("imageGrid$index")
+    .semantics { testTagsAsResourceId = true },
+)

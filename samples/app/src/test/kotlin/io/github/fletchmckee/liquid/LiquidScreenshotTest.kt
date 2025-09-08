@@ -2,12 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid
 
-import android.graphics.LinearGradient
-import android.graphics.Paint
-import android.graphics.Shader
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -15,8 +10,6 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import coil3.Canvas
-import coil3.Image
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
@@ -30,6 +23,7 @@ import io.github.fletchmckee.liquid.samples.app.demos.grid.LiquidGridScreen
 import io.github.fletchmckee.liquid.samples.app.demos.many.ManyLiquidNodesScreen
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.LiquidStickyHeaderScreen
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
+import io.github.fletchmckee.liquid.samples.app.utils.BlueRedGradient
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -61,7 +55,7 @@ class LiquidScreenshotTest {
   @Before fun before() {
     // Avoids network requests and async responses altering which images are set.
     val engine = FakeImageLoaderEngine.Builder()
-      .default(GradientImage(Color.Blue.toArgb(), Color.Red.toArgb()))
+      .default(BlueRedGradient)
       .build()
     val imageLoader = ImageLoader.Builder(ApplicationProvider.getApplicationContext())
       .components { add(engine) }
@@ -149,11 +143,11 @@ class LiquidScreenshotTest {
     }
   }
 
-  @Test fun capture_many_liquid_nodes_no_frost() = runScreenshotTest {
+  @Test fun capture_many_liquid_nodes_no_frost() = runScreenshotTest(darkMode = false) {
     ManyLiquidNodesScreen()
   }
 
-  @Test fun capture_many_liquid_nodes_10_dp_frost() = runScreenshotTest {
+  @Test fun capture_many_liquid_nodes_10_dp_frost() = runScreenshotTest(darkMode = false) {
     ManyLiquidNodesScreen(initialFrost = 10f)
   }
 
@@ -171,31 +165,5 @@ class LiquidScreenshotTest {
       waitForIdle()
       onRoot().captureRoboImage()
     }
-  }
-}
-
-// The liquid effect mainly works by displacing pixels near edges to other coordinates. So if we have a single
-// color we can't really tell if the effect is working.
-class GradientImage(
-  private val startColor: Int,
-  private val endColor: Int,
-  override val width: Int = 100,
-  override val height: Int = 100,
-  override val size: Long = 0,
-  override val shareable: Boolean = true,
-) : Image {
-  override fun draw(canvas: Canvas) {
-    val paint = Paint().apply {
-      shader = LinearGradient(
-        0f,
-        0f,
-        width.toFloat(),
-        height.toFloat(),
-        startColor,
-        endColor,
-        Shader.TileMode.CLAMP,
-      )
-    }
-    canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), paint)
   }
 }

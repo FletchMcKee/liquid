@@ -70,7 +70,7 @@ fun LiquidScreen(
 The minimum API level that will display the liquid effects is 33 (Android 13). This is essentially a RuntimeShader library, so this limits what is possible for API 32 and lower.
 
 - **API 31+** - RenderEffects are available, so we will still create a frost effect using Android's [BlurEffect](https://github.com/androidx/androidx/blob/7cca76e55aaa9c2ff1a038bac0fa2b91cd04dcff/compose/ui/ui-graphics/src/androidMain/kotlin/androidx/compose/ui/graphics/AndroidRenderEffect.android.kt#L50). We also draw a lower quality version of the edge effect. To disable, you can set the `LiquidScope.edge` property to 0f. The `LiquidScope.refraction` and `LiquidScope.curve` properties are ignored. The `LiquidScope.tint` and `LiquidScope.shape` values produce the same effect as API 33+.
-- **API 30 and lower** - Has all of the above features outside of the frost effect. 
+- **API 30 and lower** - Has all of the above features outside of the frost effect.
 
 #### Node Hierarchy
 
@@ -132,6 +132,7 @@ class.
 [Liquid Glass example](https://www.shadertoy.com/view/wcKSRD).
 - Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](./samples/app/src/main/res/drawable-nodpi/northern_lights.webp)
 - Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](./samples/app/src/main/res/drawable-nodpi/ny_city.webp).
+- Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](./samples/app/src/main/res/drawable-nodpi/dotonbori.webp).
 
 ## License
 

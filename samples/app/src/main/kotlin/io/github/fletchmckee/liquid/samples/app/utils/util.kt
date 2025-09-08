@@ -21,6 +21,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import io.github.fletchmckee.liquid.samples.app.BuildConfig as AndroidBuildConfig
+import liquid_root.samples.app.BuildConfig
 
 // Used for benchmarks so that we can compare performance with none of the library's effects added.
 internal fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier): Modifier = if (condition) this.block() else this
@@ -57,3 +59,16 @@ internal fun rememberShaderBrush(
     )
   }
 }
+
+internal fun Int.toPicsumId() = when (this) {
+  76 -> 110
+  87 -> 111
+  95 -> 112
+  else -> this
+}.plus(10)
+
+@Suppress("KotlinConstantConditions")
+internal val isCI = BuildConfig.IS_CI
+
+@Suppress("KotlinConstantConditions")
+internal val isBenchmark = AndroidBuildConfig.BUILD_TYPE == "benchmark"

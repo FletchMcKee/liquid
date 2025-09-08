@@ -5,6 +5,7 @@ androidXTest = "1.7.0"
 assertk = "0.28.1"
 benchmark = "1.4.0"
 binaryCompatibility = "0.18.1"
+buildConfig = "5.6.8"
 coilCompose = "3.3.0"
 composeAdaptive = "1.1.0"
 composeBom = "2025.08.01"
@@ -78,6 +79,7 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibility" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
+build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 
 liquid-root = { id = "io.github.fletchmckee.liquid.root" }
 liquid-android-library = { id = "io.github.fletchmckee.liquid.android.library" }

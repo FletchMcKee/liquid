@@ -5,10 +5,15 @@ plugins {
   alias(libs.plugins.liquid.android.application.compose)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.roborazzi)
+  alias(libs.plugins.build.config)
 }
 
 android {
   namespace = "io.github.fletchmckee.liquid.samples.app"
+
+  buildFeatures {
+    buildConfig = true
+  }
 
   defaultConfig {
     applicationId = "io.github.fletchmckee.liquid.samples.app"
@@ -36,6 +41,10 @@ kotlin {
       "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
     )
   }
+}
+
+buildConfig {
+  buildConfigField("IS_CI", providers.environmentVariable("CI").isPresent)
 }
 
 dependencies {

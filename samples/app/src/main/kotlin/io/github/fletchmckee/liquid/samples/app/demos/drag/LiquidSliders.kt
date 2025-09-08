@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
+import io.github.fletchmckee.liquid.samples.app.utils.isBenchmark
 import io.github.fletchmckee.liquid.samples.app.utils.safeShadow
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
@@ -165,15 +166,18 @@ fun LiquidSliderRow(
       modifier = Modifier.weight(1f),
     )
 
-    Text(
-      text = formatter.format(value),
-      style = MaterialTheme.typography.labelLarge.copy(
-        color = MaterialTheme.colorScheme.onBackground,
-        fontSize = 16.sp,
-      ),
-      textAlign = TextAlign.End,
-      modifier = Modifier.weight(1f),
-    )
+    // In benchmarks we only want to measure LiquidScope property/UI performance and not text side effects.
+    if (!isBenchmark) {
+      Text(
+        text = formatter.format(value),
+        style = MaterialTheme.typography.labelLarge.copy(
+          color = MaterialTheme.colorScheme.onBackground,
+          fontSize = 16.sp,
+        ),
+        textAlign = TextAlign.End,
+        modifier = Modifier.weight(1f),
+      )
+    }
   }
 
   Slider(

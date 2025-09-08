@@ -108,8 +108,8 @@ fun LiquidDemos(
     )
 
     manyNavigation(
-      useLiquid,
-      initialFrost,
+      useLiquid = useLiquid,
+      initialFrost = initialFrost,
     )
   }
 }

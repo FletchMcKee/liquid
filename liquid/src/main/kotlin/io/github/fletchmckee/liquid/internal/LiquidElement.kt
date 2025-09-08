@@ -56,7 +56,7 @@ internal class LiquidElement(
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
     if (other !is LiquidElement) return false
-    // Use referential equality as it's unnecessary to perform structural equality checks.
+    // Unnecessary to perform structural equality checks.
     if (liquidState !== other.liquidState) return false
     if (block !== other.block) return false
 

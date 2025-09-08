@@ -77,7 +77,7 @@ fun LiquidTopAppBar(
           this.frost = frostProvider().dp
           this.shape = shape
           this.refraction = 0.25f
-          this.curve = 0.1f
+          this.curve = 0.25f
           this.edge = 0.1f
           this.tint = containerColor
         }
@@ -108,7 +108,7 @@ fun LiquidBottomAppBar(
         this.frost = frostProvider().dp
         this.shape = shape
         this.refraction = 0.25f
-        this.curve = 0.1f
+        this.curve = 0.25f
         this.edge = 0.1f
         this.tint = containerColor
       }

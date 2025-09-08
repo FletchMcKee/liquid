@@ -43,9 +43,9 @@ import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 fun LiquidDraggableScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
-  windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
-  initialFrost: Float = 0f,
   useLiquid: Boolean = true,
+  initialFrost: Float = 0f,
+  windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
   sliderContainerColor: Color = MaterialTheme.colorScheme.surface,
 ) {
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT

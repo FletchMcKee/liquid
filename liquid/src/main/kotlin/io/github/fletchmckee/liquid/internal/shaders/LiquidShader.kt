@@ -62,10 +62,13 @@ internal const val LiquidShader = """
     half4 fragColor;
     // Only apply lens effect if refraction and curve are both positive.
     if (refraction > 0.0 && curve > 0.0) {
+      float adjustment = sqrt(maxDimension * minDimension) / minDimension;
+      float adjustedRefraction = refraction / adjustment;
+      float adjustedCurve = curve / adjustment;
       // Sine creates a smooth curve from 0 to 1 as input goes from 0 (sin(0) = 0) to π/2 (sin(π/2) = 1).
       // Credit to ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) for this lens formula.
       // https://www.shadertoy.com/view/wcKSRD
-      float2 lens = m2 * sin(pow(saturate(-lensSdf / refraction), curve) * HALF_PI) + 0.5;
+      float2 lens = m2 * sin(pow(saturate(-lensSdf / adjustedRefraction), adjustedCurve) * HALF_PI) + 0.5;
       float2 sampleCoord = effectRect.xy + lens * liquidSize;
       fragColor = content.eval(sampleCoord);
     } else {

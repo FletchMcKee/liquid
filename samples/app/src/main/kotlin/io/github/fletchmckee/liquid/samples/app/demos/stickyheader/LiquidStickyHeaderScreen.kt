@@ -52,8 +52,11 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.utils.BlueRedGradient
+import io.github.fletchmckee.liquid.samples.app.utils.isCI
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
+import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 
 @Composable
 fun LiquidStickyHeaderScreen(
@@ -151,7 +154,7 @@ private fun StickyHeaderList(
             liquid(liquidState) {
               this.frost = initialFrost.dp
               this.refraction = 0.25f
-              this.curve = 0.1f
+              this.curve = 0.25f
               this.edge = 0.05f
               this.shape = shape
               this.tint = stickyHeaderContainerColor
@@ -182,30 +185,24 @@ private fun StickyHeaderList(
 private fun ImageItem(
   liquidState: LiquidState,
   index: Int,
-) {
-  // Appears these don't exist with picsum.
-  val safeIndex = when (index) {
-    76 -> 110
-    87 -> 111
-    95 -> 112
-    else -> index
-  }.plus(10)
-  AsyncImage(
-    model = "https://picsum.photos/id/$safeIndex/300/300",
-    contentScale = ContentScale.Crop,
-    placeholder = ColorPainter(Color.LightGray),
-    error = ColorPainter(Color.Magenta),
-    contentDescription = null,
-    modifier = Modifier
-      .fillMaxWidth()
-      .aspectRatio(2f)
-      // The extra padding is for screenshot tests. Otherwise it is hard to tell if the effect is doing anything
-      // give we have to use ColorImages.
-      .padding(horizontal = 16.dp)
-      // Be sure to place liquefiable nodes before any clip calls
-      .liquefiable(liquidState)
-      .clip(RoundedCornerShape(5))
-      .testTag("imageItem$index")
-      .semantics { testTagsAsResourceId = true },
-  )
-}
+) = AsyncImage(
+  model = when {
+    isCI -> BlueRedGradient
+    else -> "https://picsum.photos/id/${index.toPicsumId()}/300/300"
+  },
+  contentScale = ContentScale.Crop,
+  placeholder = ColorPainter(Color.LightGray),
+  error = ColorPainter(Color.Magenta),
+  contentDescription = null,
+  modifier = Modifier
+    .fillMaxWidth()
+    .aspectRatio(2f)
+    // The extra padding is for screenshot tests. Otherwise it is hard to tell if the effect is doing anything
+    // give we have to use ColorImages.
+    .padding(horizontal = 16.dp)
+    // Be sure to place liquefiable nodes before any clip calls
+    .liquefiable(liquidState)
+    .clip(RoundedCornerShape(5))
+    .testTag("imageItem$index")
+    .semantics { testTagsAsResourceId = true },
+)
