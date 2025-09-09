@@ -82,15 +82,24 @@ Modifier
 
 #### Frost
 
-The frost parameter blurs the background contents resulting in a frost-like effect. You can also apply this effect while setting `refraction` or `curve` to 0f if you only want a blur effect.
-Any value below 0.dp is ignored. 
+<table>
+<tr>
+<td>
 
-<div align="center">
-  <img src="https://github.com/user-attachments/assets/51f12425-7f0f-4dbe-85d9-a3eea98d2c74" width="400" />
-</div>
+The frost parameter blurs the background contents resulting in a frost-like effect. You can also apply this effect while setting `refraction` or `curve` to 0f if you only want a blur effect. Any value below 0.dp is ignored.
 
 > [!NOTE]
 > This is the most expensive property in the LiquidScope as it creates extras RuntimeShaders to achieve the blur effect.
+
+</td>
+<td width="400">
+
+<img src="https://github.com/user-attachments/assets/51f12425-7f0f-4dbe-85d9-a3eea98d2c74" width="400" />
+
+</td>
+</tr>
+</table>
+
 
 #### Shape
 
