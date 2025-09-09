@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -95,7 +96,7 @@ fun LiquidBottomAppBar(
   frostProvider: () -> Float,
   modifier: Modifier = Modifier,
   useLiquid: Boolean = true,
-  shape: Shape = RoundedCornerShape(35),
+  shape: Shape = CircleShape,
   containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
   content: @Composable () -> Unit = {},
 ) = Row(

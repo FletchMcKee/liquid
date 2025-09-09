@@ -130,7 +130,7 @@ private fun StickyHeaderList(
   useLiquid: Boolean,
   initialFrost: Float,
   contentPaddingValues: PaddingValues,
-  shape: Shape = RoundedCornerShape(15),
+  shape: Shape = CircleShape,
   stickyHeaderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) = LazyColumn(
   modifier = Modifier
@@ -150,12 +150,14 @@ private fun StickyHeaderList(
       Row(
         modifier = Modifier
           .fillMaxWidth()
+          .padding(top = 8.dp)
           .thenIf(useLiquid) {
             liquid(liquidState) {
               this.frost = initialFrost.dp
-              this.refraction = 0.25f
-              this.curve = 0.25f
-              this.edge = 0.05f
+              // Need some examples/screenshots with more extreme distortion.
+              this.refraction = 0.4f
+              this.curve = 0.4f
+              this.edge = 0.1f
               this.shape = shape
               this.tint = stickyHeaderContainerColor
             }
@@ -185,6 +187,7 @@ private fun StickyHeaderList(
 private fun ImageItem(
   liquidState: LiquidState,
   index: Int,
+  shape: Shape = RoundedCornerShape(5),
 ) = AsyncImage(
   model = when {
     isCI -> BlueRedGradient
@@ -202,7 +205,7 @@ private fun ImageItem(
     .padding(horizontal = 16.dp)
     // Be sure to place liquefiable nodes before any clip calls
     .liquefiable(liquidState)
-    .clip(RoundedCornerShape(5))
+    .clip(shape)
     .testTag("imageItem$index")
     .semantics { testTagsAsResourceId = true },
 )

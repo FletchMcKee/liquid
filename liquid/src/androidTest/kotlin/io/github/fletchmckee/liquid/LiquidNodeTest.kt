@@ -75,7 +75,7 @@ class LiquidNodeTest {
         val scope = liquidNode.reusableScope
         assertThat(liquidBlockCount).isEqualTo(1)
         assertThat(scope.frost).isEqualTo(0.dp)
-        assertThat(scope.shape).isEqualTo(RectangleShape)
+        assertThat(scope.shape).isEqualTo(CircleShape)
         assertThat(scope.refraction).isEqualTo(0.25f)
         assertThat(scope.curve).isEqualTo(0.25f)
         assertThat(scope.edge).isZero()
@@ -492,9 +492,9 @@ class LiquidNodeTest {
   }
 
   @Test fun liquidNode_reactsToShapeChanges() = runLiquidScopeTest(
-    initialValue = RectangleShape,
+    initialValue = CircleShape,
     changedValue = RoundedCornerShape(10),
-    finalValue = CircleShape,
+    finalValue = RectangleShape,
   ) { shape ->
     this.shape = shape
   }

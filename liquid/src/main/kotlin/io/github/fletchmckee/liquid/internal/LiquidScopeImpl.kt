@@ -2,12 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
@@ -37,7 +37,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  override var shape: Shape = RectangleShape
+  override var shape: Shape = CircleShape
     set(value) {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.Shape
@@ -115,7 +115,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
 
   internal fun reset() {
     frost = 0.dp
-    shape = RectangleShape
+    shape = CircleShape
     refraction = 0.25f
     curve = 0.25f
     edge = 0f

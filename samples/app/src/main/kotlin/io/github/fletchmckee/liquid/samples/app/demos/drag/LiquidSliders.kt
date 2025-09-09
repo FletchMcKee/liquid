@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -75,7 +76,7 @@ fun BoxScope.LiquidSliders(
     .align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter)
     .fillMaxWidth(if (isLandscape) 0.4f else 1f)
     .wrapContentHeight()
-    .padding(WindowInsets.systemBars.asPaddingValues())
+    .padding(if (isLandscape) PaddingValues.Zero else WindowInsets.systemBars.asPaddingValues())
     .padding(16.dp)
     .pointerInput(Unit) {
       detectDragGestures { change, dragAmount ->

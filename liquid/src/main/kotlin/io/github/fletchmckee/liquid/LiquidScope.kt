@@ -3,8 +3,8 @@
 package io.github.fletchmckee.liquid
 
 import androidx.annotation.FloatRange
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 
@@ -25,7 +25,9 @@ public interface LiquidScope {
   /**
    * The shape of the effect area, defining the clipping and outline of the effect.
    *
-   * Defaults to [RectangleShape].
+   * It's recommended to use [CircleShape] or shapes with rounded corners for best liquid effects.
+   *
+   * Defaults to [CircleShape].
    */
   public var shape: Shape
 

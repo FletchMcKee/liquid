@@ -2,17 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performScrollToNode
+import androidx.core.graphics.drawable.toBitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import coil3.ImageLoader
 import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
+import coil3.asImage
 import coil3.test.FakeImageLoaderEngine
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
@@ -23,7 +26,6 @@ import io.github.fletchmckee.liquid.samples.app.demos.grid.LiquidGridScreen
 import io.github.fletchmckee.liquid.samples.app.demos.many.ManyLiquidNodesScreen
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.LiquidStickyHeaderScreen
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
-import io.github.fletchmckee.liquid.samples.app.utils.BlueRedGradient
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,9 +55,13 @@ class LiquidScreenshotTest {
 
   @DelicateCoilApi
   @Before fun before() {
+    // This could cause memory issues, but the gradient images are mostly useless for screenshot tests.
+    val context = ApplicationProvider.getApplicationContext<Context>()
+    val drawable = context.getDrawable(io.github.fletchmckee.liquid.samples.app.R.drawable.moon_and_stars)!!
+    val bitmap = drawable.toBitmap()
     // Avoids network requests and async responses altering which images are set.
     val engine = FakeImageLoaderEngine.Builder()
-      .default(BlueRedGradient)
+      .default(bitmap.asImage())
       .build()
     val imageLoader = ImageLoader.Builder(ApplicationProvider.getApplicationContext())
       .components { add(engine) }

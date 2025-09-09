@@ -36,7 +36,6 @@ internal const val LiquidShader = """
     float2 liquidSize = effectRect.zw - effectRect.xy;
     // Convert from absolute fragment coordinates to local coordinates relative to the effect bounds.
     float2 localCoord = fragCoord - effectRect.xy;
-
     float2 uv = localCoord / liquidSize;
     float2 m2 = uv - 0.5;
 
@@ -47,28 +46,45 @@ internal const val LiquidShader = """
     half4 shapeVr = half4(cornerRadii) / minDimension;
     float shapeSdf = computeSdf(shapeCoord, shapeSize * 0.5, shapeVr);
 
-    // The lensSdf is normalized by maxDimension to create uniform square distortion.
-    // This prevents stretching artifacts in rectangular shapes.
-    float maxDimension = max(liquidSize.x, liquidSize.y);
-    float2 lensSize = liquidSize / maxDimension;
-    float2 lensCoord = m2 * lensSize;
-    half4 lensVr = half4(cornerRadii) / maxDimension;
-    float lensSdf = computeSdf(lensCoord, lensSize * 0.5, lensVr);
-
     // Using maxDimension for a sharper transition.
+    float maxDimension = max(liquidSize.x, liquidSize.y);
     float liquidMask = saturate(-shapeSdf * maxDimension);
     float transition = smoothstep(0.0, 1.0, liquidMask);
-
     half4 fragColor;
     // Only apply lens effect if refraction and curve are both positive.
     if (refraction > 0.0 && curve > 0.0) {
-      float adjustment = sqrt(maxDimension * minDimension) / minDimension;
-      float adjustedRefraction = refraction / adjustment;
-      float adjustedCurve = curve / adjustment;
-      // Sine creates a smooth curve from 0 to 1 as input goes from 0 (sin(0) = 0) to π/2 (sin(π/2) = 1).
-      // Credit to ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) for this lens formula.
-      // https://www.shadertoy.com/view/wcKSRD
-      float2 lens = m2 * sin(pow(saturate(-lensSdf / adjustedRefraction), adjustedCurve) * HALF_PI) + 0.5;
+      float distortion = sin(pow(saturate(-shapeSdf / refraction), curve) * HALF_PI);
+      // Applying the individual radius values opens the door for too many strange visuals and complaints.
+      // I'd rather apply the max to all then have a 50% radius for one corner get reduced to something like 12.5%.
+      float maxRadii = max(max(cornerRadii.x, cornerRadii.y), max(cornerRadii.z, cornerRadii.w));
+      float spineExtentX, spineExtentY;
+      // May end up having a rule that no cornerRadii means no glass effect, but for now we'll base it on aspectRatio.
+      if (maxRadii == 0.0) {
+        float aspectRatio = liquidSize.x / liquidSize.y;
+        spineExtentX = 0.0;
+        spineExtentY = 0.0;
+        if (aspectRatio > 1.0) {
+          spineExtentX = (aspectRatio - 1.0) / (2.0 * aspectRatio);
+        } else if (aspectRatio < 1.0) {
+          float spineExtentY = (1.0 - aspectRatio) / 2.0;
+        }
+      } else {
+        maxRadii *= 2.0; // The spineExtents will start at the circumference of the corner circle.
+        float nCornerRadiiX = maxRadii / liquidSize.x;
+        float nCornerRadiiY = maxRadii / liquidSize.y;
+        // I think spineExtent-based distortion was the missing key. For example a capsule shaped 400 w by 100 h rectangle
+        // should only have vertical distortion on the top and bottom edges from x-coordinate 50 to 350. The previous approach
+        // was applying horizontal all along the longer axis.
+        spineExtentX = 0.5 - nCornerRadiiX;
+        spineExtentY = 0.5 - nCornerRadiiY;
+      }
+      float2 edgeProximity = smoothstep(
+        float2(spineExtentX, spineExtentY),
+        float2(0.5),
+        abs(m2)
+      );
+
+      float2 lens = m2 * mix(float2(1.0), float2(distortion), edgeProximity) + 0.5;
       float2 sampleCoord = effectRect.xy + lens * liquidSize;
       fragColor = content.eval(sampleCoord);
     } else {

@@ -28,7 +28,7 @@ class LiquidScopeTest {
 
   @Test fun `initial values are correct`() {
     assertThat(scope.frost).isEqualTo(0.dp)
-    assertThat(scope.shape).isEqualTo(RectangleShape)
+    assertThat(scope.shape).isEqualTo(CircleShape)
     assertThat(scope.refraction).isEqualTo(0.25f)
     assertThat(scope.curve).isEqualTo(0.25f)
     assertThat(scope.edge).isZero()
@@ -44,7 +44,7 @@ class LiquidScopeTest {
     scope.setNonDefaultValues()
     scope.reset()
     assertThat(scope.frost).isEqualTo(0.dp)
-    assertThat(scope.shape).isEqualTo(RectangleShape)
+    assertThat(scope.shape).isEqualTo(CircleShape)
     // We have to reset to the default values. Otherwise if users rely on the default values and
     // use a LazyList where items are detached and re-attached frequently, the effect would disappear.
     assertThat(scope.refraction).isEqualTo(0.25f)
@@ -68,8 +68,8 @@ class LiquidScopeTest {
   }
 
   @Test fun `shape mutations observed`() {
-    scope.shape = CircleShape
-    assertThat(scope.shape).isEqualTo(CircleShape)
+    scope.shape = RectangleShape
+    assertThat(scope.shape).isEqualTo(RectangleShape)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Shape)
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
