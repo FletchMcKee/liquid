@@ -55,13 +55,58 @@ fun LiquidScreen(
   LiquidButton(
     Modifier
       .align(Alignment.TopStart)
-      .liquid(liquidState),
+      .liquid(liquidState), // Applies the default liquid effect.
   )
 }
 ```
 > [!IMPORTANT]
 > A `liquid` node cannot have ancestor `liquefiable` nodes outside of its own Modifier chain using the same `LiquidState`. Doing so will result in a fatal SIGSEGV exception.
 > See [Node Hirearchy](#node-hierarchy) under [Limitations](#limitations) for more information.
+
+### LiquidScope
+
+The `LiquidScope` block allows you to customize your liquid effects for each modifier. The default values are applied when no scope
+block is passed, however you can alter any one of these fields to achieve the desired effect:
+
+```kotlin
+Modifier
+  .liquid(liquidState) {
+    frost = 10.dp // Defaults to 0.dp
+    shape = RoundedCornerShape(25) // Defaults to CircleShape
+    refraction = 0.5f // Defaults to 0.25f
+    curve = 0.5f // Defaults to 0.25f
+    edge = 0.1f // Defaults to 0f.
+    tint = Color.White.copy(alpha = 0.2f) // Defaults to Color.Unspecified
+  }
+```
+
+#### Frost
+
+TBD
+
+#### Shape
+
+The shape is just like setting a shape in a `background` or `clip` modifier. However the shape plays an important role in the lens distortion
+that creates the liquid effect. It distorts around the corners, so it's recommended (but not required) to use rounded corners. Applying
+`CircleShape` (RoundedCornerShape(50)) results in the best effect as it creates smooth distortions whether it is a true circle or a
+capsule-shaped composable.
+
+#### Refraction
+
+TBD
+
+#### Curve
+
+TBD
+
+#### Edge
+
+TBD
+
+#### Tint
+
+This is an optional value that is mainly provided for convenience. Most use cases will require some tint, so you can avoid applying an
+additional `background` modifier by setting everything in your `liquid` modifier.
 
 ## Limitations
 
