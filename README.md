@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-  implementation("io.github.fletchmckee.liquid:liquid:0.1.0-alpha2")
+  implementation("io.github.fletchmckee.liquid:liquid:0.1.0-rc1")
 }
 ```
 ## Usage

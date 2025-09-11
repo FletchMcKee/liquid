@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [0.1.0-rc1] - 2025-09-11
+
+  Changed:
+  - Improved lens effect by removing parallel distortion along spine extents.
+
 ## [0.1.0-alpha2] - 2025-09-06
 
   New:
@@ -16,6 +21,7 @@
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/0.1.0-alpha2...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/0.1.0-rc1...HEAD
+[0.1.0-rc1]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-rc1
 [0.1.0-alpha2]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-alpha2
 [0.1.0-alpha]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-alpha
