@@ -104,7 +104,7 @@ capsule-shaped composable.
 
 The refraction controls how much the background distorts through the liquid lens. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.curve` value.
 
-This property is no-op on Android 12 and lower.'
+This property is no-op on Android 12 and lower.
 
 <div align="center">
   <img src="https://github.com/user-attachments/assets/c173a6ae-e97a-411e-ab11-426a8f9b4446" width="400" />
@@ -122,7 +122,13 @@ This property is no-op on Android 12 and lower.
 
 #### Edge
 
-TBD
+The edge determines the width of the rim lighting around the effect's edge. Higher values create a wider, softer edge and expand the region where rim lighting is applied. Set to `0f` to disable this effect.
+
+On Android 12 and lower, this becomes a boolean where a value > 0f draws a fixed width edge effect, and 0f removes it.
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/279826e7-a134-4834-873a-7c94a2bd1f06" width="400" />
+</div>
 
 #### Tint
 
