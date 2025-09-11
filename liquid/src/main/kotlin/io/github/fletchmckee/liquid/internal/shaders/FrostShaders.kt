@@ -23,7 +23,6 @@ internal fun frostShader(vertical: Boolean): String = """
   uniform float4 cornerRadii;
 
   const float MAX_RADIUS = 150.0;
-  const float ALPHA_THRESHOLD = 0.001;
 
   float gaussian(float x, float sigma) {
     return exp(-(x * x) / (2.0 * sigma * sigma));
@@ -61,19 +60,8 @@ internal fun frostShader(vertical: Boolean): String = """
     float r = floor(blurRadius);
     float sigma = max(blurRadius / 2.0, 1.0);
 
-    float weightSum = 0.0;
-    half4 result = half4(0.0);
-
-    // Sample the center pixel
-    half4 centerSample = content.eval(fragCoord);
-
-    // Only proceed with blur if evaluated pixel has content.
-    if (centerSample.a <= ALPHA_THRESHOLD) {
-      return half4(0.0);
-    }
-
-    result = centerSample;
-    weightSum = 1.0;
+    float weightSum = 1.0;
+    half4 result = content.eval(fragCoord);
 
     for (float i = 1.0; i < MAX_RADIUS; i += 2.0) {
       if (i >= r) break;
@@ -88,19 +76,13 @@ internal fun frostShader(vertical: Boolean): String = """
       float2 coordPlus = fragCoord + offset;
 
       if (isInsideShape(coordMinus, liquidSize, minDim, normalizedSize, vr)) {
-        half4 sample = content.eval(coordMinus);
-        if (sample.a > ALPHA_THRESHOLD) {
-          result += weight * sample;
-          weightSum += weight;
-        }
+        result += weight * content.eval(coordMinus);
+        weightSum += weight;
       }
 
       if (isInsideShape(coordPlus, liquidSize, minDim, normalizedSize, vr)) {
-        half4 sample = content.eval(coordPlus);
-        if (sample.a > ALPHA_THRESHOLD) {
-          result += weight * sample;
-          weightSum += weight;
-        }
+        result += weight * content.eval(coordPlus);
+        weightSum += weight;
       }
     }
 
@@ -113,19 +95,13 @@ internal fun frostShader(vertical: Boolean): String = """
       float2 coordPlus = fragCoord + offset;
 
       if (isInsideShape(coordMinus, liquidSize, minDim, normalizedSize, vr)) {
-        half4 sample = content.eval(coordMinus);
-        if (sample.a > ALPHA_THRESHOLD) {
-          result += weight * sample;
-          weightSum += weight;
-        }
+        result += weight * content.eval(coordMinus);
+        weightSum += weight;
       }
 
       if (isInsideShape(coordPlus, liquidSize, minDim, normalizedSize, vr)) {
-        half4 sample = content.eval(coordPlus);
-        if (sample.a > ALPHA_THRESHOLD) {
-          result += weight * sample;
-          weightSum += weight;
-        }
+        result += weight * content.eval(coordPlus);
+        weightSum += weight;
       }
     }
 
