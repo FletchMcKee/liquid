@@ -17,7 +17,6 @@ import androidx.compose.ui.node.currentValueOf
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.util.fastRoundToInt
 import io.github.fletchmckee.liquid.Liquefiable
 import io.github.fletchmckee.liquid.LiquidState
 
@@ -80,7 +79,7 @@ internal class LiquefiableNode(
   }
 
   override fun ContentDrawScope.draw() {
-    if (size.minDimension.fastRoundToInt() < 1) {
+    if (size.minDimension < 1f) {
       drawContent()
       return
     }

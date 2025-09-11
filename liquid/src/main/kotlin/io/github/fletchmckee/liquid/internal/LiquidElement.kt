@@ -3,11 +3,11 @@
 package io.github.fletchmckee.liquid.internal
 
 import android.graphics.RuntimeShader
+import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.layer.GraphicsLayer
@@ -27,15 +27,12 @@ import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.toSize
-import androidx.compose.ui.util.fastRoundToInt
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
 import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
 import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
-import io.github.fletchmckee.liquid.internal.shaders.createRenderEffect
 
-@RequiresApi(33)
 internal class LiquidElement(
   private val liquidState: LiquidState,
   private val block: LiquidScope.() -> Unit,
@@ -70,7 +67,6 @@ internal class LiquidElement(
   }
 }
 
-@RequiresApi(33)
 internal class LiquidNode(
   var liquidState: LiquidState,
   var block: LiquidScope.() -> Unit,
@@ -80,28 +76,40 @@ internal class LiquidNode(
   CompositionLocalConsumerModifierNode,
   ObserverModifierNode {
   // RuntimeShaders are created once per node instance rather than in draw() to avoid expensive native allocations.
-  // This requires separate Node classes for API 33+ and fallback, but the performance gain is worth it.
-  private val liquidShader = RuntimeShader(LiquidShader)
-  private val horizontalShader = RuntimeShader(HorizontalFrostShader)
-  private val verticalShader = RuntimeShader(VerticalFrostShader)
+  @delegate:RequiresApi(33)
+  @get:RequiresApi(33)
+  private val liquidShader by lazy(LazyThreadSafetyMode.NONE) { RuntimeShader(LiquidShader) }
+
+  @delegate:RequiresApi(33)
+  @get:RequiresApi(33)
+  private val horizontalShader by lazy(LazyThreadSafetyMode.NONE) { RuntimeShader(HorizontalFrostShader) }
+
+  @delegate:RequiresApi(33)
+  @get:RequiresApi(33)
+  private val verticalShader by lazy(LazyThreadSafetyMode.NONE) { RuntimeShader(VerticalFrostShader) }
+
+  private val canUseRuntimeShaders = Build.VERSION.SDK_INT >= 33
+  private val canUserRenderEffect = Build.VERSION.SDK_INT >= 31
 
   @VisibleForTesting
   internal val reusableScope = LiquidScopeImpl()
 
   private var cachedLayer: GraphicsLayer? = null
-  private var cachedRenderEffect: RenderEffect? = null
 
   internal fun invalidateLiquidBlock() {
     if (!isAttached) return
 
     block(reusableScope)
 
-    // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
-    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-    reusableScope.liquefiables = liquidState.liquefiables
-      .asSequence()
-      .filter { it != ancestor }
-      .toList()
+    // No liquefiables are recorded for API 30 and lower, avoid unnecessary traversals and filtering.
+    if (canUserRenderEffect) {
+      // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
+      val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
+      reusableScope.liquefiables = liquidState.liquefiables
+        .asSequence()
+        .filter { it != ancestor }
+        .toList()
+    }
 
     invalidateDrawIfNeeded()
   }
@@ -113,9 +121,6 @@ internal class LiquidNode(
 
   private fun invalidateDrawIfNeeded() {
     if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
-      // As long as the uniforms in the RenderEffect's shader haven't changed, we can reuse the same RenderEffect
-      // and avoid expensive native allocations.
-      cachedRenderEffect = cachedRenderEffect.takeUnless { reusableScope.mutatedFields has Fields.RenderEffectFields }
       invalidateDraw()
     }
   }
@@ -123,12 +128,12 @@ internal class LiquidNode(
   // We handle all necessary invalidations in LiquidScopeImpl.
   override val shouldAutoInvalidate: Boolean = false
 
+  // The `observeReads` call is critical here, otherwise we won't receive updates from LiquidScope/Liquefiable property mutations.
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
 
   override fun onDetach() {
     cachedLayer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     cachedLayer = null
-    cachedRenderEffect = null
     reusableScope.reset()
   }
 
@@ -144,43 +149,40 @@ internal class LiquidNode(
   }
 
   override fun ContentDrawScope.draw() {
-    if (size.minDimension.fastRoundToInt() < 1) {
+    if (size.minDimension < 1f) {
       drawContent()
       return
     }
 
     try {
       val layer = obtainGraphicsLayer()
-      val density = currentValueOf(LocalDensity)
-      val cornerRadii = reusableScope.shape.cornerRadiiPx(size, density)
-      val frostRadius = reusableScope.frost.toPx()
+      if (!canUseRuntimeShaders) {
+        drawBackupLiquidEffect(layer, reusableScope)
+        return
+      }
+
+      reusableScope.density = currentValueOf(LocalDensity)
       // For a uniform frost, we sample outside of the node's actual size with the frost radius as padding.
-      val bounds = reusableScope.paddedBounds(padding = frostRadius)
+      val padding = reusableScope.frostRadius
+      recordLiquefiablesIntoLayer(layer, reusableScope)
 
-      recordLiquefiablesIntoLayer(
-        layer = layer,
-        liquefiables = reusableScope.liquefiables,
-        bounds = bounds,
-      )
-
-      val renderEffect = cachedRenderEffect
-        ?: createRenderEffect(
+      layer.clip = reusableScope.shape != RectangleShape
+      // We can avoid creating the frost shaders altogether by only accessing the shaders if a non-zero frost is provided.
+      layer.renderEffect = when {
+        // May need to change this to <= 0f, but I see no point in blurring if it's a single pixel.
+        padding < 1f -> reusableScope.obtainLiquidRenderEffect(liquidShader)
+        else -> reusableScope.obtainLiquidFrostRenderEffect(
           liquidShader = liquidShader,
           horizontalShader = horizontalShader,
           verticalShader = verticalShader,
-          bounds = bounds,
-          frostRadius = frostRadius,
-          cornerRadii = cornerRadii,
-          reusableScope = reusableScope,
-        ).also { cachedRenderEffect = it }
-
-      layer.clip = reusableScope.shape != RectangleShape
-      layer.renderEffect = renderEffect
+        )
+      }
       // Need to translate topLeft to account for the frostRadius padding we've added for blur sampling.
-      translate(-frostRadius, -frostRadius) { drawLayer(layer) }
+      translate(-padding, -padding) { drawLayer(layer) }
       // Necessary to call this since it isn't part of the recording.
       drawContent()
     } finally {
+      // Set it back to clean.
       reusableScope.mutatedFields = 0
     }
   }

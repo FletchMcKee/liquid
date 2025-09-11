@@ -22,7 +22,8 @@ internal fun frostShader(vertical: Boolean): String = """
   uniform float blurRadius;
   uniform float4 cornerRadii;
 
-  const float maxRadius = 150.0;
+  const float MAX_RADIUS = 150.0;
+  const float ALPHA_THRESHOLD = 0.001;
 
   float gaussian(float x, float sigma) {
     return exp(-(x * x) / (2.0 * sigma * sigma));
@@ -46,13 +47,13 @@ internal fun frostShader(vertical: Boolean): String = """
     return sdf <= 0.0;
   }
 
-  half4 main(float2 coord) {
+  half4 main(float2 fragCoord) {
     float2 liquidSize = effectRect.zw - effectRect.xy;
     float minDim = min(liquidSize.x, liquidSize.y);
     float2 normalizedSize = liquidSize / minDim;
     half4 vr = half4(cornerRadii) / minDim;
 
-    if (!isInsideShape(coord, liquidSize, minDim, normalizedSize, vr)) {
+    if (!isInsideShape(fragCoord, liquidSize, minDim, normalizedSize, vr)) {
       // If outside the shape, just return as transparent.
       return half4(0.0);
     }
@@ -60,10 +61,21 @@ internal fun frostShader(vertical: Boolean): String = """
     float r = floor(blurRadius);
     float sigma = max(blurRadius / 2.0, 1.0);
 
-    float weightSum = 1.0;
-    half4 result = content.eval(coord);
+    float weightSum = 0.0;
+    half4 result = half4(0.0);
 
-    for (float i = 1.0; i < maxRadius; i += 2.0) {
+    // Sample the center pixel
+    half4 centerSample = content.eval(fragCoord);
+
+    // Only proceed with blur if evaluated pixel has content.
+    if (centerSample.a <= ALPHA_THRESHOLD) {
+      return half4(0.0);
+    }
+
+    result = centerSample;
+    weightSum = 1.0;
+
+    for (float i = 1.0; i < MAX_RADIUS; i += 2.0) {
       if (i >= r) break;
 
       float weightL = gaussian(i, sigma);
@@ -72,36 +84,48 @@ internal fun frostShader(vertical: Boolean): String = """
 
       float2 offset = ${if (vertical) "float2(0.0, i + weightH / weight)" else "float2(i + weightH / weight, 0.0)"};
 
-      float2 coordMinus = coord - offset;
-      float2 coordPlus = coord + offset;
+      float2 coordMinus = fragCoord - offset;
+      float2 coordPlus = fragCoord + offset;
 
       if (isInsideShape(coordMinus, liquidSize, minDim, normalizedSize, vr)) {
-        result += weight * content.eval(coordMinus);
-        weightSum += weight;
+        half4 sample = content.eval(coordMinus);
+        if (sample.a > ALPHA_THRESHOLD) {
+          result += weight * sample;
+          weightSum += weight;
+        }
       }
 
       if (isInsideShape(coordPlus, liquidSize, minDim, normalizedSize, vr)) {
-        result += weight * content.eval(coordPlus);
-        weightSum += weight;
+        half4 sample = content.eval(coordPlus);
+        if (sample.a > ALPHA_THRESHOLD) {
+          result += weight * sample;
+          weightSum += weight;
+        }
       }
     }
 
     // Handle odd radius by sampling one more tap if necessary.
-    if (r < maxRadius && mod(r, 2.0) == 1.0) {
+    if (r < MAX_RADIUS && mod(r, 2.0) == 1.0) {
       float weight = gaussian(r, sigma);
       float2 offset = ${if (vertical) "float2(0.0, r)" else "float2(r, 0.0)"};
 
-      float2 coordMinus = coord - offset;
-      float2 coordPlus = coord + offset;
+      float2 coordMinus = fragCoord - offset;
+      float2 coordPlus = fragCoord + offset;
 
       if (isInsideShape(coordMinus, liquidSize, minDim, normalizedSize, vr)) {
-        result += weight * content.eval(coordMinus);
-        weightSum += weight;
+        half4 sample = content.eval(coordMinus);
+        if (sample.a > ALPHA_THRESHOLD) {
+          result += weight * sample;
+          weightSum += weight;
+        }
       }
 
       if (isInsideShape(coordPlus, liquidSize, minDim, normalizedSize, vr)) {
-        result += weight * content.eval(coordPlus);
-        weightSum += weight;
+        half4 sample = content.eval(coordPlus);
+        if (sample.a > ALPHA_THRESHOLD) {
+          result += weight * sample;
+          weightSum += weight;
+        }
       }
     }
 

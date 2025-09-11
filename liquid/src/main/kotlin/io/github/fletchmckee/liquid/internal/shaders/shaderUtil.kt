@@ -4,14 +4,9 @@
 
 package io.github.fletchmckee.liquid.internal.shaders
 
-import android.graphics.RenderEffect.createChainEffect
-import android.graphics.RenderEffect.createRuntimeShaderEffect
 import android.graphics.RuntimeShader
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.asComposeRenderEffect
-import io.github.fletchmckee.liquid.internal.LiquidScopeImpl
 
 internal fun RuntimeShader.setLiquidUniforms(
   bounds: Rect,
@@ -50,45 +45,4 @@ internal fun RuntimeShader.setFrostUniforms(
     bounds.height - frostRadius, // bottom
   )
   setFloatUniform("cornerRadii", cornerRadii)
-}
-
-internal fun createRenderEffect(
-  liquidShader: RuntimeShader,
-  horizontalShader: RuntimeShader,
-  verticalShader: RuntimeShader,
-  bounds: Rect,
-  frostRadius: Float,
-  cornerRadii: FloatArray,
-  reusableScope: LiquidScopeImpl,
-): RenderEffect {
-  liquidShader.setLiquidUniforms(
-    bounds = bounds,
-    frostRadius = frostRadius,
-    cornerRadii = cornerRadii,
-    refraction = reusableScope.refraction,
-    curve = reusableScope.curve,
-    edge = reusableScope.edge,
-    argbColor = reusableScope.argbColor,
-  )
-  val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
-  if (frostRadius <= 0f) {
-    return liquidEffect.asComposeRenderEffect()
-  }
-
-  horizontalShader.setFrostUniforms(
-    bounds = bounds,
-    frostRadius = frostRadius,
-    cornerRadii = cornerRadii,
-  )
-
-  verticalShader.setFrostUniforms(
-    bounds = bounds,
-    frostRadius = frostRadius,
-    cornerRadii = cornerRadii,
-  )
-
-  val horizontalFrost = createRuntimeShaderEffect(horizontalShader, "content")
-  val verticalFrost = createRuntimeShaderEffect(verticalShader, "content")
-  val blurEffect = createChainEffect(horizontalFrost, verticalFrost)
-  return createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()
 }

@@ -172,7 +172,7 @@ class LiquidNodeTest {
             .boundsOnScreen,
         ).isEqualTo(expectedBounds)
       }
-      // Verify same position does not cause new draws
+      // Verify same position doesn't cause new draws
       runOnIdle { offset = IntOffset(10, 10) }
       runOnIdle {
         assertThat(liquidBlockCount).isEqualTo(2)
@@ -405,7 +405,7 @@ class LiquidNodeTest {
 
       runOnIdle {
         assertThat(
-          liquidNode.reusableScope.paddedBounds()
+          liquidNode.reusableScope.computePaddedBounds()
             .overlaps(liquidState.liquefiables.single().boundsOnScreen),
         ).isFalse()
       }
@@ -473,7 +473,7 @@ class LiquidNodeTest {
 
       runOnIdle {
         assertThat(
-          liquidNode.reusableScope.paddedBounds()
+          liquidNode.reusableScope.computePaddedBounds()
             .overlaps(liquidState.liquefiables.single().boundsOnScreen),
         ).isTrue()
       }
@@ -487,49 +487,43 @@ class LiquidNodeTest {
     initialValue = 0.dp,
     changedValue = 10.dp,
     finalValue = 20.dp,
-  ) { frost ->
-    this.frost = frost
-  }
+    onUpdate = { frost = it },
+  )
 
   @Test fun liquidNode_reactsToShapeChanges() = runLiquidScopeTest(
     initialValue = CircleShape,
     changedValue = RoundedCornerShape(10),
     finalValue = RectangleShape,
-  ) { shape ->
-    this.shape = shape
-  }
+    onUpdate = { shape = it },
+  )
 
   @Test fun liquidNode_reactsToRefractionChanges() = runLiquidScopeTest(
     initialValue = 0.25f,
     changedValue = 0f,
     finalValue = 0.5f,
-  ) { refraction ->
-    this.refraction = refraction
-  }
+    onUpdate = { refraction = it },
+  )
 
   @Test fun liquidNode_reactsToCurveChanges() = runLiquidScopeTest(
     initialValue = 0.25f,
     changedValue = 0f,
     finalValue = 0.5f,
-  ) { curve ->
-    this.curve = curve
-  }
+    onUpdate = { curve = it },
+  )
 
   @Test fun liquidNode_reactsToEdgeChanges() = runLiquidScopeTest(
     initialValue = 0f,
     changedValue = 0.1f,
     finalValue = 0.2f,
-  ) { edge ->
-    this.edge = edge
-  }
+    onUpdate = { edge = it },
+  )
 
   @Test fun liquidNode_reactsToTintChanges() = runLiquidScopeTest(
     initialValue = Color.Red,
     changedValue = Color.Green,
     finalValue = Color.Blue,
-  ) { tint ->
-    this.tint = tint
-  }
+    onUpdate = { tint = it },
+  )
 
   private fun <T> runLiquidScopeTest(
     initialValue: T,

@@ -28,6 +28,7 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotEqualTo
+import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isSameInstanceAs
 import io.github.fletchmckee.liquid.internal.LiquefiableNode
@@ -117,6 +118,32 @@ class LiquefiableNodeTest {
         assertThat(liquidState.liquefiables.size).isEqualTo(1)
         // Verify the graphicsLayer remains unchanged despite the offset update.
         assertThat(liquefiableNode.liquefiable.layer).isSameInstanceAs(graphicsLayer)
+      }
+    }
+  }
+
+  @Test fun emptySizeLiquefiable_doesNotRecordContent() {
+    var size by mutableStateOf(0.dp)
+    val liquefiableNode = LiquefiableNode(liquidState)
+    rule.apply {
+      setContent {
+        Parent {
+          Box(
+            Modifier
+              .size(size)
+              .elementOf(liquefiableNode),
+          )
+        }
+      }
+
+      runOnIdle {
+        // A null graphicsLayer indicates no content was recorded.
+        assertThat(liquidState.liquefiables.single().layer).isNull()
+      }
+      runOnIdle { size = 50.dp }
+      runOnIdle {
+        // Now it should be recorded.
+        assertThat(liquidState.liquefiables.single().layer).isNotNull()
       }
     }
   }

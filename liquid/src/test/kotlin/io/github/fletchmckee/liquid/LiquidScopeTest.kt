@@ -3,11 +3,12 @@
 package io.github.fletchmckee.liquid
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import assertk.assertThat
 import assertk.assertions.isEmpty
@@ -61,19 +62,38 @@ class LiquidScopeTest {
   @Test fun `frost mutations observed`() {
     scope.frost = 10.dp
     assertThat(scope.frost).isEqualTo(10.dp)
+    assertThat(scope.frostRadius).isEqualTo(10f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Frost)
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `shape mutations observed`() {
-    scope.shape = RectangleShape
-    assertThat(scope.shape).isEqualTo(RectangleShape)
-    assertThat(scope.mutatedFields).isEqualTo(Fields.Shape)
+  @Test fun `shape mutations observed when size is specified`() {
+    // We don't set the shape flag unless we have a specified size.
+    scope.size = Size(width = 50f, height = 50f)
+    scope.shape = RoundedCornerShape(5)
+    assertThat(scope.shape).isEqualTo(RoundedCornerShape(5))
+    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(2.5f, 2.5f, 2.5f, 2.5f))
+    // Verify both Size and Shape bits are set.
+    assertThat(scope.mutatedFields and Fields.Size).isEqualTo(Fields.Size)
+    assertThat(scope.mutatedFields and Fields.Shape).isEqualTo(Fields.Shape)
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+  }
+
+  @Test fun `shape mutations not observed when size is unspecified`() {
+    // Size is unspecified by default, so while the shape is set, the cornerRadii will not be set.
+    scope.shape = RoundedCornerShape(5)
+    assertThat(scope.shape).isEqualTo(RoundedCornerShape(5))
+    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(0f, 0f, 0f, 0f))
+    // Neither size nor shape should be set.
+    assertThat(scope.mutatedFields and Fields.Size).isZero()
+    assertThat(scope.mutatedFields and Fields.Shape).isZero()
+    // RenderEffect and InvalidateFlags should not be set as size is unspecified.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isZero()
   }
 
   @Test fun `refraction mutations observed`() {
@@ -126,7 +146,10 @@ class LiquidScopeTest {
   @Test fun `size mutations observed`() {
     scope.size = Size(width = 50f, height = 50f)
     assertThat(scope.size).isEqualTo(Size(width = 50f, height = 50f))
-    assertThat(scope.mutatedFields).isEqualTo(Fields.Size)
+    // Changing size also changes the cornerRadii since we have CircleShape as the default.
+    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(25f, 25f, 25f, 25f))
+    assertThat(scope.mutatedFields and Fields.Size).isEqualTo(Fields.Size)
+    assertThat(scope.mutatedFields and Fields.Shape).isEqualTo(Fields.Shape)
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
@@ -153,13 +176,34 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `paddedBounds pads correctly`() {
+  @Test fun `density mutations update frostRadius`() {
+    // The frost property is the only public API Dp property we expose. Other density dependent values
+    // like size and cornerRadii will be updated when onGloballyPositioned is triggered.
+    scope.frost = 10.dp
+    assertThat(scope.frost).isEqualTo(10.dp)
+    assertThat(scope.frostRadius).isEqualTo(10f)
+    assertThat(scope.mutatedFields).isEqualTo(Fields.Frost)
+    // Verify the RenderEffect and InvalidateFlags are not 0.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    scope.mutatedFields = 0 // Clean the tracker.
+
+    scope.density = Density(3f)
+    assertThat(scope.frost).isEqualTo(10.dp) // This should remain 10.dp.
+    assertThat(scope.frostRadius).isEqualTo(30f) // This should change.
+    assertThat(scope.mutatedFields).isEqualTo(Fields.Frost)
+    // Verify the RenderEffect and InvalidateFlags are not 0.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+  }
+
+  @Test fun `computePaddedBounds pads correctly`() {
     // First verify we can handle unspecified Size correctly
-    val unspecifiedBounds = scope.paddedBounds()
+    val unspecifiedBounds = scope.computePaddedBounds()
     assertThat(unspecifiedBounds).isEqualTo(Rect.Zero)
 
     scope.size = Size(width = 50f, height = 50f)
-    val noFrostBounds = scope.paddedBounds()
+    val noFrostBounds = scope.computePaddedBounds()
     assertThat(noFrostBounds).isEqualTo(
       Rect(
         left = 0f,
@@ -170,7 +214,7 @@ class LiquidScopeTest {
     )
 
     scope.positionOnScreen = Offset(x = 10f, y = 5f)
-    val noFrostWithOffsetBounds = scope.paddedBounds()
+    val noFrostWithOffsetBounds = scope.computePaddedBounds()
     assertThat(noFrostWithOffsetBounds).isEqualTo(
       Rect(
         left = 10f,
@@ -180,7 +224,8 @@ class LiquidScopeTest {
       ),
     )
 
-    val frostWithOffsetBounds = scope.paddedBounds(padding = 10f)
+    scope.frost = 10.dp
+    val frostWithOffsetBounds = scope.computePaddedBounds()
     assertThat(frostWithOffsetBounds).isEqualTo(
       Rect(
         left = 0f, // x - padding

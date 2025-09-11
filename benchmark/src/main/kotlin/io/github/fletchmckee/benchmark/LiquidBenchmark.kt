@@ -105,7 +105,7 @@ class LiquidBenchmark {
     },
   )
 
-  @Test fun scrollLiquidStickHeaderBaseline() = benchmarkRule.measureRepeated(
+  @Test fun scrollLiquidStickyHeaderBaseline() = benchmarkRule.measureRepeated(
     packageName = PACKAGE_NAME,
     metrics = listOf(FrameTimingMetric()),
     iterations = ITERATIONS,

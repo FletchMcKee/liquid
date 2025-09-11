@@ -18,7 +18,7 @@ public interface LiquidScope {
    * NOTE: This is the most expensive property in this scope as it creates two separate shaders for
    * rendering the frost effect.
    *
-   * Defaults to 0.dp. Negative values are ignored.
+   * Defaults to 0.dp. No-op on API 30 and lower. Negative values are ignored.
    */
   public var frost: Dp
 
@@ -35,7 +35,7 @@ public interface LiquidScope {
    * Controls how much the background distorts through the lens. Setting this to 0 removes the liquid
    * effect altogether, nullifying any [curve] value.
    *
-   * Defaults to 0.25f.
+   * Defaults to 0.25f. No-op on API 32 and lower.
    */
   @setparam:FloatRange(from = 0.0)
   public var refraction: Float
@@ -44,7 +44,7 @@ public interface LiquidScope {
    * Adjusts how strongly the lens curves at its center vs. edges. Setting this to 0 removes the liquid
    * effect altogether, nullifying any [refraction] value.
    *
-   * Defaults to 0.25f.
+   * Defaults to 0.25f. No-op on API 32 and lower.
    */
   @setparam:FloatRange(from = 0.0)
   public var curve: Float
@@ -55,7 +55,7 @@ public interface LiquidScope {
    * Higher values create a wider, softer edge and expand the region where rim lighting is applied.
    * Set to `0f` to disable this effect.
    *
-   * Defaults to 0f.
+   * Defaults to 0f. On API 32 and lower, this becomes a boolean where a value > 0f draws a similar effect, and 0f removes it.
    */
   @setparam:FloatRange(from = 0.0)
   public var edge: Float
