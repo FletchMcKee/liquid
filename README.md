@@ -10,7 +10,7 @@ It lets you refract, frost, and curve the content behind your UI elements, creat
 Powered by RuntimeShaders, Android Graphics Shading Language (AGSL) and ModifierNodeElement APIs, it delivers GPU-accelerated visuals to your Compose UI.
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/de63e6ae-e662-477d-b0c1-a26f4aad2a2d" width="400" />
+  <img src="https://github.com/user-attachments/assets/081dbf2a-0e3f-416b-b600-cfbb6a20dd4c" width="400" />
 </div>
 
 ## Getting Started
@@ -69,15 +69,14 @@ The `LiquidScope` block allows you to customize your liquid effects for each mod
 block is passed, however you can alter any one of these fields to achieve the desired effect:
 
 ```kotlin
-Modifier
-  .liquid(liquidState) {
-    frost = 10.dp // Defaults to 0.dp
-    shape = RoundedCornerShape(25) // Defaults to CircleShape
-    refraction = 0.5f // Defaults to 0.25f
-    curve = 0.5f // Defaults to 0.25f
-    edge = 0.1f // Defaults to 0f
-    tint = Color.White.copy(alpha = 0.2f) // Defaults to Color.Unspecified
-  }
+Modifier.liquid(liquidState) {
+  frost = 10.dp // Defaults to 0.dp
+  shape = RoundedCornerShape(25) // Defaults to CircleShape
+  refraction = 0.5f // Defaults to 0.25f
+  curve = 0.5f // Defaults to 0.25f
+  edge = 0.1f // Defaults to 0f
+  tint = Color.White.copy(alpha = 0.2f) // Defaults to Color.Unspecified
+}
 ```
 
 #### Frost
@@ -135,11 +134,15 @@ On Android 12 and lower, this becomes a boolean where a value > 0f draws a fixed
 This is an optional value that is mainly provided for convenience. Most use cases will require some tint, so you can avoid applying an
 additional `background` modifier by setting everything in your `liquid` modifier.
 
+## Testing
+
+TBD
+
 ## Limitations
 
 #### SDK Level
 
-The minimum API level that will display the liquid effects is 33 (Android 13). This is essentially a RuntimeShader library, so this limits what is possible for API 32 and lower.
+The minimum API level that will display the liquid effects is 33 (Android 13). This is effectively a RuntimeShader library, so this limits what is possible for API 32 and lower.
 
 - **API 31+** - RenderEffects are available, so we will still create a frost effect using Android's [BlurEffect](https://github.com/androidx/androidx/blob/7cca76e55aaa9c2ff1a038bac0fa2b91cd04dcff/compose/ui/ui-graphics/src/androidMain/kotlin/androidx/compose/ui/graphics/AndroidRenderEffect.android.kt#L50). We also draw a lower quality version of the edge effect. To disable, you can set the `LiquidScope.edge` property to 0f. The `LiquidScope.refraction` and `LiquidScope.curve` properties are ignored. The `LiquidScope.tint` and `LiquidScope.shape` values produce the same effect as API 33+.
 - **API 30 and lower** - Has all of the above features outside of the frost effect.
