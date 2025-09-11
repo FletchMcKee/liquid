@@ -84,6 +84,8 @@ Modifier
 
 The frost parameter blurs the background contents resulting in a frost-like effect.
 You can also apply this effect while setting `refraction` or `curve` to 0f if you only want a blur effect. Any value below 0.dp is ignored.
+
+This property is no-op on Android 11 and lower.
 > [!NOTE]
 > This is the most expensive property in the LiquidScope as it creates extras RuntimeShaders to achieve the blur effect.
 
@@ -100,11 +102,23 @@ capsule-shaped composable.
 
 #### Refraction
 
-TBD
+The refraction controls how much the background distorts through the liquid lens. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.curve` value.
+
+This property is no-op on Android 12 and lower.'
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/c173a6ae-e97a-411e-ab11-426a8f9b4446" width="400" />
+</div>
 
 #### Curve
 
-TBD
+The curve adjusts how strongly the liquid lens curves at its center vs. edges. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.refraction` value.
+
+This property is no-op on Android 12 and lower.
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/d51f697c-3706-46d9-b609-2ccf843c9252" width="400" />
+</div>
 
 #### Edge
 
