@@ -69,7 +69,6 @@ internal const val LiquidShader = """
           float spineExtentY = (1.0 - aspectRatio) / 2.0;
         }
       } else {
-        maxRadii *= 2.0; // The spineExtents will start at the circumference of the corner circle.
         float nCornerRadiiX = maxRadii / liquidSize.x;
         float nCornerRadiiY = maxRadii / liquidSize.y;
         // I think spineExtent-based distortion was the missing key. For example a capsule shaped 400 w by 100 h rectangle
