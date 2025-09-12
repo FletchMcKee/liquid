@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [0.1.0] - 2025-09-12
+
+  - Initial release.
+
 ## [0.1.0-rc1] - 2025-09-11
 
   Changed:
@@ -21,7 +25,8 @@
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/0.1.0-rc1...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/0.1.0...HEAD
+[0.1.0]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0
 [0.1.0-rc1]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-rc1
 [0.1.0-alpha2]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-alpha2
 [0.1.0-alpha]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-alpha
