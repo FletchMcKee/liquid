@@ -92,17 +92,12 @@ internal const val LiquidShader = """
     }
 
     float edgeSmooth = smoothstep(-edge, 0.0, shapeSdf);
-    float2 lightDirection = float2(-0.3, -0.3);
     float2 sdfNormal = computeSdfNormal(shapeCoord, shapeSize * 0.5, shapeVr);
-
-    // Apple's liquid glass effects generally seem to have lighting from two opposite corners which is why for now
-    // we have edgeLightingTop and its opposite edgeLightingBottom.
-    float nDotL = dot(sdfNormal, normalize(lightDirection));
-    float edgeLightingTop = edgeSmooth * saturate(nDotL) * 0.2;
-    float edgeLightingBottom = edgeSmooth * saturate(-nDotL) * 0.2;
-
-    fragColor.rgb += edgeLightingTop;
-    fragColor.rgb += edgeLightingBottom;
+    // Eventually this will become a uniform.
+    float2 lightDirection = float2(-0.15, -0.15);
+    float nDotL = abs(dot(sdfNormal, lightDirection));
+    float edgeLighting = edgeSmooth * nDotL;
+    fragColor.rgb += edgeLighting;
     // Apply the provided tint.
     fragColor.rgb = mix(fragColor.rgb, tint.rgb, tint.a);
 

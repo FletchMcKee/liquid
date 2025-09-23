@@ -110,19 +110,17 @@ private fun LiquidCard(
   index: Int,
   useLiquid: Boolean,
   initialFrost: Float,
-  shape: Shape = RoundedCornerShape(10),
+  cardShape: Shape = RoundedCornerShape(10),
   containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) = Column(
   modifier = Modifier
     .fillMaxWidth()
     .thenIf(useLiquid) {
       liquid(liquidState) {
-        this.frost = initialFrost.dp
-        this.refraction = 0.25f
-        this.curve = 0.25f
-        this.edge = 0.1f
-        this.shape = shape
-        this.tint = containerColor
+        frost = initialFrost.dp
+        edge = 0.1f
+        shape = cardShape
+        tint = containerColor
       }
     }
     .padding(24.dp)

@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal
 
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
@@ -84,8 +85,7 @@ internal class LiquefiableNode(
       return
     }
 
-    val contentLayer = obtainGraphicsLayer()
-
+    val contentLayer = Snapshot.withoutReadObservation { obtainGraphicsLayer() }
     // Record the content into the layer
     contentLayer.record { this@draw.drawContent() }
     // No need to call drawContent since we did so in the recording.

@@ -21,8 +21,8 @@ class LiquidBenchmark {
   @get:Rule
   val benchmarkRule = MacrobenchmarkRule()
 
-  // Has none of the effects applied to provide a baseline comparison.
   @Test fun dragBoxBaseline() = runBenchmarkTest(
+    iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "Drag", useLiquid = false) },
     measureBlock = { dragFigureEight() },
   )
@@ -32,7 +32,7 @@ class LiquidBenchmark {
     measureBlock = { dragFigureEight() },
   )
 
-  @Test fun dragLiquidBoxFrost10() = runBenchmarkTest(
+  @Test fun dragLiquidBoxFrost10dp() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "Drag", initialFrost = 10f) },
     measureBlock = { dragFigureEight() },
   )
@@ -43,6 +43,7 @@ class LiquidBenchmark {
   )
 
   @Test fun scrollLiquidGridBaseline() = runBenchmarkTest(
+    iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "Grid", useLiquid = false) },
     measureBlock = {
       flingElementDownThenUp(
@@ -62,7 +63,7 @@ class LiquidBenchmark {
     },
   )
 
-  @Test fun scrollLiquidGridFrost10() = runBenchmarkTest(
+  @Test fun scrollLiquidGridFrost10dp() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "Grid", initialFrost = 10f) },
     measureBlock = {
       flingElementDownThenUp(
@@ -73,6 +74,7 @@ class LiquidBenchmark {
   )
 
   @Test fun scrollLiquidStickyHeaderBaseline() = runBenchmarkTest(
+    iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "StickyHeader", useLiquid = false) },
     measureBlock = { flingElementDownThenUp("stickyHeaderList") },
   )
@@ -82,12 +84,13 @@ class LiquidBenchmark {
     measureBlock = { flingElementDownThenUp("stickyHeaderList") },
   )
 
-  @Test fun scrollLiquidStickyHeaderFrost10() = runBenchmarkTest(
+  @Test fun scrollLiquidStickyHeaderFrost10dp() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "StickyHeader", initialFrost = 10f) },
     measureBlock = { flingElementDownThenUp("stickyHeaderList") },
   )
 
   @Test fun scrollManyLiquidNodesBaseline() = runBenchmarkTest(
+    iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "Many", useLiquid = false) },
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
@@ -97,7 +100,7 @@ class LiquidBenchmark {
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
 
-  @Test fun scrollManyLiquidNodesFrost10() = runBenchmarkTest(
+  @Test fun scrollManyLiquidNodesFrost10dp() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "Many", initialFrost = 10f) },
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )

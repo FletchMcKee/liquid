@@ -18,6 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -25,7 +26,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
-import io.github.fletchmckee.liquid.samples.app.utils.safeShadow
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
@@ -56,7 +56,7 @@ fun LiquidTopAppBar(
 ) {
   val view = LocalView.current
   val insets = view.rootWindowInsets
-  val shape = remember(insets) {
+  val topBarShape = remember(insets) {
     when {
       Build.VERSION.SDK_INT >= 31 -> {
         RoundedCornerShape(
@@ -75,12 +75,10 @@ fun LiquidTopAppBar(
       .fillMaxWidth()
       .thenIf(useLiquid) {
         liquid(liquidState) {
-          this.frost = frostProvider().dp
-          this.shape = shape
-          this.refraction = 0.25f
-          this.curve = 0.25f
-          this.edge = 0.1f
-          this.tint = containerColor
+          frost = frostProvider().dp
+          shape = topBarShape
+          edge = 0.1f
+          tint = containerColor
         }
       },
     title = title,
@@ -96,22 +94,20 @@ fun LiquidBottomAppBar(
   frostProvider: () -> Float,
   modifier: Modifier = Modifier,
   useLiquid: Boolean = true,
-  shape: Shape = CircleShape,
+  bottomBarShape: Shape = CircleShape,
   containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
   content: @Composable () -> Unit = {},
 ) = Row(
   modifier = modifier
     .fillMaxWidth()
     .padding(24.dp)
-    .safeShadow(elevation = 4.dp, shape = shape)
+    .shadow(elevation = 4.dp, shape = bottomBarShape)
     .thenIf(useLiquid) {
       liquid(liquidState) {
-        this.frost = frostProvider().dp
-        this.shape = shape
-        this.refraction = 0.25f
-        this.curve = 0.25f
-        this.edge = 0.1f
-        this.tint = containerColor
+        frost = frostProvider().dp
+        shape = bottomBarShape
+        edge = 0.1f
+        tint = containerColor
       }
     },
 ) {

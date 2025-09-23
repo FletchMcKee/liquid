@@ -6,12 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.toPixelMap
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 
 // These are Jetpack helper methods/classes, but they're internal so just adding them manually.
@@ -73,7 +76,10 @@ internal fun SimpleLiquefiable(
 @Composable
 internal fun Parent(
   modifier: Modifier = Modifier,
+  density: Density = Density(1f),
   content: @Composable () -> Unit,
-) = Box(modifier.size(200.dp)) {
-  content()
+) = CompositionLocalProvider(LocalDensity provides density) {
+  Box(modifier.size(200.dp)) {
+    content()
+  }
 }

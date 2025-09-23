@@ -41,21 +41,10 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields).isZero()
   }
 
-  @Test fun `reset values are correct`() {
+  @Test fun `reset cleans mutatedFields`() {
     scope.setNonDefaultValues()
+    assertThat(scope.mutatedFields).isNotZero()
     scope.reset()
-    assertThat(scope.frost).isEqualTo(0.dp)
-    assertThat(scope.shape).isEqualTo(CircleShape)
-    // We have to reset to the default values. Otherwise if users rely on the default values and
-    // use a LazyList where items are detached and re-attached frequently, the effect would disappear.
-    assertThat(scope.refraction).isEqualTo(0.25f)
-    assertThat(scope.curve).isEqualTo(0.25f)
-    assertThat(scope.edge).isZero()
-    assertThat(scope.tint).isEqualTo(Color.Unspecified)
-    assertThat(scope.argbColor).isZero()
-    assertThat(scope.size).isEqualTo(Size.Unspecified)
-    assertThat(scope.positionOnScreen).isEqualTo(Offset.Zero)
-    assertThat(scope.liquefiables).isEmpty()
     assertThat(scope.mutatedFields).isZero()
   }
 

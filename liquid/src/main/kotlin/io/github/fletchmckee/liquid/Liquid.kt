@@ -2,11 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid
 
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import io.github.fletchmckee.liquid.internal.LiquidBackupElement
 import io.github.fletchmckee.liquid.internal.LiquidElement
 
 /**
@@ -47,4 +49,7 @@ public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
 public fun Modifier.liquid(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit = {},
-): Modifier = this then LiquidElement(liquidState, block)
+): Modifier = this then when {
+  Build.VERSION.SDK_INT >= 33 -> LiquidElement(liquidState, block)
+  else -> LiquidBackupElement(liquidState, block)
+}

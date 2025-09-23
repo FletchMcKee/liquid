@@ -21,13 +21,14 @@ import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toIntSize
-import kotlin.sequences.forEach
+import io.github.fletchmckee.liquid.internal.LiquidScopeImpl.Companion.CornerRadiiZero
 
 internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   layer: GraphicsLayer,
@@ -41,7 +42,6 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   // and layers here.
   layer.record(bounds.size.toIntSize()) {
     liquefiables
-      .asSequence()
       // Only record content inside the effect's bounds.
       .filter { bounds.overlaps(it.boundsOnScreen) }
       .forEach { liquefiable ->
@@ -75,7 +75,7 @@ internal fun Shape.cornerRadiiPx(size: Size, density: Density): FloatArray = whe
       topStart.toPx(size, density),
     )
   }
-  else -> floatArrayOf(0f, 0f, 0f, 0f)
+  else -> CornerRadiiZero
 }
 
 internal inline val IntSize?.isEmpty: Boolean get() = when {
@@ -105,27 +105,26 @@ internal fun ContentDrawScope.drawBackupLiquidEffect(
   val shapeOutline = reusableScope.shape.createOutline(size, layoutDirection, this)
   val shapePath = shapeOutline.asPath()
   val frostRadius = reusableScope.frostRadius
+  // We still record liquefiables into the layer for Android 11 and lower.
+  // Otherwise something like a shadow effect for a transparent liquid composable will appear inside the node.
+  recordLiquefiablesIntoLayer(layer, reusableScope)
+  layer.clip = reusableScope.shape != RectangleShape
+
   if (frostRadius > 0f && Build.VERSION.SDK_INT >= 31) {
     // If we have a valid frostRadius and the device is API 31 or 32, we can at least use Android's BlurEffect.
-    recordLiquefiablesIntoLayer(
-      layer = layer,
-      reusableScope = reusableScope,
-    )
-
-    layer.clip = reusableScope.shape != RectangleShape
     layer.renderEffect = reusableScope.renderEffect
       ?: BlurEffect(
         radiusX = frostRadius,
         radiusY = frostRadius,
       ).also { reusableScope.renderEffect = it }
+  }
 
-    clipPath(shapePath) {
-      translate(-frostRadius, -frostRadius) { drawLayer(layer) }
-    }
+  clipPath(shapePath) {
+    translate(-frostRadius, -frostRadius) { drawLayer(layer) }
   }
 
   // Fill the shape with the tint if one is provided.
-  if (reusableScope.tint.alpha > 0f) {
+  if (reusableScope.tint.isSpecified) {
     drawOutline(
       outline = shapeOutline,
       color = reusableScope.tint,

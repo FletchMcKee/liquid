@@ -35,6 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -48,7 +49,6 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.samples.app.utils.isBenchmark
-import io.github.fletchmckee.liquid.samples.app.utils.safeShadow
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
@@ -66,7 +66,7 @@ fun BoxScope.LiquidSliders(
   edgeProvider: () -> Float,
   onEdgeChange: (Float) -> Unit,
   modifier: Modifier = Modifier,
-  shape: Shape = RoundedCornerShape(15),
+  containerShape: Shape = RoundedCornerShape(15),
   containerColor: Color = MaterialTheme.colorScheme.surface,
 ) = AnimatedVisibility(
   visible = showSliders,
@@ -87,15 +87,15 @@ fun BoxScope.LiquidSliders(
     .thenIf(useLiquid) {
       liquefiable(liquidState)
     }
-    .safeShadow(elevation = 8.dp, shape = shape)
+    .shadow(elevation = 8.dp, shape = containerShape)
     .thenIf(useLiquid) {
       liquid(liquidState) {
-        this.frost = 15.dp
-        this.shape = shape
-        this.curve = 0.35f
-        this.refraction = 0.3f
-        this.edge = 0.05f
-        this.tint = containerColor
+        frost = 15.dp
+        shape = containerShape
+        curve = 0.35f
+        refraction = 0.3f
+        edge = 0.05f
+        tint = containerColor
       }
     },
 ) {

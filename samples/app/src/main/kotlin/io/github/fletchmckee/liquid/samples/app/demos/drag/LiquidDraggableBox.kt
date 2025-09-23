@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
@@ -39,7 +40,6 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
-import io.github.fletchmckee.liquid.samples.app.utils.safeShadow
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.math.roundToInt
 
@@ -51,7 +51,7 @@ fun BoxScope.LiquidDraggableBox(
   curveProvider: () -> Float,
   edgeProvider: () -> Float,
   modifier: Modifier = Modifier,
-  shape: Shape = RoundedCornerShape(25),
+  boxShape: Shape = RoundedCornerShape(25),
   useLiquid: Boolean = true,
   colors: List<Color> = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent),
   shaderBrush: ShaderBrush = rememberShaderBrush(colors),
@@ -74,17 +74,17 @@ fun BoxScope.LiquidDraggableBox(
           dragOffset = Offset(x, y)
         }
       }
-      .safeShadow(elevation = 4.dp, shape = shape)
+      .shadow(elevation = 4.dp, shape = boxShape)
       .thenIf(useLiquid) {
         liquid(liquidState) {
-          this.frost = frostProvider().dp
-          this.shape = shape
-          this.refraction = refractionProvider()
-          this.curve = curveProvider()
-          this.edge = edgeProvider()
+          frost = frostProvider().dp
+          shape = boxShape
+          refraction = refractionProvider()
+          curve = curveProvider()
+          edge = edgeProvider()
         }
       } // Brushes aren't supported in liquid at the moment but may be added later.
-      .background(brush = shaderBrush, shape = shape),
+      .background(brush = shaderBrush, shape = boxShape),
   ) {
     Text(
       text = "Drag",
