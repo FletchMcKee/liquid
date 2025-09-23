@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid
 
-import android.os.Build
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,9 +34,6 @@ internal class Liquefiable {
  *
  * This enables the liquid effect by allowing sibling composables to reference and render the content beneath them.
  *
- * API 31+ - Uses a [LiquefiableElement] to record this node's output for [liquid] nodes to render their effect.
- * API 30 and lower - No-op.
- *
  * NOTE: Make sure to place any draw modifiers (ex. [androidx.compose.ui.draw.shadow] or [androidx.compose.foundation.background])
  * after this liquefiable node. Otherwise these draw modifiers won't be part of the recording.
  *
@@ -45,7 +41,4 @@ internal class Liquefiable {
  */
 public fun Modifier.liquefiable(
   liquidState: LiquidState,
-): Modifier = this then when {
-  Build.VERSION.SDK_INT >= 31 -> LiquefiableElement(liquidState)
-  else -> Modifier
-}
+): Modifier = this then LiquefiableElement(liquidState)

@@ -130,7 +130,7 @@ private fun StickyHeaderList(
   useLiquid: Boolean,
   initialFrost: Float,
   contentPaddingValues: PaddingValues,
-  shape: Shape = CircleShape,
+  headerShape: Shape = CircleShape,
   stickyHeaderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) = LazyColumn(
   modifier = Modifier
@@ -153,13 +153,13 @@ private fun StickyHeaderList(
           .padding(top = 8.dp)
           .thenIf(useLiquid) {
             liquid(liquidState) {
-              this.frost = initialFrost.dp
+              frost = initialFrost.dp
               // Need some examples/screenshots with more extreme distortion.
-              this.refraction = 0.4f
-              this.curve = 0.4f
-              this.edge = 0.1f
-              this.shape = shape
-              this.tint = stickyHeaderContainerColor
+              refraction = 0.4f
+              curve = 0.4f
+              edge = 0.1f
+              shape = headerShape
+              tint = stickyHeaderContainerColor
             }
           },
         verticalAlignment = Alignment.CenterVertically,

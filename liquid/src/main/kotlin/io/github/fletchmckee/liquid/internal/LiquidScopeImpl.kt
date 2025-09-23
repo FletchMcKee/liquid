@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.Shape
@@ -150,7 +151,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
 
   // This internal property exists so that we call `toArgb()` only when the tint changes and not when other
   // unrelated properties change.
-  internal var argbColor: Int = 0 // Color.Unspecified.toArgb()
+  internal var argbColor: Int = 0 // Same as Color.Unspecified.toArgb()
     private set(value) {
       if (field != value) {
         // We set the mutatedFields on this internal property rather than the public `tint` property because
@@ -166,22 +167,9 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   // Cached to avoid expensive JNI calls and native allocations on every draw.
   // Only recreated when shader uniforms change (see Fields.RenderEffectFields).
   internal var renderEffect: RenderEffect? = null
+    private set
 
   internal fun reset() {
-    frost = 0.dp
-    // Reset size before shape, otherwise shape will reset the cornerRadii an extra time.
-    size = Size.Unspecified
-    shape = CircleShape
-    refraction = 0.25f
-    curve = 0.25f
-    edge = 0f
-    tint = Color.Unspecified // Will handle resetting `argbColor`.
-    positionOnScreen = Offset.Zero
-    liquefiables = emptyList()
-    renderEffect = null
-    // No need to reset density, a change in that value would invalidate the draw automatically.
-    cornerRadii = CornerRadiiZero
-    // Keep this last.
     mutatedFields = 0
   }
 
@@ -198,23 +186,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   }
 
   @RequiresApi(33)
-  internal fun obtainLiquidRenderEffect(
-    liquidShader: RuntimeShader,
-  ): RenderEffect = renderEffect?.takeUnless { mutatedFields has Fields.RenderEffectFields } ?: run {
-    liquidShader.setLiquidUniforms(
-      bounds = paddedBounds,
-      frostRadius = frostRadius,
-      cornerRadii = cornerRadii,
-      refraction = refraction,
-      curve = curve,
-      edge = edge,
-      argbColor = argbColor,
-    )
-    createRuntimeShaderEffect(liquidShader, "content").asComposeRenderEffect()
-  }.also { renderEffect = it }
-
-  @RequiresApi(33)
-  internal fun obtainLiquidFrostRenderEffect(
+  internal fun obtainRenderEffect(
     liquidShader: RuntimeShader,
     horizontalShader: RuntimeShader,
     verticalShader: RuntimeShader,
@@ -229,6 +201,11 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       argbColor = argbColor,
     )
 
+    val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
+    if (frostRadius < 1f) {
+      return@run liquidEffect.asComposeRenderEffect()
+    }
+
     horizontalShader.setFrostUniforms(
       bounds = paddedBounds,
       frostRadius = frostRadius,
@@ -241,16 +218,22 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       cornerRadii = cornerRadii,
     )
 
-    val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
     val horizontalFrost = createRuntimeShaderEffect(horizontalShader, "content")
     val verticalFrost = createRuntimeShaderEffect(verticalShader, "content")
     val blurEffect = createChainEffect(horizontalFrost, verticalFrost)
     createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()
   }.also { renderEffect = it }
 
+  @RequiresApi(31)
+  internal fun obtainPreTiramisuRenderEffect(): RenderEffect = renderEffect?.takeUnless { mutatedFields has Fields.Frost }
+    ?: BlurEffect(
+      radiusX = frostRadius,
+      radiusY = frostRadius,
+    ).also { renderEffect = it }
+
   companion object {
     @Stable
-    private val CornerRadiiZero = floatArrayOf(0f, 0f, 0f, 0f)
+    internal val CornerRadiiZero = floatArrayOf(0f, 0f, 0f, 0f)
   }
 }
 
@@ -281,6 +264,29 @@ internal object Fields {
 
   const val InvalidateFlags: Int =
     RenderEffectFields or
+      PositionOnScreen or
+      Liquefiables
+
+  // //////////////////////////
+  // Remove once minSdk is 33.
+  // //////////////////////////
+  const val PreTiramisuInvalidateFlags: Int =
+    Frost or
+      Shape or
+      Edge or
+      Size or
+      Tint or
+      PositionOnScreen or
+      Liquefiables
+
+  // //////////////////////////
+  // Remove once minSdk is 31.
+  // //////////////////////////
+  const val PreSnowConeInvalidateFlags: Int =
+    Shape or
+      Edge or
+      Size or
+      Tint or
       PositionOnScreen or
       Liquefiables
 }

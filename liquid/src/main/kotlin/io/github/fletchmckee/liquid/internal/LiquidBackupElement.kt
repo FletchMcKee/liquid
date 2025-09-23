@@ -2,12 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal
 
-import android.graphics.RuntimeShader
-import androidx.annotation.RequiresApi
-import androidx.annotation.VisibleForTesting
+import android.os.Build
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -27,31 +30,28 @@ import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.toSize
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
-import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
-import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
-import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
 
-@RequiresApi(33)
-internal class LiquidElement(
+// This file can be deleted as soon as our minSdk is 33, so maybe by 2035.
+internal class LiquidBackupElement(
   private val liquidState: LiquidState,
   private val block: LiquidScope.() -> Unit,
-) : ModifierNodeElement<LiquidNode>() {
-  override fun create() = LiquidNode(liquidState, block)
+) : ModifierNodeElement<LiquidBackupNode>() {
+  override fun create() = LiquidBackupNode(liquidState, block)
 
-  override fun update(node: LiquidNode) {
+  override fun update(node: LiquidBackupNode) {
     node.liquidState = liquidState
     node.block = block
     node.invalidateLiquidBlock()
   }
 
   override fun InspectorInfo.inspectableProperties() {
-    name = "Liquid"
+    name = "LiquidBackup"
     properties["block"] = block
   }
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (other !is LiquidElement) return false
+    if (other !is LiquidBackupElement) return false
     // Unnecessary to perform structural equality checks.
     if (liquidState !== other.liquidState) return false
     if (block !== other.block) return false
@@ -66,24 +66,16 @@ internal class LiquidElement(
   }
 }
 
-@RequiresApi(33)
-internal class LiquidNode(
-  var liquidState: LiquidState,
+internal class LiquidBackupNode(
+  var liquidState: LiquidState?,
   var block: LiquidScope.() -> Unit,
 ) : Modifier.Node(),
   GlobalPositionAwareModifierNode,
   DrawModifierNode,
   CompositionLocalConsumerModifierNode,
   ObserverModifierNode {
-  // RuntimeShaders are created once per node instance rather than in draw() to avoid expensive native allocations.
-  // Initially used lazy delegation, but creating these shaders immediately demonstrated performance improvements.
-  private val liquidShader = RuntimeShader(LiquidShader)
-  private val horizontalShader = RuntimeShader(HorizontalFrostShader)
-  private val verticalShader = RuntimeShader(VerticalFrostShader)
-
-  @VisibleForTesting
-  internal val reusableScope = LiquidScopeImpl()
-
+  private val canUseRenderEffect = Build.VERSION.SDK_INT >= 31
+  private val reusableScope = LiquidScopeImpl()
   private var cachedLayer: GraphicsLayer? = null
 
   internal fun invalidateLiquidBlock() {
@@ -93,7 +85,8 @@ internal class LiquidNode(
 
     // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
     val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-    reusableScope.liquefiables = liquidState.liquefiables
+    reusableScope.liquefiables = liquidState?.liquefiables
+      .orEmpty()
       .asSequence()
       .filter { it != ancestor }
       .toList()
@@ -107,7 +100,12 @@ internal class LiquidNode(
       .also { cachedLayer = it }
 
   private fun invalidateDrawIfNeeded() {
-    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
+    val shouldInvalidate = reusableScope.mutatedFields has when {
+      canUseRenderEffect -> Fields.PreTiramisuInvalidateFlags
+      else -> Fields.PreSnowConeInvalidateFlags
+    }
+
+    if (shouldInvalidate) {
       invalidateDraw()
     }
   }
@@ -115,11 +113,10 @@ internal class LiquidNode(
   // We handle all necessary invalidations in LiquidScopeImpl.
   override val shouldAutoInvalidate: Boolean = false
 
-  // The `observeReads` call is critical here, otherwise we won't receive updates from LiquidScope/Liquefiable property mutations.
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
 
   override fun onDetach() {
-    cachedLayer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
+    cachedLayer?.let { layer -> currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(layer) }
     cachedLayer = null
     reusableScope.reset()
   }
@@ -136,31 +133,41 @@ internal class LiquidNode(
   }
 
   override fun ContentDrawScope.draw() {
-    if (size.minDimension < 1f) {
-      drawContent()
-      return
-    }
-
     try {
       val layer = obtainGraphicsLayer()
       reusableScope.density = currentValueOf(LocalDensity)
-      // For a uniform frost, we sample outside of the node's actual size with the frost radius as padding.
-      val padding = reusableScope.frostRadius
+      val shapeOutline = reusableScope.shape.createOutline(size, layoutDirection, this)
+      val shapePath = shapeOutline.asPath()
+      val frostRadius = reusableScope.frostRadius
+      // We still record liquefiables into the layer for Android 11 and lower.
+      // Otherwise something like a shadow effect for a transparent liquid composable will appear inside the node.
       recordLiquefiablesIntoLayer(layer, reusableScope)
-      // Not sure why this must always be true for API 34 and lower, it can always be false for 35+ with no issues.
-      layer.clip = true
-      layer.renderEffect = reusableScope.obtainRenderEffect(
-        liquidShader = liquidShader,
-        horizontalShader = horizontalShader,
-        verticalShader = verticalShader,
-      )
+      layer.clip = reusableScope.shape != RectangleShape
 
-      // Need to translate topLeft to account for the frostRadius padding we've added for blur sampling.
-      translate(-padding, -padding) { drawLayer(layer) }
-      // Necessary to call this since it isn't part of the recording.
+      if (frostRadius > 0f && Build.VERSION.SDK_INT >= 31) {
+        // If we have a valid frostRadius and the device is API 31 or 32, we can at least use Android's BlurEffect.
+        layer.renderEffect = reusableScope.obtainPreTiramisuRenderEffect()
+      }
+
+      clipPath(shapePath) {
+        translate(-frostRadius, -frostRadius) { drawLayer(layer) }
+      }
+
+      // Fill the shape with the tint if one is provided.
+      if (reusableScope.tint.isSpecified) {
+        drawOutline(
+          outline = shapeOutline,
+          color = reusableScope.tint,
+          style = Fill,
+        )
+      }
+
+      if (reusableScope.edge > 0f) {
+        drawBackupEdgeEffect(shapePath)
+      }
+
       drawContent()
     } finally {
-      // Set it back to clean.
       reusableScope.reset()
     }
   }

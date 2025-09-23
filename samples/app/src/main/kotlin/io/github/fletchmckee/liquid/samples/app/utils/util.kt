@@ -2,14 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app.utils
 
-import android.os.Build
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -17,10 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.layer.drawLayer
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import io.github.fletchmckee.liquid.samples.app.BuildConfig as AndroidBuildConfig
 import liquid_root.samples.app.BuildConfig
 
@@ -35,16 +29,6 @@ internal fun Modifier.blendMode(blendMode: BlendMode): Modifier = drawWithCache 
   }
 
   onDrawWithContent { drawLayer(layer) }
-}
-
-// There's likely a way to not have the shadow appear underneath transparent content,
-// but haven't figured that out yet.
-internal fun Modifier.safeShadow(
-  elevation: Dp = 4.dp,
-  shape: Shape = RoundedCornerShape(25.dp),
-) = this then when {
-  Build.VERSION.SDK_INT >= 33 -> Modifier.shadow(elevation, shape)
-  else -> Modifier
 }
 
 @Composable

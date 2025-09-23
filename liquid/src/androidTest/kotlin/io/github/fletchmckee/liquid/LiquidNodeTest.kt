@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,14 +20,12 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionOnScreen
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
@@ -127,23 +124,21 @@ class LiquidNodeTest {
     val liquidNode = LiquidNode(liquidState) { liquidBlockCount++ }
     rule.apply {
       setContent {
-        CompositionLocalProvider(LocalDensity provides Density(1f)) {
-          Parent {
-            if (showLiquefiable) {
-              SimpleLiquefiable(
-                liquidState,
-                Modifier
-                  .offset { offset }
-                  .onGloballyPositioned { coords = it },
-              )
-            }
-            Box(
+        Parent {
+          if (showLiquefiable) {
+            SimpleLiquefiable(
+              liquidState,
               Modifier
-                .size(100.dp)
-                .elementOf(liquidNode)
-                .drawBehind { drawCount++ },
+                .offset { offset }
+                .onGloballyPositioned { coords = it },
             )
           }
+          Box(
+            Modifier
+              .size(100.dp)
+              .elementOf(liquidNode)
+              .drawBehind { drawCount++ },
+          )
         }
       }
 
@@ -228,11 +223,9 @@ class LiquidNodeTest {
       }
       runOnIdle { showLiquid = false }
       runOnIdle {
-        // Verify no draws/invalidations occurred and the reusableScope has been reset.
+        // Verify no draws/invalidations occurred.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
-        assertThat(liquidNode.reusableScope.size).isEqualTo(Size.Unspecified)
-        assertThat(liquidNode.reusableScope.liquefiables).isEmpty()
       }
       runOnIdle { offset = IntOffset(10, 10) }
       runOnIdle {
@@ -282,11 +275,9 @@ class LiquidNodeTest {
       }
       runOnIdle { showLiquid = false }
       runOnIdle {
-        // Verify no draws/invalidations occurred and the reusableScope has been reset.
+        // Verify no draws/invalidations occurred.
         assertThat(liquidBlockCount).isEqualTo(2)
         assertThat(drawCount).isEqualTo(2)
-        assertThat(liquidNode.reusableScope.size).isEqualTo(Size.Unspecified)
-        assertThat(liquidNode.reusableScope.liquefiables).isEmpty()
       }
       runOnIdle { curve = 0.5f }
       runOnIdle {
@@ -355,17 +346,15 @@ class LiquidNodeTest {
     val liquidNode = LiquidNode(liquidState) { liquidBlockCount++ }
     rule.apply {
       setContent {
-        CompositionLocalProvider(LocalDensity provides Density(1f)) {
-          Parent {
-            SimpleLiquefiable(liquidState, Modifier.size(50.dp))
-            Box(
-              Modifier
-                .size(100.dp)
-                .liquefiable(liquidState)
-                .elementOf(liquidNode)
-                .drawBehind { drawCount++ },
-            )
-          }
+        Parent {
+          SimpleLiquefiable(liquidState, Modifier.size(50.dp))
+          Box(
+            Modifier
+              .size(100.dp)
+              .liquefiable(liquidState)
+              .elementOf(liquidNode)
+              .drawBehind { drawCount++ },
+          )
         }
       }
 
