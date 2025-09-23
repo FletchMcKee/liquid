@@ -76,16 +76,13 @@ internal class LiquidBackupNode(
 
     block(reusableScope)
 
-    // We only record if 31+, avoid unnecessary traversals if lower.
-    if (canUseRenderEffect) {
-      // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
-      val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-      reusableScope.liquefiables = liquidState?.liquefiables
-        .orEmpty()
-        .asSequence()
-        .filter { it != ancestor }
-        .toList()
-    }
+    // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
+    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
+    reusableScope.liquefiables = liquidState?.liquefiables
+      .orEmpty()
+      .asSequence()
+      .filter { it != ancestor }
+      .toList()
 
     invalidateDrawIfNeeded()
   }
@@ -136,7 +133,7 @@ internal class LiquidBackupNode(
       reusableScope.density = currentValueOf(LocalDensity)
       drawBackupLiquidEffect(layer, reusableScope)
     } finally {
-      reusableScope.mutatedFields = 0
+      reusableScope.reset()
     }
   }
 }
