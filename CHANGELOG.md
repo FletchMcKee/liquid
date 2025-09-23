@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+  - Peformance improvements ([#22](https://github.com/FletchMcKee/liquid/pull/22))
+    - Also fixed bug for RectangleShape liquid nodes for API 34 and lower.
+    - All API levels now record liquefiable layers. While API 30 and lower cannot use RuntimeShaders or RenderEffects, this can still be 
+    useful (ex. semi-transparent nodes with a shadow).
+
 ## [0.1.0] - 2025-09-12
 
   - Initial release.
