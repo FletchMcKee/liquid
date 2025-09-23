@@ -13,6 +13,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.geometry.isUnspecified
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.Shape
@@ -166,6 +167,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   // Cached to avoid expensive JNI calls and native allocations on every draw.
   // Only recreated when shader uniforms change (see Fields.RenderEffectFields).
   internal var renderEffect: RenderEffect? = null
+    private set
 
   internal fun reset() {
     mutatedFields = 0
@@ -221,6 +223,13 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     val blurEffect = createChainEffect(horizontalFrost, verticalFrost)
     createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()
   }.also { renderEffect = it }
+
+  @RequiresApi(31)
+  internal fun obtainPreTiramisuRenderEffect(): RenderEffect = renderEffect?.takeUnless { mutatedFields has Fields.Frost }
+    ?: BlurEffect(
+      radiusX = frostRadius,
+      radiusY = frostRadius,
+    ).also { renderEffect = it }
 
   companion object {
     @Stable

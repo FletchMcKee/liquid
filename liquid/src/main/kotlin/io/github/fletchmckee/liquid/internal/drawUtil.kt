@@ -2,26 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal
 
-import android.os.Build
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.takeOrElse
-import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.drawscope.translate
-import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.unit.Density
@@ -98,46 +92,6 @@ internal fun Outline.asPath(): Path = when (this) {
 // ///////////////
 // Backup effects
 // ///////////////
-internal fun ContentDrawScope.drawBackupLiquidEffect(
-  layer: GraphicsLayer,
-  reusableScope: LiquidScopeImpl,
-) {
-  val shapeOutline = reusableScope.shape.createOutline(size, layoutDirection, this)
-  val shapePath = shapeOutline.asPath()
-  val frostRadius = reusableScope.frostRadius
-  // We still record liquefiables into the layer for Android 11 and lower.
-  // Otherwise something like a shadow effect for a transparent liquid composable will appear inside the node.
-  recordLiquefiablesIntoLayer(layer, reusableScope)
-  layer.clip = reusableScope.shape != RectangleShape
-
-  if (frostRadius > 0f && Build.VERSION.SDK_INT >= 31) {
-    // If we have a valid frostRadius and the device is API 31 or 32, we can at least use Android's BlurEffect.
-    layer.renderEffect = reusableScope.renderEffect
-      ?: BlurEffect(
-        radiusX = frostRadius,
-        radiusY = frostRadius,
-      ).also { reusableScope.renderEffect = it }
-  }
-
-  clipPath(shapePath) {
-    translate(-frostRadius, -frostRadius) { drawLayer(layer) }
-  }
-
-  // Fill the shape with the tint if one is provided.
-  if (reusableScope.tint.isSpecified) {
-    drawOutline(
-      outline = shapeOutline,
-      color = reusableScope.tint,
-      style = Fill,
-    )
-  }
-
-  if (reusableScope.edge > 0f) {
-    drawBackupEdgeEffect(shapePath)
-  }
-
-  drawContent()
-}
 
 // This won't be that accurate, but we should at least provide an edge-like inner border using gradients
 // if the user provided a value.
