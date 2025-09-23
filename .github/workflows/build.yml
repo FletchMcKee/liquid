@@ -151,3 +151,12 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_CENTRAL_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+
+      - name: Upload build reports if failed
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-build-reports
+          path: |
+            **/build/reports/**
+            build/reports/problems/problems-report.html
