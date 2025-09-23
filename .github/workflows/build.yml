@@ -141,11 +141,12 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
-          java-version-file: .github/workflows/.java-version
+          # TODO: Set back to the /workflows/.java-version once Dokka has support.
+          java-version: '24'
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - run: ./gradlew publish --no-configuration-cache --stacktrace
+      - run: ./gradlew publish --no-configuration-cache
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_CENTRAL_PASSWORD }}
