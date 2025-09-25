@@ -21,7 +21,7 @@ navigationCompose = "2.9.5"
 robolectric = "4.16"
 roborazzi = "1.50.0"
 serialization = "1.9.0"
-spotless = "7.2.1"
+spotless = "8.0.0"
 uiautomator = "2.3.0"
 
 [libraries]
