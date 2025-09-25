@@ -51,6 +51,7 @@ dependencies {
   implementation(projects.liquid)
   implementation(libs.activity.compose)
   implementation(libs.compose.material3)
+  implementation(libs.compose.material.icons.core)
   implementation(libs.compose.adaptive)
   implementation(libs.compose.adaptive.layout)
   implementation(libs.compose.navigation)
