@@ -65,6 +65,8 @@ fun BoxScope.LiquidSliders(
   onCurveChange: (Float) -> Unit,
   edgeProvider: () -> Float,
   onEdgeChange: (Float) -> Unit,
+  cornerPercent: () -> Int,
+  onCornerPercentChange: (Int) -> Unit,
   modifier: Modifier = Modifier,
   containerShape: Shape = RoundedCornerShape(15),
   containerColor: Color = MaterialTheme.colorScheme.surface,
@@ -119,6 +121,7 @@ fun BoxScope.LiquidSliders(
       text = "Refraction",
       value = refractionProvider(),
       onValueChange = onRefractionChange,
+      steps = 99,
       valueRange = 0f..1f,
     )
 
@@ -134,6 +137,15 @@ fun BoxScope.LiquidSliders(
       value = edgeProvider(),
       onValueChange = onEdgeChange,
       valueRange = 0.0f..0.2f,
+    )
+
+    LiquidSliderRow(
+      text = "Corner Percent",
+      value = cornerPercent().toFloat(),
+      onValueChange = { onCornerPercentChange(it.toInt()) },
+      formatter = "%,.0f",
+      steps = 49,
+      valueRange = 0.0f..50f,
     )
   }
 }

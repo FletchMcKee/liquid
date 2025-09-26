@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object Many
 
-fun NavGraphBuilder.manyNavigation(
+fun NavGraphBuilder.manyDestination(
   useLiquid: Boolean = true,
   initialFrost: Float = 10f,
 ) = composable<Many> {

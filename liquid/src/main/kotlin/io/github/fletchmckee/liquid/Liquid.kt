@@ -46,6 +46,7 @@ public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
  * @param liquidState Shared state that tracks the set of [Liquefiable] sources to sample.
  * @param block A [LiquidScope] block where you define the effect properties.
  */
+@Stable
 public fun Modifier.liquid(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit = {},
