@@ -2,9 +2,12 @@
 
 ## [Unreleased]
 
-  - Peformance improvements ([#22](https://github.com/FletchMcKee/liquid/pull/22))
+## [0.2.0]
+
+  - Improved lens effect using spherical lens refraction ([#26](https://github.com/FletchMcKee/liquid/pull/26))
+  - Performance improvements ([#22](https://github.com/FletchMcKee/liquid/pull/22))
     - Also fixed bug for RectangleShape liquid nodes for API 34 and lower.
-    - All API levels now record liquefiable layers. While API 30 and lower cannot use RuntimeShaders or RenderEffects, this can still be 
+    - All API levels now record liquefiable layers. While API 30 and lower cannot use RuntimeShaders or RenderEffects, this can still be
     useful (ex. semi-transparent nodes with a shadow).
 
 ## [0.1.0] - 2025-09-12
@@ -30,7 +33,8 @@
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/fletchmckee/liquid/releases/tag/0.2.0
 [0.1.0]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0
 [0.1.0-rc1]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-rc1
 [0.1.0-alpha2]: https://github.com/fletchmckee/liquid/releases/tag/0.1.0-alpha2

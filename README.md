@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-  implementation("io.github.fletchmckee.liquid:liquid:0.1.0")
+  implementation("io.github.fletchmckee.liquid:liquid:0.2.0")
 }
 ```
 ## Usage
@@ -199,8 +199,10 @@ inspiration, particularly for the use of content and effect `Modifier` nodes and
 [FrostShaders](./liquid/src/main/kotlin/io/github/fletchmckee/liquid/internal/shaders/FrostShaders.kt) available for the liquid nodes are
 derived from the [HazeShaders](https://github.com/chrisbanes/haze/blob/main/haze/src/commonMain/kotlin/dev/chrisbanes/haze/HazeShaders.kt)
 class.
-- The liquid lens effect was inspired by ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) with their
+- The original liquid lens effect was inspired by ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) with their
 [Liquid Glass example](https://www.shadertoy.com/view/wcKSRD).
+- The current spherical liquid lens effect was inspired by GitHub user [Kyant0](https://github.com/Kyant0) with their own
+[AndroidLiquidGlass](https://github.com/Kyant0/AndroidLiquidGlass) library.
 - Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](./samples/app/src/main/res/drawable-nodpi/northern_lights.webp)
 - Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](./samples/app/src/main/res/drawable-nodpi/ny_city.webp).
 - Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](./samples/app/src/main/res/drawable-nodpi/dotonbori.webp).
