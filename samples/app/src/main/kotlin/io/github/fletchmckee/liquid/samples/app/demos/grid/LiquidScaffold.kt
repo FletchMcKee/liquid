@@ -76,6 +76,8 @@ fun LiquidTopAppBar(
       .thenIf(useLiquid) {
         liquid(liquidState) {
           frost = frostProvider().dp
+          refraction = 0.25f
+          curve = 0.5f
           shape = topBarShape
           edge = 0.1f
           tint = containerColor
@@ -105,6 +107,8 @@ fun LiquidBottomAppBar(
     .thenIf(useLiquid) {
       liquid(liquidState) {
         frost = frostProvider().dp
+        refraction = 0.25f
+        curve = 0.5f
         shape = bottomBarShape
         edge = 0.1f
         tint = containerColor

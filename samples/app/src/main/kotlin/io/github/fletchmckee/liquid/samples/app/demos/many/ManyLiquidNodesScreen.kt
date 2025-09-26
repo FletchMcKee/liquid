@@ -118,6 +118,7 @@ private fun LiquidCard(
     .thenIf(useLiquid) {
       liquid(liquidState) {
         frost = initialFrost.dp
+        refraction = 0.1f
         edge = 0.1f
         shape = cardShape
         tint = containerColor

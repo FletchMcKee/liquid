@@ -39,7 +39,9 @@ import io.github.fletchmckee.liquid.samples.app.demos.drag.dragDestination
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
 import io.github.fletchmckee.liquid.samples.app.demos.grid.gridDestination
 import io.github.fletchmckee.liquid.samples.app.demos.many.Many
-import io.github.fletchmckee.liquid.samples.app.demos.many.manyNavigation
+import io.github.fletchmckee.liquid.samples.app.demos.many.manyDestination
+import io.github.fletchmckee.liquid.samples.app.demos.popup.Popup
+import io.github.fletchmckee.liquid.samples.app.demos.popup.popupDestination
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.stickyHeaderDestination
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
@@ -107,7 +109,12 @@ fun LiquidDemos(
       initialFrost = initialFrost,
     )
 
-    manyNavigation(
+    manyDestination(
+      useLiquid = useLiquid,
+      initialFrost = initialFrost,
+    )
+
+    popupDestination(
       useLiquid = useLiquid,
       initialFrost = initialFrost,
     )
@@ -153,6 +160,11 @@ private fun DemosList(
     DemoItem(
       name = "500 Liquid Nodes",
       onClick = { navController.navigate(Many) },
+    )
+
+    DemoItem(
+      name = "Popup",
+      onClick = { navController.navigate(Popup) },
     )
   }
 }

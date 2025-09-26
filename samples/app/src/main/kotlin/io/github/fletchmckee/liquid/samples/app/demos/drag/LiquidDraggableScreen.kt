@@ -20,6 +20,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -54,6 +55,7 @@ fun LiquidDraggableScreen(
   var refraction by rememberSaveable { mutableFloatStateOf(0.3f) }
   var curve by rememberSaveable { mutableFloatStateOf(0.4f) }
   var edge by rememberSaveable { mutableFloatStateOf(0.05f) }
+  var cornerPercent by rememberSaveable { mutableIntStateOf(25) }
 
   var showSliders by rememberSaveable { mutableStateOf(true) }
 
@@ -84,6 +86,8 @@ fun LiquidDraggableScreen(
       onCurveChange = { curve = it },
       edgeProvider = { edge },
       onEdgeChange = { edge = it },
+      cornerPercent = { cornerPercent },
+      onCornerPercentChange = { cornerPercent = it },
       containerColor = sliderContainerColor,
     )
 
@@ -93,6 +97,7 @@ fun LiquidDraggableScreen(
       refractionProvider = { refraction },
       curveProvider = { curve },
       edgeProvider = { edge },
+      cornerPercentProvider = { cornerPercent },
     )
   }
 }

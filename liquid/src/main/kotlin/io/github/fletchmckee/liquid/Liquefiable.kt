@@ -39,6 +39,7 @@ internal class Liquefiable {
  *
  * @param liquidState The shared [LiquidState] instance that receives this node’s content for sampling.
  */
+@Stable
 public fun Modifier.liquefiable(
   liquidState: LiquidState,
 ): Modifier = this then LiquefiableElement(liquidState)
