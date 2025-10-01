@@ -33,7 +33,7 @@ jobs:
           java-version-file: .github/workflows/.java-version
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           build-scan-publish: true
@@ -108,7 +108,7 @@ jobs:
           java-version-file: .github/workflows/.java-version
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
         with:
           cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
           build-scan-publish: true
@@ -144,7 +144,7 @@ jobs:
           # TODO: Set back to the /workflows/.java-version once Dokka has support.
           java-version: '24'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v5
 
       - run: ./gradlew publish --no-configuration-cache
         env:
