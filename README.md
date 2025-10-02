@@ -34,7 +34,7 @@ dependencies {
 A modifier node can’t see pixels drawn behind it or by its ancestors. Liquid mirrors the approach popularized by [Haze](https://github.com/chrisbanes/haze) via the shared state/source/effect pattern:
 
 - **Shared state** - The `LiquidState` manages tracking all source nodes that should be shared with the effect nodes.
-- **Source** - You explicitly tag composables whose output should be sampled with `Modifier.liquefiable(liquidState)`. These are recorded into a GraphicsLayer (API 31+).
+- **Source** - You explicitly tag composables whose output should be sampled with `Modifier.liquefiable(liquidState)`. These are recorded into a GraphicsLayer.
 - **Effect** - `Modifier.liquid(liquidState)` renders those layers through AGSL shaders and draws the liquid effect upon the sampled content.
 
 Below is a simple example of how to coordinate this pattern:
