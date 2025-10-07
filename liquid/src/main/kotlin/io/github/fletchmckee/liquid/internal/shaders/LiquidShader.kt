@@ -13,6 +13,7 @@ internal const val LiquidShader = """
   uniform float curve;
   uniform float edge;
   layout(color) uniform half4 tint;
+  uniform float saturation;
 
   const float EPSILON = 0.001;
 
@@ -28,7 +29,14 @@ internal const val LiquidShader = """
     float sdfX2 = computeSdf(pos - float2(EPSILON, 0.0), shapeSize, vr);
     float sdfY1 = computeSdf(pos + float2(0.0, EPSILON), shapeSize, vr);
     float sdfY2 = computeSdf(pos - float2(0.0, EPSILON), shapeSize, vr);
-    return normalize(float2(sdfX1 - sdfX2, sdfY1 - sdfY2));
+    float2 grad = float2(sdfX1 - sdfX2, sdfY1 - sdfY2);
+    float len = length(grad);
+    return len > 0.0001 ? grad / len : float2(0.0, 1.0);
+  }
+
+  half3 applyColorAdjustments(half3 color) {
+    float lum = dot(color, half3(0.213, 0.715, 0.072));
+    return saturate(mix(half3(lum), color, saturation));
   }
 
   half4 main(float2 fragCoord) {
@@ -38,13 +46,12 @@ internal const val LiquidShader = """
     float2 center = effectRect.xy + liquidSize * 0.5;
     float2 shapeCoord = (fragCoord - center) / minDimension;
     float2 shapeSize = liquidSize / minDimension;
-    half4 shapeVr = half4(cornerRadii) / minDimension;
+    half4 shapeVr = half4(cornerRadii);
     float shapeSdf = computeSdf(shapeCoord, shapeSize * 0.5, shapeVr);
 
-    // Using maxDimension for a sharper transition.
-    float maxDimension = max(liquidSize.x, liquidSize.y);
-    float liquidMask = saturate(-shapeSdf * maxDimension);
-    float transition = smoothstep(0.0, 1.0, liquidMask);
+    if (shapeSdf > 0.0) {
+      return half4(0.0);
+    }
 
     half4 lensVr = min(shapeVr * 1.5, half4(min(shapeSize.x, shapeSize.y) * 0.5));
     float2 sdfNormal = computeSdfNormal(shapeCoord, shapeSize * 0.5, lensVr);
@@ -63,6 +70,8 @@ internal const val LiquidShader = """
       fragColor = content.eval(fragCoord);
     }
 
+    fragColor.rgb = applyColorAdjustments(fragColor.rgb);
+
     float edgeSmooth = smoothstep(-edge, 0.0, shapeSdf);
     // Eventually this will become a uniform.
     float2 lightDirection = float2(-0.15, -0.15);
@@ -72,6 +81,6 @@ internal const val LiquidShader = """
     // Apply the provided tint.
     fragColor.rgb = mix(fragColor.rgb, tint.rgb, tint.a);
 
-    return mix(content.eval(fragCoord), fragColor, transition);
+    return fragColor;
   }
 """

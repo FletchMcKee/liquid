@@ -112,6 +112,7 @@ fun LiquidBottomAppBar(
         shape = bottomBarShape
         edge = 0.1f
         tint = containerColor
+        saturation = 1.5f
       }
     },
 ) {

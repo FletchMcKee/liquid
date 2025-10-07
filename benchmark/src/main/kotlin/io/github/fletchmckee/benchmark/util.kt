@@ -37,34 +37,40 @@ internal fun MacrobenchmarkScope.navigateTo(
 internal fun MacrobenchmarkScope.dragFigureEight(
   repetitions: Int = 2,
   steps: Int = 25,
-) = repeat(repetitions) {
-  val centerX = device.displayWidth / 2
-  val centerY = device.displayHeight / 2
-  val upY = (device.displayHeight * 0.2f).toInt()
-  val downY = (device.displayHeight * 0.8f).toInt()
-  val leftX = (device.displayWidth * 0.2f).toInt()
-  val rightX = (device.displayWidth * 0.8f).toInt()
-
-  device.swipe(centerX, centerY, rightX, downY, steps)
+) {
+  val settingsButton = waitForObject("settingsButton")
+  settingsButton.click()
   device.waitForIdle()
 
-  device.swipe(rightX, downY, leftX, downY, steps)
-  device.waitForIdle()
+  repeat(repetitions) {
+    val centerX = (device.displayWidth * 0.5f).toInt()
+    val centerY = (device.displayHeight * 0.5f).toInt()
+    val upY = (device.displayHeight * 0.2f).toInt()
+    val downY = (device.displayHeight * 0.8f).toInt()
+    val leftX = (device.displayWidth * 0.25f).toInt()
+    val rightX = (device.displayWidth * 0.75f).toInt()
 
-  device.swipe(leftX, downY, rightX, upY, steps)
-  device.waitForIdle()
+    device.swipe(centerX, centerY, rightX, downY, steps)
+    device.waitForIdle()
 
-  device.swipe(rightX, upY, leftX, upY, steps)
-  device.waitForIdle()
+    device.swipe(rightX, downY, leftX, downY, steps)
+    device.waitForIdle()
 
-  device.swipe(leftX, upY, centerX, centerY, steps)
-  device.waitForIdle()
+    device.swipe(leftX, downY, rightX, upY, steps)
+    device.waitForIdle()
+
+    device.swipe(rightX, upY, leftX, upY, steps)
+    device.waitForIdle()
+
+    device.swipe(leftX, upY, centerX, centerY, steps)
+    device.waitForIdle()
+  }
 }
 
 internal fun MacrobenchmarkScope.dragFrostSlider(
   timeout: Long = 2_000,
   speed: Int = 1_000,
-  iterations: Int = 6,
+  iterations: Int = 3, // Steps were doubled, so can achieve same frame count in less time.
 ) = repeat(iterations) {
   val frostSlider = waitForObject("frostSlider", timeout)
   val thumb = waitForObject("frostThumb", timeout)

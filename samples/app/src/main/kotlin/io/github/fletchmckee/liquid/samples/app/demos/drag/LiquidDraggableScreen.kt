@@ -15,8 +15,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.adaptive.WindowAdaptiveInfo
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -32,7 +30,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.window.core.layout.WindowWidthSizeClass
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
@@ -46,15 +43,14 @@ fun LiquidDraggableScreen(
   liquidState: LiquidState = rememberLiquidState(),
   useLiquid: Boolean = true,
   initialFrost: Float = 0f,
-  windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
   sliderContainerColor: Color = MaterialTheme.colorScheme.surface,
 ) {
-  val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
   // Liquid shader properties
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
-  var refraction by rememberSaveable { mutableFloatStateOf(0.3f) }
-  var curve by rememberSaveable { mutableFloatStateOf(0.4f) }
+  var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
+  var curve by rememberSaveable { mutableFloatStateOf(0.25f) }
   var edge by rememberSaveable { mutableFloatStateOf(0.05f) }
+  var saturation by rememberSaveable { mutableFloatStateOf(1f) }
   var cornerPercent by rememberSaveable { mutableIntStateOf(25) }
 
   var showSliders by rememberSaveable { mutableStateOf(true) }
@@ -77,7 +73,6 @@ fun LiquidDraggableScreen(
       liquidState = liquidState,
       useLiquid = useLiquid,
       showSliders = showSliders,
-      isLandscape = isLandscape,
       frostProvider = { frostRadius },
       onFrostChange = { frostRadius = it },
       refractionProvider = { refraction },
@@ -86,7 +81,9 @@ fun LiquidDraggableScreen(
       onCurveChange = { curve = it },
       edgeProvider = { edge },
       onEdgeChange = { edge = it },
-      cornerPercent = { cornerPercent },
+      saturationProvider = { saturation },
+      onSaturationChange = { saturation = it },
+      cornerPercentProvider = { cornerPercent },
       onCornerPercentChange = { cornerPercent = it },
       containerColor = sliderContainerColor,
     )
@@ -97,6 +94,7 @@ fun LiquidDraggableScreen(
       refractionProvider = { refraction },
       curveProvider = { curve },
       edgeProvider = { edge },
+      saturationProvider = { saturation },
       cornerPercentProvider = { cornerPercent },
     )
   }

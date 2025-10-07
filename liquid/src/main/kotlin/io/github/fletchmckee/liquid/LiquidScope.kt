@@ -72,4 +72,15 @@ public interface LiquidScope {
    * Defaults to [Color.Unspecified]
    */
   public var tint: Color
+
+  /**
+   * Adjusts the color saturation of the content behind the liquid effect.
+   *
+   * Values greater than 1.0 create more vivid colors, while values less than 1.0
+   * decrease create more muted colors. A value of 0f results in grayscale.
+   *
+   * Defaults to 1f (no saturation change).
+   */
+  @setparam:FloatRange(from = 0.0)
+  public var saturation: Float
 }

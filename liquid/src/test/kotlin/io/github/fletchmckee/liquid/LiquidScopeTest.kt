@@ -34,9 +34,14 @@ class LiquidScopeTest {
     assertThat(scope.curve).isEqualTo(0.25f)
     assertThat(scope.edge).isZero()
     assertThat(scope.tint).isEqualTo(Color.Unspecified)
+    assertThat(scope.saturation).isEqualTo(1f)
     assertThat(scope.argbColor).isZero()
     assertThat(scope.size).isEqualTo(Size.Unspecified)
     assertThat(scope.positionOnScreen).isEqualTo(Offset.Zero)
+    assertThat(scope.scaleX).isEqualTo(1f)
+    assertThat(scope.scaleY).isEqualTo(1f)
+    assertThat(scope.rotationZ).isZero()
+    assertThat(scope.boundsInRoot).isEqualTo(Rect.Zero)
     assertThat(scope.liquefiables).isEmpty()
     assertThat(scope.mutatedFields).isZero()
   }
@@ -63,7 +68,7 @@ class LiquidScopeTest {
     scope.size = Size(width = 50f, height = 50f)
     scope.shape = RoundedCornerShape(5)
     assertThat(scope.shape).isEqualTo(RoundedCornerShape(5))
-    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(2.5f, 2.5f, 2.5f, 2.5f))
+    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(0.05f, 0.05f, 0.05f, 0.05f))
     // Verify both Size and Shape bits are set.
     assertThat(scope.mutatedFields and Fields.Size).isEqualTo(Fields.Size)
     assertThat(scope.mutatedFields and Fields.Shape).isEqualTo(Fields.Shape)
@@ -122,6 +127,15 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
+  @Test fun `saturation mutations observed`() {
+    scope.saturation = 1.5f
+    assertThat(scope.saturation).isEqualTo(1.5f)
+    assertThat(scope.mutatedFields).isEqualTo(Fields.Saturation)
+    // Verify the RenderEffect and InvalidateFlags are not 0.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+  }
+
   @Test fun `different tints with same argb value do not invalidate`() {
     scope.tint = Color.Transparent
     assertThat(scope.tint).isEqualTo(Color.Transparent)
@@ -136,7 +150,7 @@ class LiquidScopeTest {
     scope.size = Size(width = 50f, height = 50f)
     assertThat(scope.size).isEqualTo(Size(width = 50f, height = 50f))
     // Changing size also changes the cornerRadii since we have CircleShape as the default.
-    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(25f, 25f, 25f, 25f))
+    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(0.5f, 0.5f, 0.5f, 0.5f))
     assertThat(scope.mutatedFields and Fields.Size).isEqualTo(Fields.Size)
     assertThat(scope.mutatedFields and Fields.Shape).isEqualTo(Fields.Shape)
     // Verify the RenderEffect and InvalidateFlags are not 0.
@@ -175,7 +189,7 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
-    scope.mutatedFields = 0 // Clean the tracker.
+    scope.reset() // Clean the tracker.
 
     scope.density = Density(3f)
     assertThat(scope.frost).isEqualTo(10.dp) // This should remain 10.dp.
@@ -188,11 +202,11 @@ class LiquidScopeTest {
 
   @Test fun `computePaddedBounds pads correctly`() {
     // First verify we can handle unspecified Size correctly
-    val unspecifiedBounds = scope.computePaddedBounds()
+    val unspecifiedBounds = scope.computeRecordedBounds()
     assertThat(unspecifiedBounds).isEqualTo(Rect.Zero)
 
     scope.size = Size(width = 50f, height = 50f)
-    val noFrostBounds = scope.computePaddedBounds()
+    val noFrostBounds = scope.computeRecordedBounds()
     assertThat(noFrostBounds).isEqualTo(
       Rect(
         left = 0f,
@@ -203,7 +217,7 @@ class LiquidScopeTest {
     )
 
     scope.positionOnScreen = Offset(x = 10f, y = 5f)
-    val noFrostWithOffsetBounds = scope.computePaddedBounds()
+    val noFrostWithOffsetBounds = scope.computeRecordedBounds()
     assertThat(noFrostWithOffsetBounds).isEqualTo(
       Rect(
         left = 10f,
@@ -214,7 +228,7 @@ class LiquidScopeTest {
     )
 
     scope.frost = 10.dp
-    val frostWithOffsetBounds = scope.computePaddedBounds()
+    val frostWithOffsetBounds = scope.computeRecordedBounds()
     assertThat(frostWithOffsetBounds).isEqualTo(
       Rect(
         left = 0f, // x - padding
@@ -232,5 +246,6 @@ class LiquidScopeTest {
     curve = 0.5f
     edge = 0.1f
     tint = Color.Red
+    saturation = 1.5f
   }
 }
