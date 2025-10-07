@@ -27,7 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import io.github.fletchmckee.liquid.LiquidState
@@ -135,6 +138,8 @@ private fun SettingsButton(
   modifier: Modifier = Modifier,
 ) = IconButton(
   modifier = modifier
+    .testTag("settingsButton")
+    .semantics { testTagsAsResourceId = true }
     .padding(top = 48.dp, start = 32.dp)
     .zIndex(3f)
     .shadow(elevation = 2.dp, shape = CircleShape)
