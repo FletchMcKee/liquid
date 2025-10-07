@@ -5,10 +5,14 @@ package io.github.fletchmckee.liquid
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -69,13 +73,33 @@ class LiquidScreenshotTest {
     SingletonImageLoader.setUnsafe(imageLoader)
   }
 
-  @Test fun capture_drag_no_frost() = runScreenshotTest {
-    LiquidDraggableScreen()
-  }
+  @Test fun capture_drag_no_frost() = runScreenshotTest(
+    performAction = {
+      onNodeWithTag("liquidDraggableBox")
+        .performTouchInput {
+          val dragAmountPx = with(density) { 150.dp.toPx() }
+          swipeUp(
+            startY = centerY,
+            endY = centerY - dragAmountPx,
+          )
+        }
+    },
+    content = { LiquidDraggableScreen() },
+  )
 
-  @Test fun capture_drag_10_dp_frost() = runScreenshotTest {
-    LiquidDraggableScreen(initialFrost = 10f)
-  }
+  @Test fun capture_drag_10_dp_frost() = runScreenshotTest(
+    performAction = {
+      onNodeWithTag("liquidDraggableBox")
+        .performTouchInput {
+          val dragAmountPx = with(density) { 150.dp.toPx() }
+          swipeUp(
+            startY = centerY,
+            endY = centerY - dragAmountPx,
+          )
+        }
+    },
+    content = { LiquidDraggableScreen(initialFrost = 10f) },
+  )
 
   @Test fun capture_grid_no_frost() = runScreenshotTest {
     LiquidGridScreen()
@@ -85,69 +109,37 @@ class LiquidScreenshotTest {
     LiquidGridScreen(initialFrost = 10f)
   }
 
-  @Test fun capture_grid_no_frost_scrolled() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidGridScreen()
-        }
-      }
+  @Test fun capture_grid_no_frost_scrolled() = runScreenshotTest(
+    performAction = {
+      onNodeWithTag("liquidGrid")
+        .performScrollToNode(hasTestTag("imageGrid99"))
+    },
+    content = { LiquidGridScreen() },
+  )
 
-      waitForIdle()
-      // Scrolls to the bottom.
-      onNodeWithTag("liquidGrid").performScrollToNode(hasTestTag("imageGrid99"))
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
-  }
+  @Test fun capture_grid_10_dp_frost_scrolled() = runScreenshotTest(
+    performAction = {
+      onNodeWithTag("liquidGrid")
+        .performScrollToNode(hasTestTag("imageGrid99"))
+    },
+    content = { LiquidGridScreen(initialFrost = 10f) },
+  )
 
-  @Test fun capture_grid_10_dp_frost_scrolled() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidGridScreen(initialFrost = 10f)
-        }
-      }
+  @Test fun capture_sticky_header_no_frost_scrolled() = runScreenshotTest(
+    performAction = {
+      onNodeWithTag("stickyHeaderList")
+        .performScrollToNode(hasTestTag("imageItem99"))
+    },
+    content = { LiquidStickyHeaderScreen() },
+  )
 
-      waitForIdle()
-      // Scrolls to the bottom.
-      onNodeWithTag("liquidGrid").performScrollToNode(hasTestTag("imageGrid99"))
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
-  }
-
-  @Test fun capture_sticky_header_no_frost_scrolled() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidStickyHeaderScreen()
-        }
-      }
-
-      waitForIdle()
-      // Scrolls to the bottom.
-      onNodeWithTag("stickyHeaderList").performScrollToNode(hasTestTag("imageItem99"))
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
-  }
-
-  @Test fun capture_sticky_header_10_dp_frost_scrolled() {
-    rule.apply {
-      setContent {
-        LiquidTheme(darkMode = true) {
-          LiquidStickyHeaderScreen(initialFrost = 10f)
-        }
-      }
-
-      waitForIdle()
-      // Scrolls to the bottom.
-      onNodeWithTag("stickyHeaderList").performScrollToNode(hasTestTag("imageItem99"))
-      waitForIdle()
-      onRoot().captureRoboImage()
-    }
-  }
+  @Test fun capture_sticky_header_10_dp_frost_scrolled() = runScreenshotTest(
+    performAction = {
+      onNodeWithTag("stickyHeaderList")
+        .performScrollToNode(hasTestTag("imageItem99"))
+    },
+    content = { LiquidStickyHeaderScreen(initialFrost = 10f) },
+  )
 
   @Test fun capture_many_liquid_nodes_no_frost() = runScreenshotTest(darkMode = false) {
     ManyLiquidNodesScreen()
@@ -159,6 +151,7 @@ class LiquidScreenshotTest {
 
   private fun runScreenshotTest(
     darkMode: Boolean = true,
+    performAction: (ComposeTestRule.() -> Unit)? = null,
     content: @Composable () -> Unit,
   ) {
     rule.apply {
@@ -169,6 +162,10 @@ class LiquidScreenshotTest {
       }
 
       waitForIdle()
+      performAction?.let {
+        performAction()
+        waitForIdle()
+      }
       onRoot().captureRoboImage()
     }
   }

@@ -4,7 +4,9 @@ package io.github.fletchmckee.liquid.internal
 
 import android.os.Build
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -14,6 +16,7 @@ import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
 import androidx.compose.ui.node.DrawModifierNode
@@ -30,6 +33,9 @@ import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.toSize
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
+import kotlin.math.PI
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 // This file can be deleted as soon as our minSdk is 33, so maybe by 2035.
 internal class LiquidBackupElement(
@@ -76,6 +82,7 @@ internal class LiquidBackupNode(
   ObserverModifierNode {
   private val canUseRenderEffect = Build.VERSION.SDK_INT >= 31
   private val reusableScope = LiquidScopeImpl()
+  private val matrix = Matrix()
   private var cachedLayer: GraphicsLayer? = null
 
   internal fun invalidateLiquidBlock() {
@@ -126,8 +133,18 @@ internal class LiquidBackupNode(
   override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
     if (!isAttached) return
 
+    matrix.reset()
+    coordinates.transformToScreen(matrix)
+    val scaleX = matrix.values[Matrix.ScaleX]
+    val scaleY = matrix.values[Matrix.ScaleY]
+    val skewX = matrix.values[Matrix.SkewX]
+    val skewY = matrix.values[Matrix.SkewY]
     reusableScope.positionOnScreen = coordinates.positionOnScreen()
     reusableScope.size = coordinates.size.toSize()
+    reusableScope.scaleX = sqrt(scaleX * scaleX + skewY * skewY)
+    reusableScope.scaleY = sqrt(skewX * skewX + scaleY * scaleY)
+    reusableScope.rotationZ = RadiansToDegrees * atan2(skewY, scaleX)
+    reusableScope.boundsInRoot = coordinates.boundsInRoot()
 
     invalidateDrawIfNeeded()
   }
@@ -142,7 +159,10 @@ internal class LiquidBackupNode(
       // We still record liquefiables into the layer for Android 11 and lower.
       // Otherwise something like a shadow effect for a transparent liquid composable will appear inside the node.
       recordLiquefiablesIntoLayer(layer, reusableScope)
-      layer.clip = reusableScope.shape != RectangleShape
+
+      layer.colorFilter = (reusableScope.saturation != 1f).takeIf { it }?.let {
+        ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(reusableScope.saturation) })
+      }
 
       if (frostRadius > 0f && Build.VERSION.SDK_INT >= 31) {
         // If we have a valid frostRadius and the device is API 31 or 32, we can at least use Android's BlurEffect.
@@ -172,3 +192,5 @@ internal class LiquidBackupNode(
     }
   }
 }
+
+private const val RadiansToDegrees = (180.0 / PI).toFloat()

@@ -32,11 +32,16 @@ internal interface InternalLiquidScope : LiquidScope {
   var density: Density
   var size: Size
   var positionOnScreen: Offset
+  var scaleX: Float
+  var scaleY: Float
+  var rotationZ: Float
+  var boundsInRoot: Rect
   var liquefiables: List<Liquefiable>
 }
 
 internal class LiquidScopeImpl : InternalLiquidScope {
   internal var mutatedFields = 0
+    private set
 
   override var frost: Dp = 0.dp
     set(value) {
@@ -93,6 +98,14 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
+  override var saturation: Float = 1f
+    set(value) {
+      if (field != value) {
+        mutatedFields = mutatedFields or Fields.Saturation
+        field = value
+      }
+    }
+
   override var density: Density = Density(1f)
     set(value) {
       if (field != value) {
@@ -108,7 +121,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
         field = value
         if (value.isSpecified) {
           cornerRadii = shape.cornerRadiiPx(value, density)
-          paddedBounds = computePaddedBounds()
+          recordingBounds = computeRecordedBounds()
         }
       }
     }
@@ -119,7 +132,43 @@ internal class LiquidScopeImpl : InternalLiquidScope {
         mutatedFields = mutatedFields or Fields.PositionOnScreen
         field = value
         if (value.isSpecified) {
-          paddedBounds = computePaddedBounds()
+          recordingBounds = computeRecordedBounds()
+        }
+      }
+    }
+
+  override var rotationZ: Float = 0f
+    set(value) {
+      if (field != value) {
+        mutatedFields = mutatedFields or Fields.Rotation
+        field = value
+      }
+    }
+
+  override var scaleX: Float = 1f
+    set(value) {
+      if (field != value) {
+        mutatedFields = mutatedFields or Fields.ScaleX
+        field = value
+      }
+    }
+
+  override var scaleY: Float = 1f
+    set(value) {
+      if (field != value) {
+        mutatedFields = mutatedFields or Fields.ScaleY
+        field = value
+      }
+    }
+
+  override var boundsInRoot: Rect = Rect.Zero
+    set(value) {
+      if (field != value) {
+        field = value
+        overlappingBounds = if (value != Rect.Zero) {
+          value.inflate(frostRadius)
+        } else {
+          Rect.Zero
         }
       }
     }
@@ -145,7 +194,12 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.Frost
         field = value
-        paddedBounds = computePaddedBounds()
+        recordingBounds = computeRecordedBounds()
+        overlappingBounds = if (boundsInRoot != Rect.Zero) {
+          boundsInRoot.inflate(frostRadius)
+        } else {
+          Rect.Zero
+        }
       }
     }
 
@@ -161,7 +215,12 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  internal var paddedBounds: Rect = Rect.Zero
+  internal var recordingBounds: Rect = Rect.Zero
+    private set
+
+  // We have to track the overlapping bounds separately as this will differ from the
+  // recordedBounds when we have rotated/scaled nodes.
+  internal var overlappingBounds: Rect = Rect.Zero
     private set
 
   // Cached to avoid expensive JNI calls and native allocations on every draw.
@@ -173,7 +232,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     mutatedFields = 0
   }
 
-  internal fun computePaddedBounds(): Rect {
+  internal fun computeRecordedBounds(): Rect {
     // If size or position is unspecified, returning Rect.Zero will prevent the effect from being drawn.
     if (size.isUnspecified || positionOnScreen.isUnspecified) return Rect.Zero
 
@@ -192,13 +251,14 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     verticalShader: RuntimeShader,
   ): RenderEffect = renderEffect?.takeUnless { mutatedFields has Fields.RenderEffectFields } ?: run {
     liquidShader.setLiquidUniforms(
-      bounds = paddedBounds,
+      bounds = recordingBounds,
       frostRadius = frostRadius,
       cornerRadii = cornerRadii,
       refraction = refraction,
       curve = curve,
       edge = edge,
       argbColor = argbColor,
+      saturation = saturation,
     )
 
     val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
@@ -207,13 +267,13 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     }
 
     horizontalShader.setFrostUniforms(
-      bounds = paddedBounds,
+      bounds = recordingBounds,
       frostRadius = frostRadius,
       cornerRadii = cornerRadii,
     )
 
     verticalShader.setFrostUniforms(
-      bounds = paddedBounds,
+      bounds = recordingBounds,
       frostRadius = frostRadius,
       cornerRadii = cornerRadii,
     )
@@ -247,10 +307,14 @@ internal object Fields {
   const val Edge: Int = 0b1 shl 4
   const val Size: Int = 0b1 shl 5
   const val Tint: Int = 0b1 shl 6
+  const val Saturation: Int = 0b1 shl 7
 
   // These don't require updating the RenderEffect, but they do require invalidating the draw.
-  const val PositionOnScreen: Int = 0b1 shl 7
-  const val Liquefiables: Int = 0b1 shl 8
+  const val PositionOnScreen: Int = 0b1 shl 8
+  const val Rotation: Int = 0b1 shl 9
+  const val ScaleX: Int = 0b1 shl 10
+  const val ScaleY: Int = 0b1 shl 11
+  const val Liquefiables: Int = 0b1 shl 12
 
   // PositionOnScreen isn't a shader uniform as it's only used to translate liquefiables into the correct space.
   const val RenderEffectFields: Int =
@@ -260,11 +324,15 @@ internal object Fields {
       Curve or
       Edge or
       Size or
-      Tint
+      Tint or
+      Saturation
 
   const val InvalidateFlags: Int =
     RenderEffectFields or
       PositionOnScreen or
+      Rotation or
+      ScaleX or
+      ScaleY or
       Liquefiables
 
   // //////////////////////////
@@ -276,7 +344,11 @@ internal object Fields {
       Edge or
       Size or
       Tint or
+      Saturation or
       PositionOnScreen or
+      Rotation or
+      ScaleX or
+      ScaleY or
       Liquefiables
 
   // //////////////////////////
@@ -287,6 +359,10 @@ internal object Fields {
       Edge or
       Size or
       Tint or
+      Saturation or
       PositionOnScreen or
+      Rotation or
+      ScaleX or
+      ScaleY or
       Liquefiables
 }

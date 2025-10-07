@@ -17,7 +17,9 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.platform.testTag
@@ -76,6 +78,8 @@ class LiquidNodeTest {
         assertThat(scope.refraction).isEqualTo(0.25f)
         assertThat(scope.curve).isEqualTo(0.25f)
         assertThat(scope.edge).isZero()
+        assertThat(scope.tint).isEqualTo(Color.Unspecified)
+        assertThat(scope.saturation).isEqualTo(1f)
       }
     }
   }
@@ -394,7 +398,7 @@ class LiquidNodeTest {
 
       runOnIdle {
         assertThat(
-          liquidNode.reusableScope.computePaddedBounds()
+          liquidNode.reusableScope.computeRecordedBounds()
             .overlaps(liquidState.liquefiables.single().boundsOnScreen),
         ).isFalse()
       }
@@ -462,13 +466,54 @@ class LiquidNodeTest {
 
       runOnIdle {
         assertThat(
-          liquidNode.reusableScope.computePaddedBounds()
+          liquidNode.reusableScope.computeRecordedBounds()
             .overlaps(liquidState.liquefiables.single().boundsOnScreen),
         ).isTrue()
       }
       onNodeWithTag("liquid")
         .captureToImage()
         .assertContainsColor(Color.Red)
+    }
+  }
+
+  @Test fun liquidNode_detectsRotations() {
+    var rotation by mutableFloatStateOf(0f)
+    var drawCount = 0
+    var liquidBlockCount = 0
+    var coords: LayoutCoordinates? = null
+    // Own unique LiquidState
+    val liquidNode = LiquidNode(liquidState) { liquidBlockCount++ }
+    rule.apply {
+      setContent {
+        Parent {
+          SimpleLiquefiable(liquidState)
+          Box(
+            Modifier
+              .size(100.dp)
+              .graphicsLayer { rotationZ = rotation }
+              .elementOf(liquidNode)
+              .drawBehind { drawCount++ }
+              .onGloballyPositioned { coords = it },
+          )
+        }
+      }
+
+      runOnIdle {
+        // onAttach and Liquefiable being added.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(2)
+        assertThat(coords!!.boundsInRoot())
+          .isEqualTo(liquidNode.reusableScope.boundsInRoot)
+      }
+
+      runOnIdle { rotation = 45f }
+      runOnIdle {
+        // The block shouldn't invalidate, but the draw should.
+        assertThat(liquidBlockCount).isEqualTo(2)
+        assertThat(drawCount).isEqualTo(3)
+        assertThat(coords!!.boundsInRoot())
+          .isEqualTo(liquidNode.reusableScope.boundsInRoot)
+      }
     }
   }
 
@@ -512,6 +557,13 @@ class LiquidNodeTest {
     changedValue = Color.Green,
     finalValue = Color.Blue,
     onUpdate = { tint = it },
+  )
+
+  @Test fun liquidNode_reactsToSaturationChanges() = runLiquidScopeTest(
+    initialValue = 1.0f,
+    changedValue = 1.5f,
+    finalValue = 0.5f,
+    onUpdate = { saturation = it },
   )
 
   private fun <T> runLiquidScopeTest(

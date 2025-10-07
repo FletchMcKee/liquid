@@ -18,8 +18,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class LiquidBenchmark {
-  @get:Rule
-  val benchmarkRule = MacrobenchmarkRule()
+  @get:Rule val benchmarkRule = MacrobenchmarkRule()
 
   @Test fun dragBoxBaseline() = runBenchmarkTest(
     iterations = 1, // Baselines are only for insight, just run it once.
@@ -48,6 +47,7 @@ class LiquidBenchmark {
     measureBlock = {
       flingElementDownThenUp(
         testTag = "liquidGrid",
+        flings = 1,
         gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
       )
     },
@@ -58,6 +58,7 @@ class LiquidBenchmark {
     measureBlock = {
       flingElementDownThenUp(
         testTag = "liquidGrid",
+        flings = 1,
         gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
       )
     },
@@ -68,6 +69,7 @@ class LiquidBenchmark {
     measureBlock = {
       flingElementDownThenUp(
         testTag = "liquidGrid",
+        flings = 1,
         gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
       )
     },

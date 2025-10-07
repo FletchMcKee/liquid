@@ -34,6 +34,8 @@ import coil3.compose.setSingletonImageLoaderFactory
 import coil3.disk.DiskCache
 import coil3.memory.MemoryCache
 import coil3.request.crossfade
+import io.github.fletchmckee.liquid.samples.app.demos.clock.Clock
+import io.github.fletchmckee.liquid.samples.app.demos.clock.clockDestination
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.drag.dragDestination
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
@@ -118,6 +120,11 @@ fun LiquidDemos(
       useLiquid = useLiquid,
       initialFrost = initialFrost,
     )
+
+    clockDestination(
+      useLiquid = useLiquid,
+      initialFrost = initialFrost,
+    )
   }
 }
 
@@ -165,6 +172,11 @@ private fun DemosList(
     DemoItem(
       name = "Popup",
       onClick = { navController.navigate(Popup) },
+    )
+
+    DemoItem(
+      name = "Animating Clock",
+      onClick = { navController.navigate(Clock) },
     )
   }
 }

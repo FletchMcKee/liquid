@@ -154,9 +154,8 @@ private fun StickyHeaderList(
           .thenIf(useLiquid) {
             liquid(liquidState) {
               frost = initialFrost.dp
-              // Need some examples/screenshots with more extreme distortion.
-              refraction = 0.4f
-              curve = 0.4f
+              refraction = 0.25f
+              curve = 0.5f
               edge = 0.1f
               shape = headerShape
               tint = stickyHeaderContainerColor

@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.unit.Density
@@ -31,20 +31,34 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   val liquefiables = reusableScope.liquefiables
   if (liquefiables.isEmpty()) return
 
-  val bounds = reusableScope.paddedBounds
+  val bounds = reusableScope.recordingBounds
+  val overlapping = reusableScope.overlappingBounds
+  val padding = reusableScope.frostRadius
+  val pivot = Offset(padding, padding)
+  val scaleX = 1f / reusableScope.scaleX
+  val scaleY = 1f / reusableScope.scaleY
+  val rotationZ = reusableScope.rotationZ
   // We avoid unnecessary liquidScope invalidations by observing the mutableState boundsOnScreen
   // and layers here.
   layer.record(bounds.size.toIntSize()) {
     liquefiables
       // Only record content inside the effect's bounds.
-      .filter { bounds.overlaps(it.boundsOnScreen) }
+      .filter { overlapping.overlaps(it.boundsOnScreen) }
       .forEach { liquefiable ->
         liquefiable.layer
           ?.takeUnless { it.isReleased || it.size.isEmpty }
           ?.let { liquefiableLayer ->
             // Position content where it should appear on screen.
             val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - bounds.topLeft.orZero
-            translate(x, y) { drawLayer(liquefiableLayer) }
+            withTransform(
+              {
+                rotate(degrees = -rotationZ, pivot = pivot)
+                scale(scaleX = scaleX, scaleY = scaleY, pivot = pivot)
+                translate(left = x, top = y)
+              },
+            ) {
+              drawLayer(liquefiableLayer)
+            }
           }
       }
   }
@@ -56,18 +70,21 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
  */
 internal fun Shape.cornerRadiiPx(size: Size, density: Density): FloatArray = when (this) {
   CircleShape -> {
-    val radius = size.minDimension / 2f
-    floatArrayOf(radius, radius, radius, radius)
+    floatArrayOf(0.5f, 0.5f, 0.5f, 0.5f)
   }
   is RoundedCornerShape -> {
-    // Unlike the effectRect that is LTRB, the shader's cornerRadii is quadrant based where the order is:
-    // bottomEnd, topEnd, bottomStart, topStart.
-    floatArrayOf(
-      bottomEnd.toPx(size, density),
-      topEnd.toPx(size, density),
-      bottomStart.toPx(size, density),
-      topStart.toPx(size, density),
-    )
+    if (size.minDimension <= 0) {
+      CornerRadiiZero
+    } else {
+      // Unlike the effectRect that is LTRB, the shader's cornerRadii is quadrant based where the order is:
+      // bottomEnd, topEnd, bottomStart, topStart.
+      floatArrayOf(
+        bottomEnd.toPx(size, density) / size.minDimension,
+        topEnd.toPx(size, density) / size.minDimension,
+        bottomStart.toPx(size, density) / size.minDimension,
+        topStart.toPx(size, density) / size.minDimension,
+      )
+    }
   }
   else -> CornerRadiiZero
 }

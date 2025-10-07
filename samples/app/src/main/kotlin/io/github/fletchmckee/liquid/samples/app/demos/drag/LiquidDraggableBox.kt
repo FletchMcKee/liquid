@@ -50,6 +50,7 @@ fun BoxScope.LiquidDraggableBox(
   refractionProvider: () -> Float,
   curveProvider: () -> Float,
   edgeProvider: () -> Float,
+  saturationProvider: () -> Float,
   cornerPercentProvider: () -> Int,
   modifier: Modifier = Modifier,
   boxShape: Shape = RoundedCornerShape(cornerPercentProvider()),
@@ -83,6 +84,7 @@ fun BoxScope.LiquidDraggableBox(
           refraction = refractionProvider()
           curve = curveProvider()
           edge = edgeProvider()
+          saturation = saturationProvider()
         }
       } // Brushes aren't supported in liquid at the moment but may be added later.
       .background(brush = shaderBrush, shape = boxShape),

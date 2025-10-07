@@ -6,11 +6,13 @@ import android.graphics.RuntimeShader
 import androidx.annotation.RequiresApi
 import androidx.annotation.VisibleForTesting
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
 import androidx.compose.ui.node.DrawModifierNode
@@ -30,6 +32,9 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
 import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
 import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
+import kotlin.math.PI
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 @RequiresApi(33)
 internal class LiquidElement(
@@ -83,7 +88,7 @@ internal class LiquidNode(
 
   @VisibleForTesting
   internal val reusableScope = LiquidScopeImpl()
-
+  private val matrix = Matrix()
   private var cachedLayer: GraphicsLayer? = null
 
   internal fun invalidateLiquidBlock() {
@@ -129,8 +134,18 @@ internal class LiquidNode(
   override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
     if (!isAttached) return
 
+    matrix.reset()
+    coordinates.transformToScreen(matrix)
+    val scaleX = matrix.values[Matrix.ScaleX]
+    val scaleY = matrix.values[Matrix.ScaleY]
+    val skewX = matrix.values[Matrix.SkewX]
+    val skewY = matrix.values[Matrix.SkewY]
     reusableScope.positionOnScreen = coordinates.positionOnScreen()
     reusableScope.size = coordinates.size.toSize()
+    reusableScope.scaleX = sqrt(scaleX * scaleX + skewY * skewY)
+    reusableScope.scaleY = sqrt(skewX * skewX + scaleY * scaleY)
+    reusableScope.rotationZ = RadiansToDegrees * atan2(skewY, scaleX)
+    reusableScope.boundsInRoot = coordinates.boundsInRoot()
 
     invalidateDrawIfNeeded()
   }
@@ -147,8 +162,7 @@ internal class LiquidNode(
       // For a uniform frost, we sample outside of the node's actual size with the frost radius as padding.
       val padding = reusableScope.frostRadius
       recordLiquefiablesIntoLayer(layer, reusableScope)
-      // Not sure why this must always be true for API 34 and lower, it can always be false for 35+ with no issues.
-      layer.clip = true
+
       layer.renderEffect = reusableScope.obtainRenderEffect(
         liquidShader = liquidShader,
         horizontalShader = horizontalShader,
@@ -165,3 +179,5 @@ internal class LiquidNode(
     }
   }
 }
+
+private const val RadiansToDegrees = (180.0 / PI).toFloat()
