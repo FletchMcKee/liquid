@@ -70,12 +70,20 @@ block is passed, however you can alter any one of these fields to achieve the de
 
 ```kotlin
 Modifier.liquid(liquidState) {
-  frost = 10.dp // Defaults to 0.dp
-  shape = RoundedCornerShape(25) // Defaults to CircleShape
-  refraction = 0.5f // Defaults to 0.25f
-  curve = 0.5f // Defaults to 0.25f
-  edge = 0.1f // Defaults to 0f
-  tint = Color.White.copy(alpha = 0.2f) // Defaults to Color.Unspecified
+  // Defaults to 0.dp
+  frost = 10.dp
+  // Defaults to CircleShape
+  shape = RoundedCornerShape(25)
+  // Defaults to 0.25f
+  refraction = 0.5f
+  // Defaults to 0.25f
+  curve = 0.5f
+  // Defaults to 0f
+  edge = 0.1f
+  // Defaults to Color.Unspecified
+  tint = Color.White.copy(alpha = 0.2f)
+  // Defaults to 1f
+  saturation = 1.5f
 }
 ```
 
@@ -133,6 +141,11 @@ On Android 12 and lower, this becomes a boolean where a value > 0f draws a fixed
 
 This is an optional value that is mainly provided for convenience. Most use cases will require some tint, so you can avoid applying an
 additional `background` modifier by setting everything in your `liquid` modifier.
+
+#### Saturation
+
+Adjusts the vibrancy of the sampled pixels. A value greater than 1f create more vibrant and vivid colors, while a value less than 1f
+creates duller more muted color.
 
 ## Limitations
 
@@ -206,6 +219,7 @@ class.
 - Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](./samples/app/src/main/res/drawable-nodpi/northern_lights.webp)
 - Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](./samples/app/src/main/res/drawable-nodpi/ny_city.webp).
 - Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](./samples/app/src/main/res/drawable-nodpi/dotonbori.webp).
+- Efrem Efre [@efrem-efre-2786187](https://www.pexels.com/@efrem-efre-2786187/) for the [prague_clock.webp](./samples/app/src/main/res/drawable-nodpi/prague_clock.webp).
 
 ## License
 

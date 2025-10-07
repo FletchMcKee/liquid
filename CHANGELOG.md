@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+  New:
+  - Liquid node rotationZ and scale support ([#29](https://github.com/FletchMcKee/liquid/pull/29))
+  - Added `saturation` as a new LiquidScope property ([#29](https://github.com/FletchMcKee/liquid/pull/29)).
+
 ## [0.2.0]
 
   - Improved lens effect using spherical lens refraction ([#26](https://github.com/FletchMcKee/liquid/pull/26))
