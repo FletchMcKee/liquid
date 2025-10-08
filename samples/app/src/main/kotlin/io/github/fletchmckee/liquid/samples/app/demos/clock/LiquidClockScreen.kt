@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,7 +48,10 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
-import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidSliders
+import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidControls
+import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
+import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
@@ -59,18 +61,20 @@ import kotlinx.coroutines.delay
 fun LiquidClockScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
-  useLiquid: Boolean = true,
-  initialFrost: Float = 0f,
+  disableAnimation: Boolean = false,
 ) = Box(modifier) {
+  val initialFrost = LocalInitialFrost.current
+  val initialDispersion = LocalInitialDispersion.current
+
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
   var curve by rememberSaveable { mutableFloatStateOf(0.25f) }
   var saturation by rememberSaveable { mutableFloatStateOf(1f) }
+  var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
 
-  PragueClockBackground(liquidState, useLiquid)
+  PragueClockBackground(liquidState)
 
   ClockTimer(
     liquidState = liquidState,
-    useLiquid = useLiquid,
     modifier = Modifier
       .padding(top = 72.dp)
       .size(250.dp)
@@ -79,10 +83,11 @@ fun LiquidClockScreen(
 
   LiquidRotatingBox(
     liquidState = liquidState,
-    useLiquid = useLiquid,
+    disableAnimation = disableAnimation,
     frostProvider = { frostRadius },
     curveProvider = { curve },
     saturationProvider = { saturation },
+    dispersionProvider = { dispersion },
     modifier = Modifier
       .zIndex(2f)
       .padding(top = 72.dp)
@@ -90,32 +95,33 @@ fun LiquidClockScreen(
       .align(Alignment.TopCenter),
   )
 
-  LiquidSliders(
+  LiquidControls(
     liquidState = liquidState,
-    useLiquid = useLiquid,
     showSliders = true,
-    containerFrost = 20.dp,
     frostProvider = { frostRadius },
     onFrostChange = { frostRadius = it },
     curveProvider = { curve },
     onCurveChange = { curve = it },
     saturationProvider = { saturation },
     onSaturationChange = { saturation = it },
-    containerShape = RoundedCornerShape(10),
+    dispersionProvider = { dispersion },
+    onDispersionChange = { dispersion = it },
+    containerShape = RoundedCornerShape(8),
+    containerFrost = 30.dp,
+    containerRefraction = 0.08f,
   )
 }
 
 @Composable
 private fun PragueClockBackground(
   liquidState: LiquidState,
-  useLiquid: Boolean,
 ) = Image(
   painter = painterResource(R.drawable.prague_clock),
   contentDescription = null,
   contentScale = ContentScale.Crop,
   modifier = Modifier
     .fillMaxSize()
-    .thenIf(useLiquid) {
+    .thenIf(LocalUseLiquid.current) {
       liquefiable(liquidState)
     },
 )
@@ -123,9 +129,9 @@ private fun PragueClockBackground(
 @Composable
 private fun ClockTimer(
   liquidState: LiquidState,
-  useLiquid: Boolean,
   modifier: Modifier = Modifier,
 ) {
+  val useLiquid = LocalUseLiquid.current
   val startTime = remember { System.currentTimeMillis() }
   var elapsedMillis by remember { mutableLongStateOf(0L) }
 
@@ -155,7 +161,7 @@ private fun ClockTimer(
         // Prevents text jitter during continuous transformations.
         compositingStrategy = CompositingStrategy.Offscreen
       }
-      .background(Color.White.copy(alpha = 0.75f), CircleShape)
+      .background(Color.White.copy(alpha = 0.75f), RoundedCornerShape(30))
       .padding(16.dp),
   )
 }
@@ -163,19 +169,22 @@ private fun ClockTimer(
 @Composable
 private fun LiquidRotatingBox(
   liquidState: LiquidState,
-  useLiquid: Boolean,
+  disableAnimation: Boolean,
   frostProvider: () -> Float,
   curveProvider: () -> Float,
   saturationProvider: () -> Float,
+  dispersionProvider: () -> Float,
   modifier: Modifier = Modifier,
   boxShape: Shape = RoundedCornerShape(30),
 ) {
+  val useLiquid = LocalUseLiquid.current
   var dragOffset by remember { mutableStateOf(Offset.Zero) }
 
   val infiniteTransition = rememberInfiniteTransition()
+  // We're starting at 45 degrees and 1.2 scale for screenshot testing.
   val rotation by infiniteTransition.animateFloat(
-    initialValue = 0f,
-    targetValue = 720f,
+    initialValue = 45f,
+    targetValue = if (disableAnimation) 45f else 765f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Restart,
@@ -184,8 +193,8 @@ private fun LiquidRotatingBox(
   )
 
   val scale by infiniteTransition.animateFloat(
-    initialValue = 0.8f,
-    targetValue = 1.2f,
+    initialValue = 1.2f,
+    targetValue = if (disableAnimation) 1.2f else 0.8f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Reverse,
@@ -217,6 +226,7 @@ private fun LiquidRotatingBox(
           saturation = saturationProvider()
           shape = boxShape
           edge = 0.05f
+          dispersion = dispersionProvider()
         }
       },
   )

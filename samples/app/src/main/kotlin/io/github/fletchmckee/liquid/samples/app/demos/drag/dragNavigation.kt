@@ -14,13 +14,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object Drag
 
-fun NavGraphBuilder.dragDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<Drag> {
+fun NavGraphBuilder.dragDestination() = composable<Drag> {
   LiquidDraggableScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
     modifier = Modifier
       .fillMaxSize()
       .consumeWindowInsets(WindowInsets.systemBars),

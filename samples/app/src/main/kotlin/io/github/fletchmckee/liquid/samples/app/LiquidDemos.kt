@@ -96,10 +96,7 @@ fun LiquidDemos(
   ) {
     demosListDestination(navController)
 
-    dragDestination(
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    )
+    dragDestination()
 
     gridDestination(
       useLiquid = useLiquid,
@@ -121,10 +118,7 @@ fun LiquidDemos(
       initialFrost = initialFrost,
     )
 
-    clockDestination(
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    )
+    clockDestination()
   }
 }
 

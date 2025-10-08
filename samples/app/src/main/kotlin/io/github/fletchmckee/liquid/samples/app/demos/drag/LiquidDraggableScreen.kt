@@ -38,16 +38,19 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
+import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
+import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
 fun LiquidDraggableScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
-  useLiquid: Boolean = true,
-  initialFrost: Float = 0f,
   sliderContainerColor: Color = MaterialTheme.colorScheme.surface,
 ) {
+  val initialFrost = LocalInitialFrost.current
+  val initialDispersion = LocalInitialDispersion.current
   // Liquid shader properties
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
   var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
@@ -55,26 +58,22 @@ fun LiquidDraggableScreen(
   var edge by rememberSaveable { mutableFloatStateOf(0.05f) }
   var saturation by rememberSaveable { mutableFloatStateOf(1f) }
   var cornerPercent by rememberSaveable { mutableIntStateOf(25) }
+  var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
 
   var showSliders by rememberSaveable { mutableStateOf(true) }
 
   Box(modifier) {
-    PagerBackground(
-      liquidState = liquidState,
-      useLiquid = useLiquid,
-    )
+    PagerBackground(liquidState)
 
     SettingsButton(
       liquidState = liquidState,
       onClick = { showSliders = !showSliders },
-      useLiquid = useLiquid,
       containerColor = sliderContainerColor,
       modifier = Modifier.align(Alignment.TopStart),
     )
 
-    LiquidSliders(
+    LiquidControls(
       liquidState = liquidState,
-      useLiquid = useLiquid,
       showSliders = showSliders,
       frostProvider = { frostRadius },
       onFrostChange = { frostRadius = it },
@@ -88,6 +87,8 @@ fun LiquidDraggableScreen(
       onSaturationChange = { saturation = it },
       cornerPercentProvider = { cornerPercent },
       onCornerPercentChange = { cornerPercent = it },
+      dispersionProvider = { dispersion },
+      onDispersionChange = { dispersion = it },
       containerColor = sliderContainerColor,
     )
 
@@ -99,6 +100,7 @@ fun LiquidDraggableScreen(
       edgeProvider = { edge },
       saturationProvider = { saturation },
       cornerPercentProvider = { cornerPercent },
+      dispersionProvider = { dispersion },
     )
   }
 }
@@ -106,13 +108,12 @@ fun LiquidDraggableScreen(
 @Composable
 private fun PagerBackground(
   liquidState: LiquidState,
-  useLiquid: Boolean,
   pagerState: PagerState = rememberPagerState { 3 },
 ) = HorizontalPager(
   state = pagerState,
   modifier = Modifier
     .fillMaxSize()
-    .thenIf(useLiquid) {
+    .thenIf(LocalUseLiquid.current) {
       liquefiable(liquidState)
     },
 ) { page ->
@@ -133,7 +134,6 @@ private fun PagerBackground(
 private fun SettingsButton(
   liquidState: LiquidState,
   onClick: () -> Unit,
-  useLiquid: Boolean,
   containerColor: Color,
   modifier: Modifier = Modifier,
 ) = IconButton(
@@ -143,7 +143,7 @@ private fun SettingsButton(
     .padding(top = 48.dp, start = 32.dp)
     .zIndex(3f)
     .shadow(elevation = 2.dp, shape = CircleShape)
-    .thenIf(useLiquid) {
+    .thenIf(LocalUseLiquid.current) {
       liquid(liquidState) {
         frost = 10.dp
         shape = CircleShape

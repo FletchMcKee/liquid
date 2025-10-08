@@ -35,6 +35,7 @@ class LiquidScopeTest {
     assertThat(scope.edge).isZero()
     assertThat(scope.tint).isEqualTo(Color.Unspecified)
     assertThat(scope.saturation).isEqualTo(1f)
+    assertThat(scope.dispersion).isZero()
     assertThat(scope.argbColor).isZero()
     assertThat(scope.size).isEqualTo(Size.Unspecified)
     assertThat(scope.positionOnScreen).isEqualTo(Offset.Zero)
@@ -131,6 +132,15 @@ class LiquidScopeTest {
     scope.saturation = 1.5f
     assertThat(scope.saturation).isEqualTo(1.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Saturation)
+    // Verify the RenderEffect and InvalidateFlags are not 0.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+  }
+
+  @Test fun `dispersion mutations observed`() {
+    scope.dispersion = 0.5f
+    assertThat(scope.dispersion).isEqualTo(0.5f)
+    assertThat(scope.mutatedFields).isEqualTo(Fields.Dispersion)
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()

@@ -46,6 +46,9 @@ jobs:
       - name: Spotless check
         run: ./gradlew spotlessCheck
 
+      - name: API check
+        run: ./gradlew apiCheck
+
       - name: Run Roborazzi screenshot tests
         id: screenshotsverify
         continue-on-error: true

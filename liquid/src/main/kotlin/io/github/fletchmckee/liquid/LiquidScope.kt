@@ -76,11 +76,23 @@ public interface LiquidScope {
   /**
    * Adjusts the color saturation of the content behind the liquid effect.
    *
-   * Values greater than 1.0 create more vivid colors, while values less than 1.0
+   * Values greater than 1f create more vivid colors, while values less than 1f
    * decrease create more muted colors. A value of 0f results in grayscale.
    *
    * Defaults to 1f (no saturation change).
    */
   @setparam:FloatRange(from = 0.0)
   public var saturation: Float
+
+  /**
+   * Controls the chromatic aberration effect, which separates RGB channels to simulate
+   * light dispersion through a lens.
+   *
+   * Higher values create more pronounced color separation, similar to light passing through
+   * a prism. Set to 0f to disable chromatic aberration.
+   *
+   * Defaults to 0f. No-op on API 32 and lower. Negative values are ignored.
+   */
+  @setparam:FloatRange(from = 0.0)
+  public var dispersion: Float
 }

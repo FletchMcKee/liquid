@@ -19,8 +19,13 @@ class MainActivity : ComponentActivity() {
     val startDestination = intent.getStringExtra(START_DESTINATION).toStartDestination()
     val useLiquid = intent.getBooleanExtra(USE_LIQUID, true)
     val initialFrost = intent.getFloatExtra(INITIAL_FROST, 0f)
+    val initialDispersion = intent.getFloatExtra(INITIAL_DISPERSION, 0f)
     setContent {
-      LiquidTheme {
+      LiquidTheme(
+        useLiquid = useLiquid,
+        initialFrost = initialFrost,
+        initialDispersion = initialDispersion,
+      ) {
         LiquidDemos(
           startDestination = startDestination,
           useLiquid = useLiquid,
@@ -47,6 +52,7 @@ class MainActivity : ComponentActivity() {
     const val START_DESTINATION = "$PACKAGE_NAME.START_DESTINATION"
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"
+    const val INITIAL_DISPERSION = "$PACKAGE_NAME.INITIAL_DISPERSION"
 
     enum class StartDestination { DemosList, Drag, Grid, StickyHeader, Many }
   }
