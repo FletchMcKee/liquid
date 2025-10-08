@@ -40,6 +40,8 @@ import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.BlueRedGradient
 import io.github.fletchmckee.liquid.samples.app.utils.isCI
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
@@ -50,9 +52,10 @@ import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 fun LiquidGridScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
-  useLiquid: Boolean = true,
-  initialFrost: Float = 0f,
 ) {
+  val useLiquid = LocalUseLiquid.current
+  val initialFrost = LocalInitialFrost.current
+
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
 
   LiquidScaffold(

@@ -40,6 +40,8 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
+import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.BlueRedGradient
 import io.github.fletchmckee.liquid.samples.app.utils.isCI
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
@@ -49,28 +51,21 @@ import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 fun ManyLiquidNodesScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
-  useLiquid: Boolean = true,
-  initialFrost: Float = 0f,
 ) = Box(modifier) {
-  DotonboriBackground(liquidState, useLiquid)
-  LiquidNodesList(
-    liquidState = liquidState,
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
-  )
+  DotonboriBackground(liquidState)
+  LiquidNodesList(liquidState)
 }
 
 @Composable
 private fun DotonboriBackground(
   liquidState: LiquidState,
-  useLiquid: Boolean,
 ) = Image(
   painter = painterResource(R.drawable.dotonbori),
   contentDescription = null,
   contentScale = ContentScale.Crop,
   modifier = Modifier
     .fillMaxSize()
-    .thenIf(useLiquid) {
+    .thenIf(LocalUseLiquid.current) {
       liquefiable(liquidState)
     },
 )
@@ -78,8 +73,6 @@ private fun DotonboriBackground(
 @Composable
 private fun LiquidNodesList(
   liquidState: LiquidState,
-  useLiquid: Boolean,
-  initialFrost: Float,
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
@@ -98,8 +91,8 @@ private fun LiquidNodesList(
     LiquidCard(
       liquidState = liquidState,
       index = index,
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
+      useLiquid = LocalUseLiquid.current,
+      initialFrost = LocalInitialFrost.current,
     )
   }
 }

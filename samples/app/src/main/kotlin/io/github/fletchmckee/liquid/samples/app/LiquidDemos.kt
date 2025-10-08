@@ -95,29 +95,11 @@ fun LiquidDemos(
     modifier = modifier.fillMaxSize(),
   ) {
     demosListDestination(navController)
-
     dragDestination()
-
-    gridDestination(
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    )
-
-    stickyHeaderDestination(
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    )
-
-    manyDestination(
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    )
-
-    popupDestination(
-      useLiquid = useLiquid,
-      initialFrost = initialFrost,
-    )
-
+    gridDestination()
+    stickyHeaderDestination()
+    manyDestination()
+    popupDestination()
     clockDestination()
   }
 }

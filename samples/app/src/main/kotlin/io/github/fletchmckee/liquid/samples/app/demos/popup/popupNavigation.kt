@@ -14,13 +14,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object Popup
 
-fun NavGraphBuilder.popupDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<Popup> {
+fun NavGraphBuilder.popupDestination() = composable<Popup> {
   LiquidPopupScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
     modifier = Modifier
       .fillMaxSize()
       .consumeWindowInsets(WindowInsets.systemBars),

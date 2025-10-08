@@ -11,13 +11,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object Grid
 
-fun NavGraphBuilder.gridDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<Grid> {
+fun NavGraphBuilder.gridDestination() = composable<Grid> {
   LiquidGridScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
     modifier = Modifier.fillMaxSize(),
   )
 }

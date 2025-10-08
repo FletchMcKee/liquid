@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app.utils
 
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -15,7 +17,10 @@ import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.IntOffset
 import io.github.fletchmckee.liquid.samples.app.BuildConfig as AndroidBuildConfig
+import kotlin.math.roundToInt
 import liquid_root.samples.app.BuildConfig
 
 // Used for benchmarks so that we can compare performance with none of the library's effects added.
@@ -30,6 +35,20 @@ internal fun Modifier.blendMode(blendMode: BlendMode): Modifier = drawWithCache 
 
   onDrawWithContent { drawLayer(layer) }
 }
+
+internal fun Modifier.drag(
+  dragProvider: () -> Offset,
+  onDragChange: (Offset) -> Unit,
+): Modifier = this then Modifier
+  .offset { IntOffset(dragProvider().x.roundToInt(), dragProvider().y.roundToInt()) }
+  .pointerInput(Unit) {
+    detectDragGestures { change, dragAmount ->
+      change.consume()
+      val x = dragProvider().x + dragAmount.x
+      val y = dragProvider().y + dragAmount.y
+      onDragChange(Offset(x, y))
+    }
+  }
 
 @Composable
 internal fun rememberShaderBrush(

@@ -122,8 +122,8 @@ class LiquidScreenshotTest {
     LiquidGridScreen()
   }
 
-  @Test fun capture_grid_10_dp_frost() = runScreenshotTest {
-    LiquidGridScreen(initialFrost = 10f)
+  @Test fun capture_grid_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
+    LiquidGridScreen()
   }
 
   @Test fun capture_sticky_header_no_frost_scrolled() = runScreenshotTest(
@@ -135,19 +135,23 @@ class LiquidScreenshotTest {
   )
 
   @Test fun capture_sticky_header_10_dp_frost_scrolled() = runScreenshotTest(
+    initialFrost = 10f,
     performAction = {
       onNodeWithTag("stickyHeaderList")
         .performScrollToNode(hasTestTag("imageItem99"))
     },
-    content = { LiquidStickyHeaderScreen(initialFrost = 10f) },
+    content = { LiquidStickyHeaderScreen() },
   )
 
   @Test fun capture_many_liquid_nodes_no_frost() = runScreenshotTest(darkMode = false) {
     ManyLiquidNodesScreen()
   }
 
-  @Test fun capture_many_liquid_nodes_10_dp_frost() = runScreenshotTest(darkMode = false) {
-    ManyLiquidNodesScreen(initialFrost = 10f)
+  @Test fun capture_many_liquid_nodes_10_dp_frost() = runScreenshotTest(
+    darkMode = false,
+    initialFrost = 10f,
+  ) {
+    ManyLiquidNodesScreen()
   }
 
   @Test fun capture_clock_no_frost() = runScreenshotTest {

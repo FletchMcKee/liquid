@@ -11,13 +11,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object Many
 
-fun NavGraphBuilder.manyDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<Many> {
+fun NavGraphBuilder.manyDestination() = composable<Many> {
   ManyLiquidNodesScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
     modifier = Modifier.fillMaxSize(),
   )
 }

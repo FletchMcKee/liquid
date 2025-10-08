@@ -11,13 +11,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object StickyHeader
 
-fun NavGraphBuilder.stickyHeaderDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<StickyHeader> {
+fun NavGraphBuilder.stickyHeaderDestination() = composable<StickyHeader> {
   LiquidStickyHeaderScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
     modifier = Modifier.fillMaxSize(),
   )
 }

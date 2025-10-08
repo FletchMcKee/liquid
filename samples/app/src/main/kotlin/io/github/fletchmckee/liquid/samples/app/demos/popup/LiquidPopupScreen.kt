@@ -51,15 +51,18 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
+import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
 fun LiquidPopupScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
-  useLiquid: Boolean = true,
-  initialFrost: Float = 0f,
 ) = Box(modifier) {
+  val useLiquid = LocalUseLiquid.current
+  val initialFrost = LocalInitialFrost.current
+
   var showPopup by rememberSaveable { mutableStateOf(false) }
   NyCityBackground(
     liquidState = liquidState,

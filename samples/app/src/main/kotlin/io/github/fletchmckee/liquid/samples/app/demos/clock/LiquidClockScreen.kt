@@ -9,10 +9,8 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -35,11 +33,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -52,8 +48,8 @@ import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidControls
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
+import io.github.fletchmckee.liquid.samples.app.utils.drag
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
-import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
@@ -183,8 +179,8 @@ private fun LiquidRotatingBox(
   val infiniteTransition = rememberInfiniteTransition()
   // We're starting at 45 degrees and 1.2 scale for screenshot testing.
   val rotation by infiniteTransition.animateFloat(
-    initialValue = 45f,
-    targetValue = if (disableAnimation) 45f else 765f,
+    initialValue = if (disableAnimation) 45f else 0f,
+    targetValue = if (disableAnimation) 45f else 720f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Restart,
@@ -193,8 +189,8 @@ private fun LiquidRotatingBox(
   )
 
   val scale by infiniteTransition.animateFloat(
-    initialValue = 1.2f,
-    targetValue = if (disableAnimation) 1.2f else 0.8f,
+    initialValue = if (disableAnimation) 1.2f else 0.8f,
+    targetValue = if (disableAnimation) 1.2f else 1.2f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Reverse,
@@ -204,15 +200,10 @@ private fun LiquidRotatingBox(
 
   Box(
     modifier
-      .offset { IntOffset(dragOffset.x.roundToInt(), dragOffset.y.roundToInt()) }
-      .pointerInput(Unit) {
-        detectDragGestures { change, dragAmount ->
-          change.consume()
-          val x = dragOffset.x + dragAmount.x
-          val y = dragOffset.y + dragAmount.y
-          dragOffset = Offset(x, y)
-        }
-      }
+      .drag(
+        dragProvider = { dragOffset },
+        onDragChange = { dragOffset = it },
+      )
       .graphicsLayer {
         rotationZ = rotation
         scaleX = scale
