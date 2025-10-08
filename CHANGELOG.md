@@ -5,6 +5,10 @@
   New:
   - Liquid node rotationZ and scale support ([#29](https://github.com/FletchMcKee/liquid/pull/29))
   - Added `saturation` as a new LiquidScope property ([#29](https://github.com/FletchMcKee/liquid/pull/29)).
+  - Added `dispersion` as a new LiquidScope property ([#32](https://github.com/FletchMcKee/liquid/pull/32)).
+
+  Fixed:
+  - Fixed a normalize/divide by zero bug that was causing lines to appear in some shapes ([#29](https://github.com/FletchMcKee/liquid/pull/29)).
 
 ## [0.2.0]
 

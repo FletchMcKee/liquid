@@ -80,6 +80,7 @@ class LiquidNodeTest {
         assertThat(scope.edge).isZero()
         assertThat(scope.tint).isEqualTo(Color.Unspecified)
         assertThat(scope.saturation).isEqualTo(1f)
+        assertThat(scope.dispersion).isZero()
       }
     }
   }
@@ -553,7 +554,7 @@ class LiquidNodeTest {
   )
 
   @Test fun liquidNode_reactsToTintChanges() = runLiquidScopeTest(
-    initialValue = Color.Red,
+    initialValue = Color.Unspecified,
     changedValue = Color.Green,
     finalValue = Color.Blue,
     onUpdate = { tint = it },
@@ -564,6 +565,13 @@ class LiquidNodeTest {
     changedValue = 1.5f,
     finalValue = 0.5f,
     onUpdate = { saturation = it },
+  )
+
+  @Test fun liquidNode_reactsToDispersionChanges() = runLiquidScopeTest(
+    initialValue = 0f,
+    changedValue = 0.5f,
+    finalValue = 1f,
+    onUpdate = { dispersion = it },
   )
 
   private fun <T> runLiquidScopeTest(
