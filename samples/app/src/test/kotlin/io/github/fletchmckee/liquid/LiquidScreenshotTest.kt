@@ -151,15 +151,15 @@ class LiquidScreenshotTest {
   }
 
   @Test fun capture_clock_no_frost() = runScreenshotTest {
-    LiquidClockScreen()
+    LiquidClockScreen(disableAnimation = true)
   }
 
   @Test fun capture_clock_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
-    LiquidClockScreen()
+    LiquidClockScreen(disableAnimation = true)
   }
 
   @Test fun capture_clock_quarter_dispersion_no_frost() = runScreenshotTest(initialDispersion = 0.25f) {
-    LiquidClockScreen()
+    LiquidClockScreen(disableAnimation = true)
   }
 
   private fun runScreenshotTest(

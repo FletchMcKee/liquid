@@ -61,6 +61,7 @@ import kotlinx.coroutines.delay
 fun LiquidClockScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
+  disableAnimation: Boolean = false,
 ) = Box(modifier) {
   val initialFrost = LocalInitialFrost.current
   val initialDispersion = LocalInitialDispersion.current
@@ -82,6 +83,7 @@ fun LiquidClockScreen(
 
   LiquidRotatingBox(
     liquidState = liquidState,
+    disableAnimation = disableAnimation,
     frostProvider = { frostRadius },
     curveProvider = { curve },
     saturationProvider = { saturation },
@@ -167,6 +169,7 @@ private fun ClockTimer(
 @Composable
 private fun LiquidRotatingBox(
   liquidState: LiquidState,
+  disableAnimation: Boolean,
   frostProvider: () -> Float,
   curveProvider: () -> Float,
   saturationProvider: () -> Float,
@@ -181,7 +184,7 @@ private fun LiquidRotatingBox(
   // We're starting at 45 degrees and 1.2 scale for screenshot testing.
   val rotation by infiniteTransition.animateFloat(
     initialValue = 45f,
-    targetValue = 765f,
+    targetValue = if (disableAnimation) 45f else 765f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Restart,
@@ -191,7 +194,7 @@ private fun LiquidRotatingBox(
 
   val scale by infiniteTransition.animateFloat(
     initialValue = 1.2f,
-    targetValue = 0.8f,
+    targetValue = if (disableAnimation) 1.2f else 0.8f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Reverse,
