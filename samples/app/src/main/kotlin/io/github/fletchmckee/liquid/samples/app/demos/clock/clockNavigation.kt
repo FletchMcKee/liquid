@@ -14,13 +14,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object Clock
 
-fun NavGraphBuilder.clockDestination(
-  useLiquid: Boolean = true,
-  initialFrost: Float = 10f,
-) = composable<Clock> {
+fun NavGraphBuilder.clockDestination() = composable<Clock> {
   LiquidClockScreen(
-    useLiquid = useLiquid,
-    initialFrost = initialFrost,
     modifier = Modifier
       .fillMaxSize()
       .consumeWindowInsets(WindowInsets.systemBars),

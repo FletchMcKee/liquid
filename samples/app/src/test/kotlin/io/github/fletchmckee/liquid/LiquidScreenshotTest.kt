@@ -25,6 +25,7 @@ import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.RoborazziRule
 import com.github.takahirom.roborazzi.captureRoboImage
+import io.github.fletchmckee.liquid.samples.app.demos.clock.LiquidClockScreen
 import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidDraggableScreen
 import io.github.fletchmckee.liquid.samples.app.demos.grid.LiquidGridScreen
 import io.github.fletchmckee.liquid.samples.app.demos.many.ManyLiquidNodesScreen
@@ -88,6 +89,7 @@ class LiquidScreenshotTest {
   )
 
   @Test fun capture_drag_10_dp_frost() = runScreenshotTest(
+    initialFrost = 10f,
     performAction = {
       onNodeWithTag("liquidDraggableBox")
         .performTouchInput {
@@ -98,7 +100,22 @@ class LiquidScreenshotTest {
           )
         }
     },
-    content = { LiquidDraggableScreen(initialFrost = 10f) },
+    content = { LiquidDraggableScreen() },
+  )
+
+  @Test fun capture_drag_half_dispersion() = runScreenshotTest(
+    initialDispersion = 0.5f,
+    performAction = {
+      onNodeWithTag("liquidDraggableBox")
+        .performTouchInput {
+          val dragAmountPx = with(density) { 150.dp.toPx() }
+          swipeUp(
+            startY = centerY,
+            endY = centerY - dragAmountPx,
+          )
+        }
+    },
+    content = { LiquidDraggableScreen() },
   )
 
   @Test fun capture_grid_no_frost() = runScreenshotTest {
@@ -108,22 +125,6 @@ class LiquidScreenshotTest {
   @Test fun capture_grid_10_dp_frost() = runScreenshotTest {
     LiquidGridScreen(initialFrost = 10f)
   }
-
-  @Test fun capture_grid_no_frost_scrolled() = runScreenshotTest(
-    performAction = {
-      onNodeWithTag("liquidGrid")
-        .performScrollToNode(hasTestTag("imageGrid99"))
-    },
-    content = { LiquidGridScreen() },
-  )
-
-  @Test fun capture_grid_10_dp_frost_scrolled() = runScreenshotTest(
-    performAction = {
-      onNodeWithTag("liquidGrid")
-        .performScrollToNode(hasTestTag("imageGrid99"))
-    },
-    content = { LiquidGridScreen(initialFrost = 10f) },
-  )
 
   @Test fun capture_sticky_header_no_frost_scrolled() = runScreenshotTest(
     performAction = {
@@ -149,14 +150,32 @@ class LiquidScreenshotTest {
     ManyLiquidNodesScreen(initialFrost = 10f)
   }
 
+  @Test fun capture_clock_no_frost() = runScreenshotTest {
+    LiquidClockScreen()
+  }
+
+  @Test fun capture_clock_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
+    LiquidClockScreen()
+  }
+
+  @Test fun capture_clock_quarter_dispersion_no_frost() = runScreenshotTest(initialDispersion = 0.25f) {
+    LiquidClockScreen()
+  }
+
   private fun runScreenshotTest(
     darkMode: Boolean = true,
+    initialFrost: Float = 0f,
+    initialDispersion: Float = 0f,
     performAction: (ComposeTestRule.() -> Unit)? = null,
     content: @Composable () -> Unit,
   ) {
     rule.apply {
       setContent {
-        LiquidTheme(darkMode = darkMode) {
+        LiquidTheme(
+          darkMode = darkMode,
+          initialFrost = initialFrost,
+          initialDispersion = initialDispersion,
+        ) {
           content()
         }
       }

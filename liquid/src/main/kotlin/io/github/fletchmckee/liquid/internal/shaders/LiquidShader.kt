@@ -14,6 +14,7 @@ internal const val LiquidShader = """
   uniform float edge;
   layout(color) uniform half4 tint;
   uniform float saturation;
+  uniform float dispersion;
 
   const float EPSILON = 0.001;
 
@@ -57,17 +58,28 @@ internal const val LiquidShader = """
     float2 sdfNormal = computeSdfNormal(shapeCoord, shapeSize * 0.5, lensVr);
 
     half4 fragColor;
+    float2 baseCoord = fragCoord;
+    // Applies the lens effect.
     if (refraction > 0.0 && curve > 0.0) {
-      // Using sdf radial-based distortion instead of sine-based, much closer to Apple's effect.
       float lensDepth = 1.0 - saturate(-shapeSdf / refraction);
       float distortion = 1.0 - sqrt(1.0 - lensDepth * lensDepth);
       float normalDisplacement = distortion * -curve * minDimension;
-      float2 lensCoord = fragCoord + normalDisplacement * sdfNormal;
+      baseCoord = fragCoord + normalDisplacement * sdfNormal;
+    }
 
-      fragColor = content.eval(lensCoord);
+    // Applies the dispersion effect.
+    if (dispersion > 0.0) {
+      float2 distFromCenter = (fragCoord - center) / liquidSize;
+      // Cubic multiply is more efficient than pow() for integer exponents.
+      // Also pow() didn't work for screenshot tests while this does.
+      float2 aberration = dispersion * distFromCenter * distFromCenter * distFromCenter * minDimension;
+
+      half4 colorR = content.eval(baseCoord - aberration);
+      half4 colorG = content.eval(baseCoord);
+      half4 colorB = content.eval(baseCoord + aberration);
+      fragColor = half4(colorR.r, colorG.g, colorB.b, colorG.a);
     } else {
-      // No lens effect, just use the original coordinates
-      fragColor = content.eval(fragCoord);
+      fragColor = content.eval(baseCoord);
     }
 
     fragColor.rgb = applyColorAdjustments(fragColor.rgb);

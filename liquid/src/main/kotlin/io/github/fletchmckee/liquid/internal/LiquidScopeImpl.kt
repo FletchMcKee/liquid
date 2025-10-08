@@ -106,6 +106,14 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
+  override var dispersion: Float = 0f
+    set(value) {
+      if (field != value) {
+        mutatedFields = mutatedFields or Fields.Dispersion
+        field = value
+      }
+    }
+
   override var density: Density = Density(1f)
     set(value) {
       if (field != value) {
@@ -259,6 +267,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       edge = edge,
       argbColor = argbColor,
       saturation = saturation,
+      dispersion = dispersion,
     )
 
     val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
@@ -308,13 +317,14 @@ internal object Fields {
   const val Size: Int = 0b1 shl 5
   const val Tint: Int = 0b1 shl 6
   const val Saturation: Int = 0b1 shl 7
+  const val Dispersion: Int = 0b1 shl 8
 
   // These don't require updating the RenderEffect, but they do require invalidating the draw.
-  const val PositionOnScreen: Int = 0b1 shl 8
-  const val Rotation: Int = 0b1 shl 9
-  const val ScaleX: Int = 0b1 shl 10
-  const val ScaleY: Int = 0b1 shl 11
-  const val Liquefiables: Int = 0b1 shl 12
+  const val PositionOnScreen: Int = 0b1 shl 9
+  const val Rotation: Int = 0b1 shl 10
+  const val ScaleX: Int = 0b1 shl 11
+  const val ScaleY: Int = 0b1 shl 12
+  const val Liquefiables: Int = 0b1 shl 13
 
   // PositionOnScreen isn't a shader uniform as it's only used to translate liquefiables into the correct space.
   const val RenderEffectFields: Int =
@@ -325,7 +335,8 @@ internal object Fields {
       Edge or
       Size or
       Tint or
-      Saturation
+      Saturation or
+      Dispersion
 
   const val InvalidateFlags: Int =
     RenderEffectFields or

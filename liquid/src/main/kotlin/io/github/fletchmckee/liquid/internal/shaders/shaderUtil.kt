@@ -17,6 +17,7 @@ internal fun RuntimeShader.setLiquidUniforms(
   edge: Float,
   argbColor: Int,
   saturation: Float,
+  dispersion: Float,
 ) {
   setFloatUniform(
     "effectRect",
@@ -31,6 +32,7 @@ internal fun RuntimeShader.setLiquidUniforms(
   setFloatUniform("edge", edge)
   setColorUniform("tint", argbColor)
   setFloatUniform("saturation", saturation)
+  setFloatUniform("dispersion", dispersion)
 }
 
 internal fun RuntimeShader.setFrostUniforms(

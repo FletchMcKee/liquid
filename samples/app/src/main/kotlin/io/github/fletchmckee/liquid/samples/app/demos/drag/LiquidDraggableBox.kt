@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
+import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
@@ -52,12 +53,13 @@ fun BoxScope.LiquidDraggableBox(
   edgeProvider: () -> Float,
   saturationProvider: () -> Float,
   cornerPercentProvider: () -> Int,
+  dispersionProvider: () -> Float,
   modifier: Modifier = Modifier,
   boxShape: Shape = RoundedCornerShape(cornerPercentProvider()),
-  useLiquid: Boolean = true,
   colors: List<Color> = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent),
   shaderBrush: ShaderBrush = rememberShaderBrush(colors),
 ) {
+  val useLiquid = LocalUseLiquid.current
   var dragOffset by remember { mutableStateOf(Offset.Zero) }
 
   Box(
@@ -85,6 +87,7 @@ fun BoxScope.LiquidDraggableBox(
           curve = curveProvider()
           edge = edgeProvider()
           saturation = saturationProvider()
+          dispersion = dispersionProvider()
         }
       } // Brushes aren't supported in liquid at the moment but may be added later.
       .background(brush = shaderBrush, shape = boxShape),

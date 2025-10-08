@@ -84,12 +84,14 @@ Modifier.liquid(liquidState) {
   tint = Color.White.copy(alpha = 0.2f)
   // Defaults to 1f
   saturation = 1.5f
+  // Defaults to 0f
+  dispersion = 0.25f
 }
 ```
 
 #### Frost
 
-The frost parameter blurs the background contents resulting in a frost-like effect.
+Blurs the background contents resulting in a frost-like effect.
 You can also apply this effect while setting `refraction` or `curve` to 0f if you only want a blur effect. Any value below 0.dp is ignored.
 
 This property is no-op on Android 11 and lower.
@@ -102,14 +104,14 @@ This property is no-op on Android 11 and lower.
 
 #### Shape
 
-The shape is just like setting a shape in a `background` or `clip` modifier. However the shape plays an important role in the lens distortion
+Similar to setting a shape in a `background` or `clip` modifier. However the shape plays an important role in the lens distortion
 that creates the liquid effect. It distorts around the corners, so it's recommended (but not required) to use rounded corners. Applying
 `CircleShape` (RoundedCornerShape(50)) results in the best effect as it creates smooth distortions whether it is a true circle or a
 capsule-shaped composable.
 
 #### Refraction
 
-The refraction controls how much the background distorts through the liquid lens. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.curve` value.
+Controls how much the background distorts through the liquid lens. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.curve` value.
 
 This property is no-op on Android 12 and lower.
 
@@ -119,7 +121,7 @@ This property is no-op on Android 12 and lower.
 
 #### Curve
 
-The curve adjusts how strongly the liquid lens curves at its center vs. edges. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.refraction` value.
+Adjusts how strongly the liquid lens curves at its center vs. edges. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.refraction` value.
 
 This property is no-op on Android 12 and lower.
 
@@ -129,7 +131,7 @@ This property is no-op on Android 12 and lower.
 
 #### Edge
 
-The edge determines the width of the rim lighting around the effect's edge. Higher values create a wider, softer edge and expand the region where rim lighting is applied. Set to `0f` to disable this effect.
+Determines the width of the rim lighting around the effect's edge. Higher values create a wider, softer edge and expand the region where rim lighting is applied. Set to `0f` to disable this effect.
 
 On Android 12 and lower, this becomes a boolean where a value > 0f draws a fixed width edge effect, and 0f removes it.
 
@@ -145,7 +147,13 @@ additional `background` modifier by setting everything in your `liquid` modifier
 #### Saturation
 
 Adjusts the vibrancy of the sampled pixels. A value greater than 1f create more vibrant and vivid colors, while a value less than 1f
-creates duller more muted color.
+creates duller and more muted colors.
+
+#### Dispersion
+
+Controls the strength of chromatic aberration, separating colors near the edges of the effect to create a prism-like effect.
+
+This property is no-op on Android 12 and lower.
 
 ## Limitations
 
@@ -216,6 +224,8 @@ class.
 [Liquid Glass example](https://www.shadertoy.com/view/wcKSRD).
 - The current spherical liquid lens effect was inspired by GitHub user [Kyant0](https://github.com/Kyant0) with their own
 [AndroidLiquidGlass](https://github.com/Kyant0/AndroidLiquidGlass) library.
+- The dispersion effect was inspired by ShaderToy user [PuZo](https://www.shadertoy.com/user/PuZo) with their
+[Chromatic Aberration example](https://www.shadertoy.com/view/ltByR3).
 - Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](./samples/app/src/main/res/drawable-nodpi/northern_lights.webp)
 - Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](./samples/app/src/main/res/drawable-nodpi/ny_city.webp).
 - Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](./samples/app/src/main/res/drawable-nodpi/dotonbori.webp).

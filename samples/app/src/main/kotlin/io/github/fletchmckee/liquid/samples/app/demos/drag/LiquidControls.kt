@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -53,13 +54,13 @@ import androidx.window.core.layout.WindowWidthSizeClass
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
+import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.isBenchmark
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
-fun BoxScope.LiquidSliders(
+fun BoxScope.LiquidControls(
   liquidState: LiquidState,
-  useLiquid: Boolean,
   showSliders: Boolean,
   modifier: Modifier = Modifier,
   frostProvider: (() -> Float)? = null,
@@ -74,11 +75,15 @@ fun BoxScope.LiquidSliders(
   onSaturationChange: (Float) -> Unit = {},
   cornerPercentProvider: (() -> Int)? = null,
   onCornerPercentChange: (Int) -> Unit = {},
+  dispersionProvider: (() -> Float)? = null,
+  onDispersionChange: (Float) -> Unit = {},
   windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
-  containerShape: Shape = RoundedCornerShape(15),
+  containerShape: Shape = RoundedCornerShape(10),
   containerColor: Color = MaterialTheme.colorScheme.surface,
   containerFrost: Dp = 15.dp,
+  containerRefraction: Float = 0.15f,
 ) {
+  val useLiquid = LocalUseLiquid.current
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
 
   AnimatedVisibility(
@@ -88,6 +93,7 @@ fun BoxScope.LiquidSliders(
     modifier = modifier
       .align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter)
       .fillMaxWidth(if (isLandscape) 0.4f else 1f)
+      .fillMaxHeight(if (isLandscape) 1f else 0.5f)
       .wrapContentHeight()
       .padding(if (isLandscape) PaddingValues.Zero else WindowInsets.systemBars.asPaddingValues())
       .padding(16.dp)
@@ -106,7 +112,7 @@ fun BoxScope.LiquidSliders(
           frost = containerFrost
           shape = containerShape
           curve = 0.15f
-          refraction = 0.15f
+          refraction = containerRefraction
           edge = 0.05f
           tint = containerColor
         }
@@ -150,7 +156,7 @@ fun BoxScope.LiquidSliders(
             text = "Curve",
             value = curveProvider(),
             onValueChange = onCurveChange,
-            steps = 59,
+            steps = 49,
             valueRange = 0f..0.5f,
           )
         }
@@ -187,6 +193,18 @@ fun BoxScope.LiquidSliders(
             formatter = "%,.0f",
             steps = 49,
             valueRange = 0.0f..50f,
+          )
+        }
+      }
+
+      dispersionProvider?.let {
+        item(key = "Dispersion") {
+          LiquidSliderRow(
+            text = "Dispersion",
+            value = dispersionProvider(),
+            onValueChange = onDispersionChange,
+            steps = 49,
+            valueRange = 0f..1f,
           )
         }
       }
