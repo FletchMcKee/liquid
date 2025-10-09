@@ -32,9 +32,9 @@ internal interface InternalLiquidScope : LiquidScope {
   var density: Density
   var size: Size
   var positionOnScreen: Offset
-  var scaleX: Float
-  var scaleY: Float
-  var rotationZ: Float
+  var inverseScaleX: Float
+  var inverseScaleY: Float
+  var inverseRotationZ: Float
   var boundsInRoot: Rect
   var liquefiables: List<Liquefiable>
 }
@@ -145,7 +145,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  override var rotationZ: Float = 0f
+  override var inverseRotationZ: Float = 0f
     set(value) {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.Rotation
@@ -153,7 +153,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  override var scaleX: Float = 1f
+  override var inverseScaleX: Float = 1f
     set(value) {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.ScaleX
@@ -161,7 +161,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  override var scaleY: Float = 1f
+  override var inverseScaleY: Float = 1f
     set(value) {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.ScaleY

@@ -28,39 +28,37 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   layer: GraphicsLayer,
   reusableScope: LiquidScopeImpl,
 ) {
-  val liquefiables = reusableScope.liquefiables
+  val overlapping = reusableScope.overlappingBounds
+  // Only record content inside the effect's bounds.
+  val liquefiables = reusableScope.liquefiables.filter { overlapping.overlaps(it.boundsOnScreen) }
   if (liquefiables.isEmpty()) return
 
   val bounds = reusableScope.recordingBounds
-  val overlapping = reusableScope.overlappingBounds
   val padding = reusableScope.frostRadius
   val pivot = Offset(padding, padding)
-  val scaleX = 1f / reusableScope.scaleX
-  val scaleY = 1f / reusableScope.scaleY
-  val rotationZ = reusableScope.rotationZ
+  val scaleX = reusableScope.inverseScaleX
+  val scaleY = reusableScope.inverseScaleY
+  val rotationZ = reusableScope.inverseRotationZ
   // We avoid unnecessary liquidScope invalidations by observing the mutableState boundsOnScreen
   // and layers here.
   layer.record(bounds.size.toIntSize()) {
-    liquefiables
-      // Only record content inside the effect's bounds.
-      .filter { overlapping.overlaps(it.boundsOnScreen) }
-      .forEach { liquefiable ->
-        liquefiable.layer
-          ?.takeUnless { it.isReleased || it.size.isEmpty }
-          ?.let { liquefiableLayer ->
-            // Position content where it should appear on screen.
-            val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - bounds.topLeft.orZero
-            withTransform(
-              {
-                rotate(degrees = -rotationZ, pivot = pivot)
-                scale(scaleX = scaleX, scaleY = scaleY, pivot = pivot)
-                translate(left = x, top = y)
-              },
-            ) {
-              drawLayer(liquefiableLayer)
-            }
+    liquefiables.forEach { liquefiable ->
+      liquefiable.layer
+        ?.takeUnless { it.isReleased || it.size.isEmpty }
+        ?.let { liquefiableLayer ->
+          // Position content where it should appear on screen.
+          val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - bounds.topLeft.orZero
+          withTransform(
+            {
+              rotate(degrees = rotationZ, pivot = pivot)
+              scale(scaleX = scaleX, scaleY = scaleY, pivot = pivot)
+              translate(left = x, top = y)
+            },
+          ) {
+            drawLayer(liquefiableLayer)
           }
-      }
+        }
+    }
   }
 }
 

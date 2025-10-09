@@ -139,11 +139,13 @@ internal class LiquidBackupNode(
     val scaleY = matrix.values[Matrix.ScaleY]
     val skewX = matrix.values[Matrix.SkewX]
     val skewY = matrix.values[Matrix.SkewY]
+    val scaleXMagnitude = sqrt(scaleX * scaleX + skewY * skewY)
+    val scaleYMagnitude = sqrt(skewX * skewX + scaleY * scaleY)
     reusableScope.positionOnScreen = coordinates.positionOnScreen()
     reusableScope.size = coordinates.size.toSize()
-    reusableScope.scaleX = sqrt(scaleX * scaleX + skewY * skewY)
-    reusableScope.scaleY = sqrt(skewX * skewX + scaleY * scaleY)
-    reusableScope.rotationZ = RadiansToDegrees * atan2(skewY, scaleX)
+    reusableScope.inverseScaleX = if (scaleXMagnitude > 0f) 1f / scaleXMagnitude else 0f
+    reusableScope.inverseScaleY = if (scaleYMagnitude > 0f) 1f / scaleYMagnitude else 0f
+    reusableScope.inverseRotationZ = -RadiansToDegrees * atan2(skewY, scaleX)
     reusableScope.boundsInRoot = coordinates.boundsInRoot()
 
     invalidateDrawIfNeeded()
