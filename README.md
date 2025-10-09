@@ -10,7 +10,7 @@ It lets you refract, frost, and curve the content behind your UI elements, creat
 Powered by RuntimeShaders, Android Graphics Shading Language (AGSL) and ModifierNodeElement APIs, it delivers GPU-accelerated visuals to your Compose UI.
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/081dbf2a-0e3f-416b-b600-cfbb6a20dd4c" width="400" />
+  <img src="https://github.com/user-attachments/assets/10475f8b-1f64-49df-a170-c61e0280240f" width="400" />
 </div>
 
 ## Getting Started
