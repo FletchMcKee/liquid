@@ -190,7 +190,7 @@ fun LiquefiableAndLiquid(
     .liquid(liquidState),
 ) {
   // Some UI content.
-  // See LiquidSliders in :samples:app as an example.
+  // See LiquidControls in :samples:app as an example.
 }
 ```
 **Don't**

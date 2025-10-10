@@ -62,6 +62,10 @@ internal fun frostShader(vertical: Boolean): String = """
 
     float weightSum = 1.0;
     half4 result = content.eval(fragCoord);
+    // Needs more testing, but appears to improve performance with LazyLists.
+    if (result.a == 0.0) {
+      return result;
+    }
 
     for (float i = 1.0; i < MAX_RADIUS; i += 2.0) {
       if (i >= r) break;

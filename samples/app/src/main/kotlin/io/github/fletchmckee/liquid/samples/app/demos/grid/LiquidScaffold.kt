@@ -18,7 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
+import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
@@ -103,7 +104,7 @@ fun LiquidBottomAppBar(
   modifier = modifier
     .fillMaxWidth()
     .padding(24.dp)
-    .shadow(elevation = 4.dp, shape = bottomBarShape)
+    .dropShadow(bottomBarShape, LiquidShadow)
     .thenIf(useLiquid) {
       liquid(liquidState) {
         frost = frostProvider().dp

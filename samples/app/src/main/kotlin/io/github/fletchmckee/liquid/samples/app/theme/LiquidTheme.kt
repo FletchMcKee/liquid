@@ -11,6 +11,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.shadow.Shadow
+import androidx.compose.ui.unit.dp
 
 private val LightColorScheme = lightColorScheme(
   primary = LiquidPurple,
@@ -36,6 +39,8 @@ private val DarkColorScheme = darkColorScheme(
   onBackground = FlawedWhite,
   onSurfaceVariant = FlawedWhite,
 )
+
+internal val LiquidShadow = Shadow(radius = 4.dp, color = Color.Black.copy(alpha = 0.3f))
 
 internal val LocalUseLiquid = staticCompositionLocalOf { true }
 internal val LocalInitialFrost = staticCompositionLocalOf { 0f }

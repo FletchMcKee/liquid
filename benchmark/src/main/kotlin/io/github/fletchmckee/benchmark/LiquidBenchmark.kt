@@ -107,6 +107,22 @@ class LiquidBenchmark {
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
 
+  @Test fun rotatingClockBaseline() = runBenchmarkTest(
+    iterations = 1, // Baselines are only for insight, just run it once.
+    setupBlock = { navigateTo(startDestination = "Clock", useLiquid = false) },
+    measureBlock = { Thread.sleep(5000) },
+  )
+
+  @Test fun rotatingClockNoFrost() = runBenchmarkTest(
+    setupBlock = { navigateTo(startDestination = "Clock") },
+    measureBlock = { Thread.sleep(5000) },
+  )
+
+  @Test fun rotatingClockFrost10dp() = runBenchmarkTest(
+    setupBlock = { navigateTo(startDestination = "Clock", initialFrost = 10f) },
+    measureBlock = { Thread.sleep(5000) },
+  )
+
   private fun runBenchmarkTest(
     metrics: List<Metric> = listOf(FrameTimingMetric()),
     iterations: Int = ITERATIONS,
