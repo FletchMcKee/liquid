@@ -36,33 +36,35 @@ internal fun MacrobenchmarkScope.navigateTo(
 
 internal fun MacrobenchmarkScope.dragFigureEight(
   repetitions: Int = 2,
-  steps: Int = 25,
+  speed: Int = 2_000,
 ) {
+  val liquidDraggableBox = waitForObject("liquidDraggableBox")
   val settingsButton = waitForObject("settingsButton")
   settingsButton.click()
   device.waitForIdle()
 
+  val bounds = liquidDraggableBox.visibleBounds
+  val centerX = bounds.centerX()
+  val centerY = bounds.centerY()
+  val upY = (device.displayHeight * 0.2f).toInt()
+  val downY = (device.displayHeight * 0.8f).toInt()
+  val leftX = (device.displayWidth * 0.25f).toInt()
+  val rightX = (device.displayWidth * 0.75f).toInt()
+
   repeat(repetitions) {
-    val centerX = (device.displayWidth * 0.5f).toInt()
-    val centerY = (device.displayHeight * 0.5f).toInt()
-    val upY = (device.displayHeight * 0.2f).toInt()
-    val downY = (device.displayHeight * 0.8f).toInt()
-    val leftX = (device.displayWidth * 0.25f).toInt()
-    val rightX = (device.displayWidth * 0.75f).toInt()
-
-    device.swipe(centerX, centerY, rightX, downY, steps)
+    liquidDraggableBox.drag(Point(rightX, downY), speed)
     device.waitForIdle()
 
-    device.swipe(rightX, downY, leftX, downY, steps)
+    liquidDraggableBox.drag(Point(leftX, downY), speed)
     device.waitForIdle()
 
-    device.swipe(leftX, downY, rightX, upY, steps)
+    liquidDraggableBox.drag(Point(rightX, upY), speed)
     device.waitForIdle()
 
-    device.swipe(rightX, upY, leftX, upY, steps)
+    liquidDraggableBox.drag(Point(leftX, upY), speed)
     device.waitForIdle()
 
-    device.swipe(leftX, upY, centerX, centerY, steps)
+    liquidDraggableBox.drag(Point(centerX, centerY), speed)
     device.waitForIdle()
   }
 }

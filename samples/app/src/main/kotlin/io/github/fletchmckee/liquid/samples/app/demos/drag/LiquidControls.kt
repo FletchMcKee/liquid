@@ -13,12 +13,10 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,14 +37,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,10 +78,11 @@ fun BoxScope.LiquidControls(
   dispersionProvider: (() -> Float)? = null,
   onDispersionChange: (Float) -> Unit = {},
   windowAdaptiveInfo: WindowAdaptiveInfo = currentWindowAdaptiveInfo(),
-  containerShape: Shape = RoundedCornerShape(10),
+  containerShape: Shape = RoundedCornerShape(8),
   containerColor: Color = MaterialTheme.colorScheme.surface,
   containerFrost: Dp = 15.dp,
-  containerRefraction: Float = 0.15f,
+  containerRefraction: Float = 0.08f,
+  containerEdge: Float = 0.02f,
 ) {
   val useLiquid = LocalUseLiquid.current
   val isLandscape = windowAdaptiveInfo.windowSizeClass.windowWidthSizeClass != WindowWidthSizeClass.COMPACT
@@ -93,7 +94,6 @@ fun BoxScope.LiquidControls(
     modifier = modifier
       .align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter)
       .fillMaxWidth(if (isLandscape) 0.4f else 1f)
-      .fillMaxHeight(if (isLandscape) 1f else 0.5f)
       .wrapContentHeight()
       .padding(if (isLandscape) PaddingValues.Zero else WindowInsets.systemBars.asPaddingValues())
       .padding(16.dp)
@@ -106,20 +106,20 @@ fun BoxScope.LiquidControls(
       .thenIf(useLiquid) {
         liquefiable(liquidState)
       }
-      .shadow(elevation = 8.dp, shape = containerShape)
+      .dropShadow(containerShape, Shadow(radius = 8.dp, color = Color.Black.copy(alpha = 0.3f)))
       .thenIf(useLiquid) {
         liquid(liquidState) {
           frost = containerFrost
           shape = containerShape
           curve = 0.15f
           refraction = containerRefraction
-          edge = 0.05f
+          edge = containerEdge
           tint = containerColor
         }
       },
   ) {
     LazyColumn(
-      modifier = Modifier.padding(16.dp),
+      modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -144,8 +144,8 @@ fun BoxScope.LiquidControls(
             text = "Refraction",
             value = refractionProvider(),
             onValueChange = onRefractionChange,
-            steps = 49,
-            valueRange = 0f..0.5f,
+            steps = 24,
+            valueRange = 0f..0.25f,
           )
         }
       }
@@ -187,7 +187,7 @@ fun BoxScope.LiquidControls(
       cornerPercentProvider?.let {
         item(key = "Corner") {
           LiquidSliderRow(
-            text = "Corner Percent",
+            text = "Corner",
             value = cornerPercentProvider().toFloat(),
             onValueChange = { onCornerPercentChange(it.toInt()) },
             formatter = "%,.0f",
@@ -203,7 +203,7 @@ fun BoxScope.LiquidControls(
             text = "Dispersion",
             value = dispersionProvider(),
             onValueChange = onDispersionChange,
-            steps = 49,
+            steps = 99,
             valueRange = 0f..1f,
           )
         }
@@ -223,37 +223,24 @@ fun LiquidSliderRow(
   formatter: String = "%,.2f",
   sliderTestTag: String = "slider",
   thumbTestTag: String = "thumb",
-) = Column {
-  Row(
-    modifier = modifier
-      .fillMaxWidth()
-      .padding(horizontal = 24.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(16.dp),
-  ) {
-    Text(
-      text = text,
-      style = MaterialTheme.typography.labelLarge.copy(
-        color = MaterialTheme.colorScheme.onBackground,
-        fontSize = 16.sp,
-      ),
-      textAlign = TextAlign.Start,
-      modifier = Modifier.weight(1f),
-    )
-
-    // In benchmarks we only want to measure LiquidScope property/UI performance and not text side effects.
-    if (!isBenchmark) {
-      Text(
-        text = formatter.format(value),
-        style = MaterialTheme.typography.labelLarge.copy(
-          color = MaterialTheme.colorScheme.onBackground,
-          fontSize = 16.sp,
-        ),
-        textAlign = TextAlign.End,
-        modifier = Modifier.weight(1f),
-      )
-    }
-  }
+) = Row(
+  modifier = modifier
+    .fillMaxWidth()
+    .padding(horizontal = 4.dp),
+  verticalAlignment = Alignment.CenterVertically,
+  horizontalArrangement = Arrangement.spacedBy(4.dp),
+) {
+  Text(
+    text = text,
+    style = MaterialTheme.typography.labelLarge.copy(
+      color = MaterialTheme.colorScheme.onBackground,
+      fontSize = 14.sp,
+    ),
+    maxLines = 1,
+    overflow = TextOverflow.Ellipsis,
+    textAlign = TextAlign.Start,
+    modifier = Modifier.weight(0.25f),
+  )
 
   Slider(
     value = value,
@@ -278,11 +265,24 @@ fun LiquidSliderRow(
       )
     },
     modifier = Modifier
-      .fillMaxWidth()
-      .padding(horizontal = 16.dp)
+      .weight(0.65f)
       .testTag(sliderTestTag)
       .semantics { testTagsAsResourceId = true },
   )
+
+  // In benchmarks we only want to measure LiquidScope property/UI performance and not text side effects.
+  if (!isBenchmark) {
+    Text(
+      text = formatter.format(value),
+      style = MaterialTheme.typography.labelLarge.copy(
+        color = MaterialTheme.colorScheme.onBackground,
+        fontSize = 14.sp,
+      ),
+      maxLines = 1,
+      textAlign = TextAlign.End,
+      modifier = Modifier.weight(0.1f),
+    )
+  }
 }
 
 typealias FloatRange = ClosedFloatingPointRange<Float>

@@ -27,7 +27,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
@@ -45,6 +45,7 @@ import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.R
 import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidControls
+import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
@@ -105,6 +106,7 @@ fun LiquidClockScreen(
     containerShape = RoundedCornerShape(8),
     containerFrost = 30.dp,
     containerRefraction = 0.08f,
+    containerEdge = 0.01f,
   )
 }
 
@@ -209,7 +211,7 @@ private fun LiquidRotatingBox(
         scaleX = scale
         scaleY = scale
       }
-      .shadow(4.dp, boxShape)
+      .dropShadow(boxShape, LiquidShadow)
       .thenIf(useLiquid) {
         liquid(liquidState) {
           frost = frostProvider().dp

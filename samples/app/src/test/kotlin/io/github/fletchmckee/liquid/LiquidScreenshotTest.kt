@@ -10,9 +10,6 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performScrollToNode
-import androidx.compose.ui.test.performTouchInput
-import androidx.compose.ui.test.swipeUp
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -44,8 +41,7 @@ import org.robolectric.annotation.GraphicsMode
 class LiquidScreenshotTest {
   @get:Rule val rule = createComposeRule()
 
-  @get:Rule
-  val roborazziRule = RoborazziRule(
+  @get:Rule val roborazziRule = RoborazziRule(
     options = RoborazziRule.Options(
       roborazziOptions = RoborazziOptions(
         compareOptions = RoborazziOptions.CompareOptions(
@@ -74,49 +70,17 @@ class LiquidScreenshotTest {
     SingletonImageLoader.setUnsafe(imageLoader)
   }
 
-  @Test fun capture_drag_no_frost() = runScreenshotTest(
-    performAction = {
-      onNodeWithTag("liquidDraggableBox")
-        .performTouchInput {
-          val dragAmountPx = with(density) { 150.dp.toPx() }
-          swipeUp(
-            startY = centerY,
-            endY = centerY - dragAmountPx,
-          )
-        }
-    },
-    content = { LiquidDraggableScreen() },
-  )
+  @Test fun capture_drag_no_frost() = runScreenshotTest {
+    LiquidDraggableScreen()
+  }
 
-  @Test fun capture_drag_10_dp_frost() = runScreenshotTest(
-    initialFrost = 10f,
-    performAction = {
-      onNodeWithTag("liquidDraggableBox")
-        .performTouchInput {
-          val dragAmountPx = with(density) { 150.dp.toPx() }
-          swipeUp(
-            startY = centerY,
-            endY = centerY - dragAmountPx,
-          )
-        }
-    },
-    content = { LiquidDraggableScreen() },
-  )
+  @Test fun capture_drag_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
+    LiquidDraggableScreen()
+  }
 
-  @Test fun capture_drag_half_dispersion() = runScreenshotTest(
-    initialDispersion = 0.5f,
-    performAction = {
-      onNodeWithTag("liquidDraggableBox")
-        .performTouchInput {
-          val dragAmountPx = with(density) { 150.dp.toPx() }
-          swipeUp(
-            startY = centerY,
-            endY = centerY - dragAmountPx,
-          )
-        }
-    },
-    content = { LiquidDraggableScreen() },
-  )
+  @Test fun capture_drag_half_dispersion() = runScreenshotTest(initialDispersion = 0.5f) {
+    LiquidDraggableScreen()
+  }
 
   @Test fun capture_grid_no_frost() = runScreenshotTest {
     LiquidGridScreen()

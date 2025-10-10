@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import io.github.fletchmckee.liquid.samples.app.demos.clock.Clock
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
 import io.github.fletchmckee.liquid.samples.app.demos.many.Many
@@ -44,6 +45,7 @@ class MainActivity : ComponentActivity() {
       StartDestination.Grid -> Grid
       StartDestination.StickyHeader -> StickyHeader
       StartDestination.Many -> Many
+      StartDestination.Clock -> Clock
     }
   }
 
@@ -54,6 +56,6 @@ class MainActivity : ComponentActivity() {
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"
     const val INITIAL_DISPERSION = "$PACKAGE_NAME.INITIAL_DISPERSION"
 
-    enum class StartDestination { DemosList, Drag, Grid, StickyHeader, Many }
+    enum class StartDestination { DemosList, Drag, Grid, StickyHeader, Many, Clock }
   }
 }
