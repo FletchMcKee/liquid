@@ -166,8 +166,8 @@ internal class LiquidBackupNode(
         ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(reusableScope.saturation) })
       }
 
-      if (frostRadius > 0f && Build.VERSION.SDK_INT >= 31) {
-        // If we have a valid frostRadius and the device is API 31 or 32, we can at least use Android's BlurEffect.
+      if (Build.VERSION.SDK_INT >= 31) {
+        // We can use Android's BlurEffect if the device is API 31 or 32.
         layer.renderEffect = reusableScope.obtainPreTiramisuRenderEffect()
       }
 

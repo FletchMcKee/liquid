@@ -112,6 +112,13 @@ that creates the liquid effect. It distorts around the corners, so it's recommen
 `CircleShape` (RoundedCornerShape(50)) results in the best effect as it creates smooth distortions whether it is a true circle or a
 capsule-shaped composable.
 
+<div align="center">
+  <img 
+    src="https://github.com/user-attachments/assets/2808d488-2a37-40b0-9c7c-81af735b00e4" 
+    alt="Demo of the shape's corner radius changing"
+    width="400" />
+</div>
+
 #### Refraction
 
 Controls how much the background distorts through the liquid lens. Setting this to 0f removes the liquid effect altogether, nullifying any `curve` value.
