@@ -114,7 +114,7 @@ capsule-shaped composable.
 
 #### Refraction
 
-Controls how much the background distorts through the liquid lens. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.curve` value.
+Controls how much the background distorts through the liquid lens. Setting this to 0f removes the liquid effect altogether, nullifying any `curve` value.
 
 This property is no-op on Android 12 and lower.
 
@@ -127,7 +127,7 @@ This property is no-op on Android 12 and lower.
 
 #### Curve
 
-Adjusts how strongly the liquid lens curves at its center vs. edges. Setting this to 0f removes the liquid effect altogether, nullifying any `LiquidScope.refraction` value.
+Adjusts how strongly the liquid lens curves at its center vs. edges. Setting this to 0f removes the liquid effect altogether, nullifying any `refraction` value.
 
 This property is no-op on Android 12 and lower.
 
@@ -187,8 +187,8 @@ This property is no-op on Android 12 and lower.
 
 The minimum API level that will display the liquid effects is 33 (Android 13). This is effectively a RuntimeShader library, so this limits what is possible for API 32 and lower.
 
-- **API 31+** - RenderEffects are available, so we will still create a frost effect using Android's [BlurEffect](https://github.com/androidx/androidx/blob/7cca76e55aaa9c2ff1a038bac0fa2b91cd04dcff/compose/ui/ui-graphics/src/androidMain/kotlin/androidx/compose/ui/graphics/AndroidRenderEffect.android.kt#L50). We also draw a lower quality version of the edge effect. To disable, you can set the `LiquidScope.edge` property to 0f. The `LiquidScope.refraction` and `LiquidScope.curve` properties are ignored. The `LiquidScope.tint` and `LiquidScope.shape` values produce the same effect as API 33+.
-- **API 30 and lower** - Has all of the above features outside of the frost effect.
+- **API 31+** - RenderEffects are available, so we will still create a frost effect using Android's [BlurEffect](https://github.com/androidx/androidx/blob/7cca76e55aaa9c2ff1a038bac0fa2b91cd04dcff/compose/ui/ui-graphics/src/androidMain/kotlin/androidx/compose/ui/graphics/AndroidRenderEffect.android.kt#L50). We also draw a lower quality version of the edge effect. To disable, you can set the `edge` property to 0f. The `refraction`, `curve` and `dispersion` properties are ignored. The `tint`, `shape` and `saturation` values produce the same effect as API 33+.
+- **API 30 and lower** - Has all of the above features outside of the `frost` effect.
 
 #### Node Hierarchy
 
