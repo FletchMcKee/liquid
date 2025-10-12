@@ -294,11 +294,15 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   }.also { renderEffect = it }
 
   @RequiresApi(31)
-  internal fun obtainPreTiramisuRenderEffect(): RenderEffect = renderEffect?.takeUnless { mutatedFields has Fields.Frost }
-    ?: BlurEffect(
-      radiusX = frostRadius,
-      radiusY = frostRadius,
-    ).also { renderEffect = it }
+  internal fun obtainPreTiramisuRenderEffect(): RenderEffect? {
+    if (frostRadius <= 0f) return null
+
+    return renderEffect?.takeUnless { mutatedFields has Fields.Frost }
+      ?: BlurEffect(
+        radiusX = frostRadius,
+        radiusY = frostRadius,
+      ).also { renderEffect = it }
+  }
 
   companion object {
     @Stable
@@ -347,22 +351,6 @@ internal object Fields {
       Liquefiables
 
   // //////////////////////////
-  // Remove once minSdk is 33.
-  // //////////////////////////
-  const val PreTiramisuInvalidateFlags: Int =
-    Frost or
-      Shape or
-      Edge or
-      Size or
-      Tint or
-      Saturation or
-      PositionOnScreen or
-      Rotation or
-      ScaleX or
-      ScaleY or
-      Liquefiables
-
-  // //////////////////////////
   // Remove once minSdk is 31.
   // //////////////////////////
   const val PreSnowConeInvalidateFlags: Int =
@@ -376,4 +364,9 @@ internal object Fields {
       ScaleX or
       ScaleY or
       Liquefiables
+
+  // //////////////////////////
+  // Remove once minSdk is 33.
+  // //////////////////////////
+  const val PreTiramisuInvalidateFlags: Int = PreSnowConeInvalidateFlags or Frost
 }
