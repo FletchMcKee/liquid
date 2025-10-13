@@ -36,7 +36,7 @@ internal const val LiquidShader = """
   }
 
   half3 applyColorAdjustments(half3 color) {
-    float lum = dot(color, half3(0.213, 0.715, 0.072));
+    float lum = dot(color, half3(0.2126, 0.7152, 0.0722));
     return saturate(mix(half3(lum), color, saturation));
   }
 
