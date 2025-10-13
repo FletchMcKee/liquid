@@ -71,12 +71,14 @@ class LiquidScreenshotTest {
   }
 
   @Config(sdk = [31, 35])
-  @Test fun capture_drag_no_frost() = runScreenshotTest {
+  @Test
+  fun capture_drag_no_frost() = runScreenshotTest {
     LiquidDraggableScreen()
   }
 
   @Config(sdk = [31, 35])
-  @Test fun capture_drag_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
+  @Test
+  fun capture_drag_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
     LiquidDraggableScreen()
   }
 
