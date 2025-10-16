@@ -17,7 +17,6 @@ pluginManagement {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
   repositories {
     google()
     mavenCentral()
@@ -32,3 +31,4 @@ enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 include(":samples:app")
 include(":liquid")
 include(":benchmark")
+include(":samples:composeApp")
