@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
@@ -50,9 +51,9 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun ManyLiquidNodesScreen(
-  navController: NavController,
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
+  navController: NavController = rememberNavController(),
 ) = SliderScaffold(
   navController = navController,
   modifier = modifier,
@@ -177,7 +178,7 @@ private fun CardImage(
     .clip(shape),
 )
 
-private val LoremIpsum = """
+internal val LoremIpsum = """
   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
   Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
   Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.

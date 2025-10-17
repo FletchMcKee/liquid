@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
@@ -53,9 +54,9 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LiquidDraggableScreen(
-  navController: NavController,
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
+  navController: NavController = rememberNavController(),
   sliderContainerColor: Color = MaterialTheme.colorScheme.surface,
 ) {
   val initialFrost = LocalInitialFrost.current

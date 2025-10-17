@@ -4,10 +4,10 @@ package io.github.fletchmckee.liquid.samples.app.demos.drag
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +27,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -87,11 +86,10 @@ fun BoxScope.LiquidControls(
 
   AnimatedVisibility(
     visible = showSliders,
-    enter = fadeIn(tween(1000)) + expandIn(tween(1000)),
-    exit = fadeOut(tween(1000)) + shrinkOut(tween(1000)),
+    enter = fadeIn(tween(1000)) + expandVertically(tween(1000)),
+    exit = fadeOut(tween(1000)) + shrinkVertically(tween(1000)),
     modifier = modifier
       .align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter)
-      // .fillMaxWidth(if (isLandscape) 0.4f else 1f)
       .widthIn(max = 600.dp)
       .wrapContentHeight()
       .padding(if (isLandscape) PaddingValues.Zero else WindowInsets.systemBars.asPaddingValues())
@@ -250,7 +248,7 @@ fun LiquidSliderRow(
     thumb = {
       Box(
         Modifier
-          .size(ButtonDefaults.IconSize)
+          .size(20.dp)
           .clip(CircleShape)
           .background(MaterialTheme.colorScheme.primary)
           .testTag(thumbTestTag),

@@ -22,10 +22,12 @@ private val LightColorScheme = lightColorScheme(
   tertiary = PurpleGrey80,
   surface = FlawedWhite30,
   surfaceVariant = FlawedWhite50,
+  surfaceTint = LiquidPurple,
   background = FlawedWhite,
   onPrimary = Ink,
   onBackground = Ink,
   onSurfaceVariant = Ink,
+  surfaceContainer = Silver,
 )
 private val DarkColorScheme = darkColorScheme(
   primary = LiquidPurple,
@@ -34,10 +36,12 @@ private val DarkColorScheme = darkColorScheme(
   tertiary = PurpleGrey80,
   surface = Ink30,
   surfaceVariant = Ink50,
+  surfaceTint = Carbon,
   background = Ink,
   onPrimary = FlawedWhite,
   onBackground = FlawedWhite,
   onSurfaceVariant = FlawedWhite,
+  surfaceContainer = Stone,
 )
 
 internal val LiquidShadow = Shadow(radius = 4.dp, color = Color.Black.copy(alpha = 0.3f))

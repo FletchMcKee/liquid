@@ -26,7 +26,7 @@ import io.github.fletchmckee.liquid.internal.shaders.setLiquidUniforms
 internal actual fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
-): AbstractLiquidElement = when {
+): AbstractLiquidElement<out AbstractLiquidNode> = when {
   Build.VERSION.SDK_INT >= 33 -> LiquidElement(liquidState, block)
   else -> LiquidBackupElement(liquidState, block)
 }
@@ -37,15 +37,8 @@ internal actual fun LayoutCoordinates.liquidPositionOnScreen(): Offset = positio
 internal class LiquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
-) : AbstractLiquidElement(liquidState, block) {
+) : AbstractLiquidElement<LiquidNode>(liquidState, block) {
   override fun create() = LiquidNode(liquidState, block)
-
-  override fun update(node: AbstractLiquidNode) {
-    node as LiquidNode
-    node.liquidState = liquidState
-    node.block = block
-    node.invalidateLiquidBlock()
-  }
 }
 
 @RequiresApi(33)

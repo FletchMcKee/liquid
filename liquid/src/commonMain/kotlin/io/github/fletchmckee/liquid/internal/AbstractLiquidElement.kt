@@ -5,7 +5,6 @@ package io.github.fletchmckee.liquid.internal
 import androidx.annotation.VisibleForTesting
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.translate
@@ -13,7 +12,6 @@ import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInRoot
-import androidx.compose.ui.layout.findRootCoordinates
 import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.GlobalPositionAwareModifierNode
@@ -37,15 +35,21 @@ import kotlin.math.sqrt
 internal expect fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
-): AbstractLiquidElement
+): AbstractLiquidElement<out AbstractLiquidNode>
 
 // The skiko targets need to use `positionInWindow` instead of `positionOnScreen`.
 internal expect fun LayoutCoordinates.liquidPositionOnScreen(): Offset
 
-internal abstract class AbstractLiquidElement(
+internal abstract class AbstractLiquidElement<N : AbstractLiquidNode>(
   protected val liquidState: LiquidState,
   protected val block: LiquidScope.() -> Unit,
-) : ModifierNodeElement<AbstractLiquidNode>() {
+) : ModifierNodeElement<N>() {
+
+  override fun update(node: N) {
+    node.liquidState = liquidState
+    node.block = block
+    node.invalidateLiquidBlock()
+  }
 
   override fun InspectorInfo.inspectableProperties() {
     name = "Liquid"
@@ -54,7 +58,7 @@ internal abstract class AbstractLiquidElement(
 
   override fun equals(other: Any?): Boolean {
     if (this === other) return true
-    if (other !is AbstractLiquidElement) return false
+    if (other !is AbstractLiquidElement<N>) return false
     // Unnecessary to perform structural equality checks.
     if (liquidState !== other.liquidState) return false
     if (block !== other.block) return false
@@ -77,7 +81,6 @@ internal abstract class AbstractLiquidNode(
   DrawModifierNode,
   CompositionLocalConsumerModifierNode,
   ObserverModifierNode {
-
   @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
   internal val reusableScope = LiquidScopeImpl()
   private val matrix = Matrix()
@@ -97,10 +100,7 @@ internal abstract class AbstractLiquidNode(
 
     // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
     val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-    reusableScope.liquefiables = liquidState.liquefiables
-      .asSequence()
-      .filter { it != ancestor }
-      .toList()
+    reusableScope.liquefiables = liquidState.liquefiables.filter { it != ancestor }
 
     invalidateDrawIfNeeded()
   }
@@ -140,7 +140,6 @@ internal abstract class AbstractLiquidNode(
     reusableScope.inverseScaleY = if (scaleYMagnitude > 0f) 1f / scaleYMagnitude else 0f
     reusableScope.inverseRotationZ = -RadiansToDegrees * atan2(skewY, scaleX)
     reusableScope.boundsInRoot = coordinates.boundsInRoot()
-    reusableScope.screenBounds = Rect(Offset.Zero, coordinates.findRootCoordinates().size.toSize())
 
     invalidateDrawIfNeeded()
   }

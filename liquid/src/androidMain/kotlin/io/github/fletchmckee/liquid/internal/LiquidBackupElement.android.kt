@@ -21,15 +21,8 @@ import io.github.fletchmckee.liquid.LiquidState
 internal class LiquidBackupElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
-) : AbstractLiquidElement(liquidState, block) {
+) : AbstractLiquidElement<LiquidBackupNode>(liquidState, block) {
   override fun create() = LiquidBackupNode(liquidState, block)
-
-  override fun update(node: AbstractLiquidNode) {
-    node as LiquidBackupNode
-    node.liquidState = liquidState
-    node.block = block
-    node.invalidateLiquidBlock()
-  }
 }
 
 internal class LiquidBackupNode(

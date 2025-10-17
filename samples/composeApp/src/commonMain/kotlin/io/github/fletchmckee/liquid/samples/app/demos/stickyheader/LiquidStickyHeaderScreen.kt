@@ -5,12 +5,14 @@ package io.github.fletchmckee.liquid.samples.app.demos.stickyheader
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,12 +36,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
+import io.github.fletchmckee.liquid.samples.app.demos.many.LoremIpsum
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
@@ -49,9 +53,9 @@ import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 
 @Composable
 fun LiquidStickyHeaderScreen(
-  navController: NavController,
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
+  navController: NavController = rememberNavController(),
 ) {
   val useLiquid = LocalUseLiquid.current
   val initialFrost = LocalInitialFrost.current
@@ -139,16 +143,45 @@ private fun StickyHeaderList(
 
     items(count = 20, key = { 20 * header + it }, contentType = { "imageItem" }) { index ->
       val accumulatedIndex = 20 * header + index
-      ImageItem(liquidState, accumulatedIndex)
+      CardItem(liquidState, accumulatedIndex)
     }
   }
 }
 
 @Composable
-private fun ImageItem(
+private fun CardItem(
   liquidState: LiquidState,
   index: Int,
   shape: Shape = RoundedCornerShape(5),
+) = Column(
+  modifier = Modifier
+    .fillMaxWidth()
+    // Be sure to place liquefiable nodes before any clip calls
+    .liquefiable(liquidState)
+    .clip(shape)
+    .background(MaterialTheme.colorScheme.background),
+  horizontalAlignment = Alignment.CenterHorizontally,
+) {
+  ImageItem(index)
+  Text(
+    text = "Card $index",
+    color = MaterialTheme.colorScheme.onBackground,
+    style = MaterialTheme.typography.labelLarge,
+    modifier = Modifier.padding(16.dp),
+  )
+  Text(
+    text = LoremIpsum,
+    color = MaterialTheme.colorScheme.onBackground,
+    style = MaterialTheme.typography.bodyMedium,
+    modifier = Modifier
+      .padding(horizontal = 16.dp)
+      .padding(bottom = 16.dp),
+  )
+}
+
+@Composable
+private fun ImageItem(
+  index: Int,
 ) = AsyncImage(
   model = "https://picsum.photos/id/${index.toPicsumId()}/300/300",
   contentScale = ContentScale.Crop,
@@ -156,14 +189,8 @@ private fun ImageItem(
   error = ColorPainter(Color.Magenta),
   contentDescription = null,
   modifier = Modifier
-    .fillMaxWidth()
-    .aspectRatio(2f)
-    // The extra padding is for screenshot tests. Otherwise it is hard to tell if the effect is doing anything
-    // give we have to use ColorImages.
-    .padding(horizontal = 16.dp)
-    // Be sure to place liquefiable nodes before any clip calls
-    .liquefiable(liquidState)
-    .clip(shape)
+    .widthIn(max = 600.dp)
+    .aspectRatio(1f)
     .testTag("imageItem$index")
     .testTagsAsResourceId(true),
 )

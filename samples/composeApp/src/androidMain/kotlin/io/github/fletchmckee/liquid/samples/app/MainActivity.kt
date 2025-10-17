@@ -23,7 +23,12 @@ class MainActivity : ComponentActivity() {
     val initialFrost = intent.getFloatExtra(INITIAL_FROST, 0f)
     val initialDispersion = intent.getFloatExtra(INITIAL_DISPERSION, 0f)
     setContent {
-      LiquidDemos(startDestination = startDestination)
+      LiquidDemos(
+        startDestination = startDestination,
+        useLiquid = useLiquid,
+        initialFrost = initialFrost,
+        initialDispersion = initialDispersion,
+      )
     }
   }
 

@@ -1,5 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+import com.android.build.api.variant.HasUnitTestBuilder
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -88,6 +89,17 @@ kotlin {
       implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
     }
+
+    androidUnitTest.dependencies {
+      implementation(libs.compose.junit4)
+      implementation(libs.junit)
+      implementation(libs.robolectric)
+      implementation(libs.roborazzi)
+      implementation(libs.roborazzi.compose)
+      implementation(libs.roborazzi.rule)
+      implementation(libs.roborazzi.core)
+      implementation(libs.coil.test)
+    }
   }
 }
 
@@ -101,6 +113,8 @@ android {
     targetSdk = 36
     versionCode = 1
     versionName = "1.0"
+
+    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
 
   packaging {
@@ -113,11 +127,39 @@ android {
     getByName("release") {
       isMinifyEnabled = false
     }
+
+    create("benchmark") {
+      initWith(buildTypes.getByName("release"))
+      signingConfig = signingConfigs.getByName("debug")
+      matchingFallbacks += listOf("release")
+      isDebuggable = false
+    }
   }
 
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
+  }
+
+  testOptions {
+    animationsDisabled = true
+    unitTests {
+      isIncludeAndroidResources = true
+    }
+  }
+}
+
+androidComponents {
+  beforeVariants(selector().withBuildType("release")) { variantBuilder ->
+    (variantBuilder as? HasUnitTestBuilder)?.apply {
+      enableUnitTest = false
+    }
+  }
+
+  beforeVariants(selector().withBuildType("benchmark")) { variantBuilder ->
+    (variantBuilder as? HasUnitTestBuilder)?.apply {
+      enableUnitTest = false
+    }
   }
 }
 
@@ -135,4 +177,8 @@ compose.desktop {
       packageVersion = "1.0.0"
     }
   }
+}
+
+roborazzi {
+  outputDir.set(project.layout.projectDirectory.dir("screenshots"))
 }

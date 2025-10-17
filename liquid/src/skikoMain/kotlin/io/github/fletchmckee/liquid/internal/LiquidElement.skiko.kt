@@ -24,22 +24,15 @@ import org.jetbrains.skia.RuntimeShaderBuilder
 internal actual fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
-): AbstractLiquidElement = LiquidElement(liquidState, block)
+): AbstractLiquidElement<out AbstractLiquidNode> = LiquidElement(liquidState, block)
 
 internal actual fun LayoutCoordinates.liquidPositionOnScreen(): Offset = positionInWindow()
 
 internal class LiquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
-) : AbstractLiquidElement(liquidState, block) {
+) : AbstractLiquidElement<LiquidNode>(liquidState, block) {
   override fun create() = LiquidNode(liquidState, block)
-
-  override fun update(node: AbstractLiquidNode) {
-    node as LiquidNode
-    node.liquidState = liquidState
-    node.block = block
-    node.invalidateLiquidBlock()
-  }
 }
 
 internal class LiquidNode(

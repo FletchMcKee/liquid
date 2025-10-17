@@ -29,7 +29,6 @@ internal interface InternalLiquidScope : LiquidScope {
   var inverseRotationZ: Float
   var boundsInRoot: Rect
   var liquefiables: List<Liquefiable>
-  var screenBounds: Rect
 }
 
 internal class LiquidScopeImpl : InternalLiquidScope {
@@ -183,14 +182,6 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  override var screenBounds: Rect = Rect.Zero
-    set(value) {
-      if (field != value) {
-        mutatedFields = mutatedFields or Fields.ScreenBounds
-        field = value
-      }
-    }
-
   @ArraySize(value = 4)
   internal var cornerRadii: FloatArray = Float4Zero
     private set(value) {
@@ -282,7 +273,6 @@ internal object Fields {
   const val ScaleX: Int = 0b1 shl 11
   const val ScaleY: Int = 0b1 shl 12
   const val Liquefiables: Int = 0b1 shl 13
-  const val ScreenBounds: Int = 0b1 shl 14
 
   // PositionOnScreen isn't a shader uniform as it's only used to translate liquefiables into the correct space.
   const val RenderEffectFields: Int =
@@ -302,8 +292,7 @@ internal object Fields {
       Rotation or
       ScaleX or
       ScaleY or
-      Liquefiables or
-      ScreenBounds
+      Liquefiables
 
   // //////////////////////////
   // Remove once minSdk is 31.
@@ -318,8 +307,7 @@ internal object Fields {
       Rotation or
       ScaleX or
       ScaleY or
-      Liquefiables or
-      ScreenBounds
+      Liquefiables
 
   // //////////////////////////
   // Remove once minSdk is 33.

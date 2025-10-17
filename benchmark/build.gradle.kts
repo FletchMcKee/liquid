@@ -23,7 +23,7 @@ android {
     }
   }
 
-  targetProjectPath = ":samples:app"
+  targetProjectPath = ":samples:composeApp"
   experimentalProperties["android.experimental.self-instrumenting"] = true
 
   testOptions.managedDevices.devices {

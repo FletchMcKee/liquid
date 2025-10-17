@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
@@ -63,9 +64,9 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LiquidClockScreen(
-  navController: NavController,
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
+  navController: NavController = rememberNavController(),
   disableAnimation: Boolean = false,
 ) = SliderScaffold(
   navController = navController,
@@ -87,8 +88,9 @@ fun LiquidClockScreen(
     ClockTimer(
       liquidState = liquidState,
       modifier = Modifier
+        .systemBarsPadding()
         .padding(top = 72.dp)
-        .size(250.dp)
+        .size(width = 200.dp, height = 250.dp)
         .align(Alignment.TopCenter),
     )
 
@@ -103,6 +105,7 @@ fun LiquidClockScreen(
       dispersionProvider = { dispersion },
       modifier = Modifier
         .zIndex(2f)
+        .systemBarsPadding()
         .padding(top = 72.dp)
         .size(250.dp)
         .align(Alignment.TopCenter),
@@ -181,7 +184,6 @@ private fun ClockTimer(
     style = TextStyle(textAlign = TextAlign.Center),
     maxLines = 1,
     modifier = modifier
-      .width(180.dp)
       .wrapContentHeight(Alignment.CenterVertically)
       .liquefiable(liquidState)
       .graphicsLayer {

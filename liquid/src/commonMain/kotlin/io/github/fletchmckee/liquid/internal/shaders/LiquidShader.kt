@@ -71,9 +71,20 @@ internal const val LiquidShader = """
       // Also pow() didn't work for screenshot tests while this does.
       float2 aberration = dispersion * distFromCenter * distFromCenter * distFromCenter * minDimension;
 
-      half4 colorR = content.eval(baseCoord - aberration);
-      half4 colorG = content.eval(baseCoord);
-      half4 colorB = content.eval(baseCoord + aberration);
+      float2 coordR = baseCoord - aberration;
+      float2 coordG = baseCoord;
+      float2 coordB = baseCoord + aberration;
+
+      // Check if aberrated samples fall outside the shape.
+      float2 shapeCoordR = (coordR - center) / minDimension;
+      float2 shapeCoordB = (coordB - center) / minDimension;
+      bool validR = computeSdf(shapeCoordR, shapeSize * 0.5, shapeVr) <= 0.0;
+      bool validB = computeSdf(shapeCoordB, shapeSize * 0.5, shapeVr) <= 0.0;
+
+      // Use the existing coord (which is colorG) if the red or blue coord fall outside of the shape.
+      half4 colorG = content.eval(coordG);
+      half4 colorR = validR ? content.eval(coordR) : colorG;
+      half4 colorB = validB ? content.eval(coordB) : colorG;
       fragColor = half4(colorR.r, colorG.g, colorB.b, colorG.a);
     } else {
       fragColor = content.eval(baseCoord);
