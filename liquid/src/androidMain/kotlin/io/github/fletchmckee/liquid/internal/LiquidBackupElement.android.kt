@@ -43,12 +43,7 @@ internal class LiquidBackupNode(
     }
   }
 
-  override fun onDetach() {
-    super.onDetach()
-    cachedRenderEffect = null
-  }
-
-  override fun ContentDrawScope.drawLiquidEffects(
+  override fun ContentDrawScope.applyLiquidEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) {

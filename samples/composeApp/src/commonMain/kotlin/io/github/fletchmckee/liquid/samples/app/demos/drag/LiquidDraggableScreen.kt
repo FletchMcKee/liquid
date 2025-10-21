@@ -13,6 +13,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
@@ -40,6 +41,7 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.displayNavIcons
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
@@ -110,7 +112,7 @@ fun LiquidDraggableScreen(
       curveProvider = { curve },
       edgeProvider = { edge },
       saturationProvider = { saturation },
-      cornerPercentProvider = { cornerPercent },
+      shapeProvider = { RoundedCornerShape(cornerPercent) },
       dispersionProvider = { dispersion },
     )
   }
@@ -155,11 +157,13 @@ private fun SettingsColumn(
     .zIndex(3f),
   verticalArrangement = Arrangement.spacedBy(16.dp),
 ) {
-  BackButton(
-    liquidState = liquidState,
-    onClick = onBackClick,
-    containerColor = containerColor,
-  )
+  if (displayNavIcons()) {
+    BackButton(
+      liquidState = liquidState,
+      onClick = onBackClick,
+      containerColor = containerColor,
+    )
+  }
 
   ControlsButton(
     liquidState = liquidState,

@@ -77,11 +77,8 @@ jobs:
           disable_globbing: true
           commit_message: "🤖 Updates screenshots"
 
-      - name: Run unit tests
-        run: ./gradlew testDebugUnitTest
-
-      - name: Assemble
-        run: ./gradlew assembleDebug
+      - name: Build
+        run: ./gradlew build
 
       - name: Upload screenshot results if failed
         if: ${{ !cancelled() && steps.screenshotsverify.outcome == 'failure' }}
@@ -144,8 +141,7 @@ jobs:
       - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
-          # TODO: Set back to the /workflows/.java-version once Dokka has support.
-          java-version: '24'
+          java-version-file: .github/workflows/.java-version
 
       - uses: gradle/actions/setup-gradle@v5
 

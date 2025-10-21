@@ -1,11 +1,14 @@
 #!/bin/bash
 set -e
 
-# Build the Compose WASM sample.
+mkdir -p docs/sample
+# Build the Compose WASM and JS samples.
 ./gradlew samples:composeApp:wasmJsBrowserDistribution
+./gradlew samples:composeApp:jsBrowserDistribution
 
 # Copy outside files into the docs folder.
-cp -R samples/composeApp/build/dist/wasmJs/productionExecutable docs/sample
+cp -R samples/composeApp/build/dist/wasmJs/productionExecutable docs/sample/wasm
+cp -R samples/composeApp/build/dist/js/productionExecutable docs/sample/js
 
 # Copy outside files into the docs folder.
 cp README.md docs/index.md

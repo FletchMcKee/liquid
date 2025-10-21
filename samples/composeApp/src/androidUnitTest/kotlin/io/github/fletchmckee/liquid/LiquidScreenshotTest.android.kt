@@ -45,7 +45,6 @@ import org.robolectric.annotation.GraphicsMode
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
 @Config(sdk = [35], qualifiers = RobolectricDeviceQualifiers.Pixel7)
 class LiquidScreenshotTest {
-
   @get:Rule val roborazziRule = RoborazziRule(
     options = RoborazziRule.Options(
       roborazziOptions = RoborazziOptions(

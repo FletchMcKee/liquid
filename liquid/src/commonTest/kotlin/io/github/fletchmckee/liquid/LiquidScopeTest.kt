@@ -27,7 +27,7 @@ class LiquidScopeTest {
     scope = LiquidScopeImpl()
   }
 
-  @Test fun `initial values are correct`() {
+  @Test fun initialValues_areCorrect() {
     assertThat(scope.frost).isEqualTo(0.dp)
     assertThat(scope.shape).isEqualTo(CircleShape)
     assertThat(scope.refraction).isEqualTo(0.25f)
@@ -47,14 +47,14 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields).isZero()
   }
 
-  @Test fun `reset cleans mutatedFields`() {
+  @Test fun reset_cleansMutatedFields() {
     scope.setNonDefaultValues()
     assertThat(scope.mutatedFields).isNotZero()
     scope.reset()
     assertThat(scope.mutatedFields).isZero()
   }
 
-  @Test fun `frost mutations observed`() {
+  @Test fun frostMutationsObserved() {
     scope.frost = 10.dp
     assertThat(scope.frost).isEqualTo(10.dp)
     assertThat(scope.frostRadius).isEqualTo(10f)
@@ -64,7 +64,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `shape mutations observed when size is specified`() {
+  @Test fun shapeMutationsObserved_whenSizeIsSpecified() {
     // We don't set the shape flag unless we have a specified size.
     scope.size = Size(width = 50f, height = 50f)
     scope.shape = RoundedCornerShape(5)
@@ -78,7 +78,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `shape mutations not observed when size is unspecified`() {
+  @Test fun shapeMutationsNotObserved_whenSizeIsUnspecified() {
     // Size is unspecified by default, so while the shape is set, the cornerRadii will not be set.
     scope.shape = RoundedCornerShape(5)
     assertThat(scope.shape).isEqualTo(RoundedCornerShape(5))
@@ -91,7 +91,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isZero()
   }
 
-  @Test fun `refraction mutations observed`() {
+  @Test fun refractionMutationsObserved() {
     scope.refraction = 0.5f
     assertThat(scope.refraction).isEqualTo(0.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Refraction)
@@ -100,7 +100,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `curve mutations observed`() {
+  @Test fun curveMutationsObserved() {
     scope.curve = 0.5f
     assertThat(scope.curve).isEqualTo(0.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Curve)
@@ -109,7 +109,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `edge mutations observed`() {
+  @Test fun edgeMutationsObserved() {
     scope.edge = 0.5f
     assertThat(scope.edge).isEqualTo(0.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Edge)
@@ -118,7 +118,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `tint mutations observed`() {
+  @Test fun tintMutationsObserved() {
     scope.tint = Color.Red
     assertThat(scope.tint).isEqualTo(Color.Red)
     assertThat(scope.argbColor).isEqualTo(-65536)
@@ -128,7 +128,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `saturation mutations observed`() {
+  @Test fun saturationMutationsObserved() {
     scope.saturation = 1.5f
     assertThat(scope.saturation).isEqualTo(1.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Saturation)
@@ -137,7 +137,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `dispersion mutations observed`() {
+  @Test fun dispersionMutationsObserved() {
     scope.dispersion = 0.5f
     assertThat(scope.dispersion).isEqualTo(0.5f)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Dispersion)
@@ -146,7 +146,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `different tints with same argb value do not invalidate`() {
+  @Test fun differentTints_withSameArgbValue_doNotInvalidate() {
     scope.tint = Color.Transparent
     assertThat(scope.tint).isEqualTo(Color.Transparent)
     assertThat(scope.argbColor).isZero()
@@ -156,7 +156,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isZero()
   }
 
-  @Test fun `size mutations observed`() {
+  @Test fun sizeMutationsObserved() {
     scope.size = Size(width = 50f, height = 50f)
     assertThat(scope.size).isEqualTo(Size(width = 50f, height = 50f))
     // Changing size also changes the cornerRadii since we have CircleShape as the default.
@@ -168,7 +168,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `positionOnScreen mutations observed`() {
+  @Test fun positionOnScreenMutationsObserved() {
     scope.positionOnScreen = Offset(x = 50f, y = 50f)
     assertThat(scope.positionOnScreen).isEqualTo(Offset(x = 50f, y = 50f))
     assertThat(scope.mutatedFields).isEqualTo(Fields.PositionOnScreen)
@@ -178,7 +178,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `liquefiables mutations observed`() {
+  @Test fun liquefiablesMutationsObserved() {
     val liquefiable = Liquefiable()
     scope.liquefiables = listOf(liquefiable)
     assertThat(scope.liquefiables.single()).isEqualTo(liquefiable)
@@ -189,7 +189,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `density mutations update frostRadius`() {
+  @Test fun densityMutationsUpdateFrostRadius() {
     // The frost property is the only public API Dp property we expose. Other density dependent values
     // like size and cornerRadii will be updated when onGloballyPositioned is triggered.
     scope.frost = 10.dp
@@ -210,7 +210,7 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun `computePaddedBounds pads correctly`() {
+  @Test fun computePaddedBounds_padsCorrectly() {
     // First verify we can handle unspecified Size correctly
     val unspecifiedBounds = scope.computeRecordedBounds()
     assertThat(unspecifiedBounds).isEqualTo(Rect.Zero)

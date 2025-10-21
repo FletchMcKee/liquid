@@ -20,8 +20,6 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
 import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
 import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
-import io.github.fletchmckee.liquid.internal.shaders.setFrostUniforms
-import io.github.fletchmckee.liquid.internal.shaders.setLiquidUniforms
 
 internal actual fun liquidElement(
   liquidState: LiquidState,
@@ -50,61 +48,74 @@ internal class LiquidNode(
   private val horizontalShader = RuntimeShader(HorizontalFrostShader)
   private val verticalShader = RuntimeShader(VerticalFrostShader)
   private var cachedRenderEffect: RenderEffect? = null
+  private var cachedBlurEffect: android.graphics.RenderEffect? = null
 
   override fun invalidateDrawIfNeeded() {
     if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
+      if (reusableScope.mutatedFields has Fields.RenderEffectFields) {
+        cachedRenderEffect = createRenderEffect()
+      }
       invalidateDraw()
     }
   }
 
-  override fun onDetach() {
-    super.onDetach()
-    cachedRenderEffect = null
-  }
-
-  override fun ContentDrawScope.drawLiquidEffects(
+  override fun ContentDrawScope.applyLiquidEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) {
-    layer.renderEffect = obtainRenderEffect()
+    layer.renderEffect = cachedRenderEffect
     drawBlock()
   }
 
-  private fun obtainRenderEffect(): RenderEffect = cachedRenderEffect
-    ?.takeUnless { reusableScope.mutatedFields has Fields.RenderEffectFields }
-    ?: run {
-      liquidShader.setLiquidUniforms(
-        bounds = reusableScope.recordingBounds,
-        frostRadius = reusableScope.frostRadius,
-        cornerRadii = reusableScope.cornerRadii,
-        refraction = reusableScope.refraction,
-        curve = reusableScope.curve,
-        edge = reusableScope.edge,
-        argbColor = reusableScope.argbColor,
-        saturation = reusableScope.saturation,
-        dispersion = reusableScope.dispersion,
-      )
+  private fun createRenderEffect(): RenderEffect? {
+    if (reusableScope.recordingBounds.isEmpty) return null
+    liquidShader.updateLiquidUniforms()
+    val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
 
-      val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
-      if (reusableScope.frostRadius < 1f) {
-        return@run liquidEffect.asComposeRenderEffect()
-      }
+    if (reusableScope.frostRadius < 1f) {
+      cachedBlurEffect = null
+      return liquidEffect.asComposeRenderEffect()
+    }
 
-      horizontalShader.setFrostUniforms(
-        bounds = reusableScope.recordingBounds,
-        frostRadius = reusableScope.frostRadius,
-        cornerRadii = reusableScope.cornerRadii,
-      )
+    val blurEffect = cachedBlurEffect
+      ?.takeUnless { reusableScope.mutatedFields has Fields.BlurEffectFields }
+      ?: run {
+        horizontalShader.updateFrostUniforms()
+        verticalShader.updateFrostUniforms()
+        val horizontalFrost = createRuntimeShaderEffect(horizontalShader, "content")
+        val verticalFrost = createRuntimeShaderEffect(verticalShader, "content")
+        createChainEffect(horizontalFrost, verticalFrost)
+      }.also { cachedBlurEffect = it }
 
-      verticalShader.setFrostUniforms(
-        bounds = reusableScope.recordingBounds,
-        frostRadius = reusableScope.frostRadius,
-        cornerRadii = reusableScope.cornerRadii,
-      )
+    return createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()
+  }
 
-      val horizontalFrost = createRuntimeShaderEffect(horizontalShader, "content")
-      val verticalFrost = createRuntimeShaderEffect(verticalShader, "content")
-      val blurEffect = createChainEffect(horizontalFrost, verticalFrost)
-      createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()
-    }.also { cachedRenderEffect = it }
+  private fun RuntimeShader.updateLiquidUniforms() = with(reusableScope) {
+    setFloatUniform(
+      "effectRect",
+      frostRadius, // left
+      frostRadius, // top
+      recordingBounds.width - frostRadius, // right
+      recordingBounds.height - frostRadius, // bottom
+    )
+    setFloatUniform("cornerRadii", cornerRadii)
+    setFloatUniform("refraction", refraction)
+    setFloatUniform("curve", curve)
+    setFloatUniform("edge", edge)
+    setColorUniform("tint", argbColor)
+    setFloatUniform("saturation", saturation)
+    setFloatUniform("dispersion", dispersion)
+  }
+
+  private fun RuntimeShader.updateFrostUniforms() = with(reusableScope) {
+    setFloatUniform("blurRadius", frostRadius)
+    setFloatUniform(
+      "effectRect",
+      frostRadius, // left
+      frostRadius, // top
+      recordingBounds.width - frostRadius, // right
+      recordingBounds.height - frostRadius, // bottom
+    )
+    setFloatUniform("cornerRadii", cornerRadii)
+  }
 }

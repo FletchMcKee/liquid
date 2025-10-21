@@ -559,7 +559,7 @@ private class LiquidNode(
     }
   }
 
-  override fun ContentDrawScope.drawLiquidEffects(
+  override fun ContentDrawScope.applyLiquidEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) {

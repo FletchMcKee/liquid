@@ -44,15 +44,16 @@ internal const val LiquidShader = """
     float2 center = effectRect.xy + liquidSize * 0.5;
     float2 shapeCoord = (fragCoord - center) / minDimension;
     float2 shapeSize = liquidSize / minDimension;
+    float2 halfShapeSize = shapeSize * 0.5;
     half4 shapeVr = half4(cornerRadii);
-    float shapeSdf = computeSdf(shapeCoord, shapeSize * 0.5, shapeVr);
+    float shapeSdf = computeSdf(shapeCoord, halfShapeSize, shapeVr);
 
     if (shapeSdf > 0.0) {
       return half4(0.0);
     }
 
     half4 lensVr = min(shapeVr * 1.5, half4(min(shapeSize.x, shapeSize.y) * 0.5));
-    float2 sdfNormal = computeSdfNormal(shapeCoord, shapeSize * 0.5, lensVr);
+    float2 sdfNormal = computeSdfNormal(shapeCoord, halfShapeSize, lensVr);
 
     half4 fragColor;
     float2 baseCoord = fragCoord;
@@ -78,8 +79,8 @@ internal const val LiquidShader = """
       // Check if aberrated samples fall outside the shape.
       float2 shapeCoordR = (coordR - center) / minDimension;
       float2 shapeCoordB = (coordB - center) / minDimension;
-      bool validR = computeSdf(shapeCoordR, shapeSize * 0.5, shapeVr) <= 0.0;
-      bool validB = computeSdf(shapeCoordB, shapeSize * 0.5, shapeVr) <= 0.0;
+      bool validR = computeSdf(shapeCoordR, halfShapeSize, shapeVr) <= 0.0;
+      bool validB = computeSdf(shapeCoordB, halfShapeSize, shapeVr) <= 0.0;
 
       // Use the existing coord (which is colorG) if the red or blue coord fall outside of the shape.
       half4 colorG = content.eval(coordG);

@@ -36,6 +36,7 @@ gradlePlugin {
           .pluginId
       implementationClass = "RootConventionPlugin"
     }
+
     register("kotlinMultiplatform") {
       id =
         libs.plugins.liquid.kotlin.multiplatform
@@ -43,6 +44,7 @@ gradlePlugin {
           .pluginId
       implementationClass = "KotlinMultiplatformConventionPlugin"
     }
+
     register("composeMultiplatform") {
       id =
         libs.plugins.liquid.compose.multiplatform
@@ -50,36 +52,23 @@ gradlePlugin {
           .pluginId
       implementationClass = "ComposeMultiplatformConventionPlugin"
     }
+
     register("androidLibrary") {
       id =
         libs.plugins.liquid.android.library
-          .asProvider()
           .get()
           .pluginId
       implementationClass = "AndroidLibraryConventionPlugin"
     }
-    register("androidLibraryCompose") {
-      id =
-        libs.plugins.liquid.android.library.compose
-          .get()
-          .pluginId
-      implementationClass = "AndroidLibraryComposeConventionPlugin"
-    }
+
     register("androidApplication") {
       id =
         libs.plugins.liquid.android.application
-          .asProvider()
           .get()
           .pluginId
       implementationClass = "AndroidApplicationConventionPlugin"
     }
-    register("androidApplicationCompose") {
-      id =
-        libs.plugins.liquid.android.application.compose
-          .get()
-          .pluginId
-      implementationClass = "AndroidApplicationComposeConventionPlugin"
-    }
+
     register("androidTest") {
       id =
         libs.plugins.liquid.android.test

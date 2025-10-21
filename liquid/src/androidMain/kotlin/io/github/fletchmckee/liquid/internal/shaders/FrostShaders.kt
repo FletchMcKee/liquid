@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal.shaders
 
+import org.intellij.lang.annotations.Language
+
 // Derived from Haze's
 // [HazeShader](https://github.com/chrisbanes/haze/blob/1.6.10/haze/src/commonMain/kotlin/dev/chrisbanes/haze/HazeShaders.kt)
 internal val HorizontalFrostShader by lazy(LazyThreadSafetyMode.NONE) {
@@ -13,6 +15,7 @@ internal val VerticalFrostShader by lazy(LazyThreadSafetyMode.NONE) {
 }
 
 // Similar to Haze's shader, but adjusted with cornerRadii and a single shader.
+@Language(value = "AGSL")
 internal fun frostShader(vertical: Boolean): String = """
   uniform shader content;
   uniform float4 effectRect;

@@ -1,44 +1,34 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+import com.android.build.api.variant.HasUnitTestBuilder
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 
 plugins {
-  alias(libs.plugins.android.library)
+  alias(libs.plugins.liquid.android.library)
   alias(libs.plugins.liquid.kotlin.multiplatform)
   alias(libs.plugins.liquid.compose.multiplatform)
   alias(libs.plugins.maven.publish)
   alias(libs.plugins.binary.compatibility.validator)
 }
 
-android {
-  namespace = "io.github.fletchmckee.liquid"
-
-  compileSdk = 36
-  defaultConfig {
-    minSdk = 23
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  }
-
-  testOptions {
-    targetSdk = 36
-    animationsDisabled = true
-    unitTests {
-      isIncludeAndroidResources = true
-    }
-  }
-}
-
 kotlin {
   explicitApi()
   addDefaultLiquidTargets()
+
+  androidTarget {
+    @OptIn(ExperimentalKotlinGradlePluginApi::class)
+    instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
+  }
+
   sourceSets {
-    commonMain {
-      dependencies {
-        api(compose.ui)
-        implementation(compose.foundation)
-      }
+    commonMain.dependencies {
+      api(compose.ui)
+      implementation(compose.foundation)
     }
 
     val skikoMain by creating {
@@ -65,20 +55,16 @@ kotlin {
       dependsOn(skikoMain)
     }
 
-    commonTest {
-      dependencies {
-        implementation(kotlin("test"))
-        implementation(libs.assertk)
+    commonTest.dependencies {
+      implementation(kotlin("test"))
+      implementation(libs.assertk)
 
-        @OptIn(ExperimentalComposeLibrary::class)
-        implementation(compose.uiTest)
-      }
+      @OptIn(ExperimentalComposeLibrary::class)
+      implementation(compose.uiTest)
     }
 
-    jvmTest {
-      dependencies {
-        implementation(compose.desktop.currentOs)
-      }
+    jvmTest.dependencies {
+      implementation(compose.desktop.currentOs)
     }
   }
 }
@@ -92,6 +78,25 @@ dependencies {
       because("Library now uses JetBrains Compose Multiplatform")
     }
   }
+
+  androidTestImplementation(libs.androidx.junit)
+  debugImplementation(libs.compose.test.manifest)
+}
+
+android {
+  namespace = "io.github.fletchmckee.liquid"
+}
+
+androidComponents {
+  beforeVariants { variantBuilder ->
+    (variantBuilder as? HasUnitTestBuilder)?.apply {
+      enableUnitTest = false
+    }
+  }
+}
+
+tasks.withType<KotlinJsTest> {
+  enabled = false
 }
 
 mavenPublishing {

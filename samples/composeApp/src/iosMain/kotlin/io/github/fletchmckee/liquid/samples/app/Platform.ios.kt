@@ -13,3 +13,5 @@ class IOSPlatform : Platform {
 actual fun getPlatform(): Platform = IOSPlatform()
 
 actual fun PlatformContext.cacheDir(): Path? = null
+
+internal actual fun displayNavIcons(): Boolean = true

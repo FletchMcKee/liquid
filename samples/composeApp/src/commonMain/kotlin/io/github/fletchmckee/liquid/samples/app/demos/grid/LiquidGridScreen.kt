@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -103,6 +102,7 @@ fun LiquidGridScreen(
         Slider(
           value = frostRadius,
           onValueChange = { frostRadius = it },
+          steps = 49,
           valueRange = 0f..50f,
           thumb = {
             Box(

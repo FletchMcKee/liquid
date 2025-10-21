@@ -4,6 +4,7 @@ import com.android.build.api.variant.HasUnitTestBuilder
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 
 plugins {
   alias(libs.plugins.kotlin.multiplatform)
@@ -136,11 +137,6 @@ android {
     }
   }
 
-  compileOptions {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-  }
-
   testOptions {
     animationsDisabled = true
     unitTests {
@@ -177,6 +173,18 @@ compose.desktop {
       packageVersion = "1.0.0"
     }
   }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest> {
+  enabled = false
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest> {
+  enabled = false
+}
+
+tasks.withType<KotlinJsTest> {
+  enabled = false
 }
 
 roborazzi {

@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal
 
-import androidx.annotation.Size as ArraySize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
@@ -182,7 +181,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  @ArraySize(value = 4)
+  @androidx.annotation.Size(value = 4)
   internal var cornerRadii: FloatArray = Float4Zero
     private set(value) {
       if (!field.contentEquals(value)) {
@@ -202,6 +201,8 @@ internal class LiquidScopeImpl : InternalLiquidScope {
         } else {
           Rect.Zero
         }
+        pivot = Offset(value, value)
+        sigma = value / 3f
       }
     }
 
@@ -217,7 +218,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
-  @ArraySize(value = 4)
+  @androidx.annotation.Size(value = 4)
   internal var colorComponents: FloatArray = Float4Zero
     private set
 
@@ -227,6 +228,12 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   // We have to track the overlapping bounds separately as this will differ from the
   // recordedBounds when we have rotated/scaled nodes.
   internal var overlappingBounds: Rect = Rect.Zero
+    private set
+
+  internal var pivot: Offset = Offset.Zero
+    private set
+
+  internal var sigma: Float = 0f
     private set
 
   internal fun reset() {
@@ -245,7 +252,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     )
   }
 
-  @ArraySize(value = 4)
+  @androidx.annotation.Size(value = 4)
   private fun Color.getComponents(): FloatArray = floatArrayOf(red, green, blue, alpha)
 
   companion object {
@@ -285,6 +292,10 @@ internal object Fields {
       Tint or
       Saturation or
       Dispersion
+
+  // The blur is agnostic to any changes specific to the liquid effect. This way we only
+  // recreate the blur effect when `Frost` and `Size` change.
+  const val BlurEffectFields: Int = Frost or Size
 
   const val InvalidateFlags: Int =
     RenderEffectFields or

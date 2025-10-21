@@ -10,13 +10,12 @@ import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.node.invalidateDraw
+import androidx.compose.ui.util.fastRoundToInt
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
-import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
 import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
-import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
-import io.github.fletchmckee.liquid.internal.shaders.setFrostUniforms
-import io.github.fletchmckee.liquid.internal.shaders.setLiquidUniforms
+import org.jetbrains.skia.FilterTileMode
+import org.jetbrains.skia.IRect
 import org.jetbrains.skia.ImageFilter
 import org.jetbrains.skia.RuntimeEffect
 import org.jetbrains.skia.RuntimeShaderBuilder
@@ -40,81 +39,70 @@ internal class LiquidNode(
   block: LiquidScope.() -> Unit,
 ) : AbstractLiquidNode(liquidState, block) {
   private val liquidShader = RuntimeShaderBuilder(RuntimeEffect.makeForShader(LiquidShader))
-  private val horizontalShader = RuntimeShaderBuilder(RuntimeEffect.makeForShader(HorizontalFrostShader))
-  private val verticalShader = RuntimeShaderBuilder(RuntimeEffect.makeForShader(VerticalFrostShader))
-
   private var cachedRenderEffect: RenderEffect? = null
+  private var cachedBlurImageFilter: ImageFilter? = null
 
   override fun invalidateDrawIfNeeded() {
     if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
+      if (reusableScope.mutatedFields has Fields.RenderEffectFields) {
+        cachedRenderEffect = createRenderEffect()
+      }
       invalidateDraw()
     }
   }
 
-  override fun onDetach() {
-    super.onDetach()
-    cachedRenderEffect = null
-  }
-
-  override fun ContentDrawScope.drawLiquidEffects(
+  override fun ContentDrawScope.applyLiquidEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) {
-    layer.renderEffect = obtainRenderEffect()
+    layer.renderEffect = cachedRenderEffect
     drawBlock()
   }
 
-  private fun obtainRenderEffect(): RenderEffect = cachedRenderEffect?.takeUnless { reusableScope.mutatedFields has Fields.RenderEffectFields }
-    ?: createRenderEffect().also { cachedRenderEffect = it }
+  private fun createRenderEffect(): RenderEffect? {
+    if (reusableScope.recordingBounds.isEmpty) return null
+    liquidShader.updateLiquidUniforms()
+    val blurEffect = if (reusableScope.sigma > 0f) {
+      cachedBlurImageFilter?.takeUnless { reusableScope.mutatedFields has Fields.BlurEffectFields }
+        ?: ImageFilter.makeBlur(
+          sigmaX = reusableScope.sigma,
+          sigmaY = reusableScope.sigma,
+          mode = FilterTileMode.CLAMP,
+          crop = with(reusableScope) {
+            val frostInt = frostRadius.fastRoundToInt()
+            IRect.makeLTRB(
+              l = frostInt,
+              t = frostInt,
+              r = recordingBounds.width.fastRoundToInt() - frostInt,
+              b = recordingBounds.height.fastRoundToInt() - frostInt,
+            )
+          },
+        )
+    } else {
+      null
+    }.also { cachedBlurImageFilter = it }
 
-  private fun createRenderEffect(): RenderEffect {
-    liquidShader.setLiquidUniforms(
-      bounds = reusableScope.recordingBounds,
-      frostRadius = reusableScope.frostRadius,
-      cornerRadii = reusableScope.cornerRadii,
-      refraction = reusableScope.refraction,
-      curve = reusableScope.curve,
-      edge = reusableScope.edge,
-      colorComponents = reusableScope.colorComponents,
-      saturation = reusableScope.saturation,
-      dispersion = reusableScope.dispersion,
-    )
-
-    val liquidImageFilter = ImageFilter.makeRuntimeShader(
+    return ImageFilter.makeRuntimeShader(
       runtimeShaderBuilder = liquidShader,
       shaderNames = arrayOf("content"),
-      inputs = arrayOf(null),
+      inputs = arrayOf(blurEffect),
+    ).asComposeRenderEffect()
+  }
+
+  private fun RuntimeShaderBuilder.updateLiquidUniforms() = with(reusableScope) {
+    uniform(
+      "effectRect",
+      frostRadius, // left
+      frostRadius, // top
+      recordingBounds.width - frostRadius, // right
+      recordingBounds.height - frostRadius, // bottom
     )
-
-    if (reusableScope.frostRadius < 1f) {
-      return liquidImageFilter.asComposeRenderEffect()
-    }
-
-    horizontalShader.setFrostUniforms(
-      bounds = reusableScope.recordingBounds,
-      frostRadius = reusableScope.frostRadius,
-      cornerRadii = reusableScope.cornerRadii,
-    )
-
-    verticalShader.setFrostUniforms(
-      bounds = reusableScope.recordingBounds,
-      frostRadius = reusableScope.frostRadius,
-      cornerRadii = reusableScope.cornerRadii,
-    )
-
-    val horizontalFrost = ImageFilter.makeRuntimeShader(
-      runtimeShaderBuilder = horizontalShader,
-      shaderNames = arrayOf("content"),
-      inputs = arrayOf(null),
-    )
-
-    val verticalFrost = ImageFilter.makeRuntimeShader(
-      runtimeShaderBuilder = verticalShader,
-      shaderNames = arrayOf("content"),
-      inputs = arrayOf(null),
-    )
-
-    val blurEffect = ImageFilter.makeCompose(verticalFrost, horizontalFrost)
-    return ImageFilter.makeCompose(liquidImageFilter, blurEffect).asComposeRenderEffect()
+    uniform("cornerRadii", cornerRadii)
+    uniform("refraction", refraction)
+    uniform("curve", curve)
+    uniform("edge", edge)
+    uniform("tint", colorComponents)
+    uniform("saturation", saturation)
+    uniform("dispersion", dispersion)
   }
 }

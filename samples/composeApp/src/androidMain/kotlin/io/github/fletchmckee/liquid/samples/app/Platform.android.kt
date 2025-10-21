@@ -14,3 +14,5 @@ class AndroidPlatform : Platform {
 actual fun getPlatform(): Platform = AndroidPlatform()
 
 actual fun PlatformContext.cacheDir(): Path? = this.cacheDir.toOkioPath()
+
+internal actual fun displayNavIcons(): Boolean = false

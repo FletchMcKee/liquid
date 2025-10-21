@@ -67,7 +67,7 @@ internal class LiquefiableNode(
     liquidState.liquefiables += liquefiable
   }
 
-  override fun onDetach() {
+  override fun onDetach() = Snapshot.withMutableSnapshot {
     liquidState.liquefiables -= liquefiable
     liquefiable.layer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     liquefiable.layer = null

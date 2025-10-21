@@ -12,3 +12,5 @@ interface Platform {
 expect fun getPlatform(): Platform
 
 internal expect fun PlatformContext.cacheDir(): Path?
+
+internal expect fun displayNavIcons(): Boolean

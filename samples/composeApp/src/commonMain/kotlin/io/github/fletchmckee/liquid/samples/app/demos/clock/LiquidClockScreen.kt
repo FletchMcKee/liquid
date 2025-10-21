@@ -3,6 +3,7 @@
 package io.github.fletchmckee.liquid.samples.app.demos.clock
 
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.StartOffset
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -18,10 +19,12 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,9 +61,12 @@ import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import liquid_root.samples.composeapp.generated.resources.Res
+import liquid_root.samples.composeapp.generated.resources.clock_format
 import liquid_root.samples.composeapp.generated.resources.prague_clock
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LiquidClockScreen(
@@ -79,8 +85,9 @@ fun LiquidClockScreen(
     var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
     var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
     var curve by rememberSaveable { mutableFloatStateOf(0.25f) }
-    var edge by rememberSaveable { mutableFloatStateOf(0.05f) }
+    var edge by rememberSaveable { mutableFloatStateOf(0.1f) }
     var saturation by rememberSaveable { mutableFloatStateOf(1f) }
+    var cornerPercent by rememberSaveable { mutableIntStateOf(30) }
     var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
 
     PragueClockBackground(liquidState)
@@ -102,6 +109,7 @@ fun LiquidClockScreen(
       curveProvider = { curve },
       edgeProvider = { edge },
       saturationProvider = { saturation },
+      shapeProvider = { RoundedCornerShape(cornerPercent) },
       dispersionProvider = { dispersion },
       modifier = Modifier
         .zIndex(2f)
@@ -124,6 +132,8 @@ fun LiquidClockScreen(
       onEdgeChange = { edge = it },
       saturationProvider = { saturation },
       onSaturationChange = { saturation = it },
+      cornerPercentProvider = { cornerPercent },
+      onCornerPercentChange = { cornerPercent = it },
       dispersionProvider = { dispersion },
       onDispersionChange = { dispersion = it },
       containerShape = RoundedCornerShape(8),
@@ -157,7 +167,7 @@ private fun ClockTimer(
   var elapsedMillis by remember { mutableLongStateOf(0L) }
 
   LaunchedEffect(Unit) {
-    while (true) {
+    while (isActive) {
       elapsedMillis = Clock.System.now().toEpochMilliseconds() - startTime
       delay(1.seconds)
     }
@@ -167,13 +177,12 @@ private fun ClockTimer(
   val hours = totalSeconds / 3600
   val minutes = (totalSeconds % 3600) / 60
   val seconds = totalSeconds % 60
-  val timeString = buildString {
-    append(hours.toString().padStart(2, '0'))
-    append(":")
-    append(minutes.toString().padStart(2, '0'))
-    append(":")
-    append(seconds.toString().padStart(2, '0'))
-  }
+  val timeString = stringResource(
+    Res.string.clock_format,
+    hours.toString().padStart(2, '0'),
+    minutes.toString().padStart(2, '0'),
+    seconds.toString().padStart(2, '0'),
+  )
 
   BasicText(
     text = timeString,
@@ -204,9 +213,10 @@ private fun LiquidRotatingBox(
   curveProvider: () -> Float,
   edgeProvider: () -> Float,
   saturationProvider: () -> Float,
+  shapeProvider: () -> Shape,
   dispersionProvider: () -> Float,
   modifier: Modifier = Modifier,
-  boxShape: Shape = RoundedCornerShape(30),
+  fallbackColor: Color = MaterialTheme.colorScheme.background,
 ) {
   val useLiquid = LocalUseLiquid.current
   var dragOffset by remember { mutableStateOf(Offset.Zero) }
@@ -219,6 +229,7 @@ private fun LiquidRotatingBox(
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Restart,
+      initialStartOffset = StartOffset(1000),
     ),
     label = "rotate",
   )
@@ -229,6 +240,7 @@ private fun LiquidRotatingBox(
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Reverse,
+      initialStartOffset = StartOffset(1000),
     ),
     label = "scale",
   )
@@ -244,17 +256,20 @@ private fun LiquidRotatingBox(
         scaleX = scale
         scaleY = scale
       }
-      .dropShadow(boxShape, LiquidShadow)
+      .dropShadow(shapeProvider(), LiquidShadow)
       .thenIf(useLiquid) {
         liquid(liquidState) {
           frost = frostProvider().dp
           refraction = refractionProvider()
           curve = curveProvider()
           saturation = saturationProvider()
-          shape = boxShape
+          shape = shapeProvider()
           edge = edgeProvider()
           dispersion = dispersionProvider()
         }
+      }
+      .thenIf(!useLiquid) {
+        background(fallbackColor, shapeProvider())
       },
   )
 }

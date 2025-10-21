@@ -11,4 +11,6 @@ class JVMPlatform : Platform {
 
 actual fun getPlatform(): Platform = JVMPlatform()
 
-actual fun PlatformContext.cacheDir(): Path? = null
+internal actual fun PlatformContext.cacheDir(): Path? = null
+
+internal actual fun displayNavIcons(): Boolean = true

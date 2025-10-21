@@ -22,36 +22,30 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toIntSize
+import androidx.compose.ui.util.fastFilter
+import androidx.compose.ui.util.fastForEach
 import io.github.fletchmckee.liquid.internal.LiquidScopeImpl.Companion.Float4Zero
 
 internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   layer: GraphicsLayer,
   reusableScope: LiquidScopeImpl,
-) {
-  val overlapping = reusableScope.overlappingBounds
+) = with(reusableScope) {
   // Only record content inside the effect's bounds.
-  val liquefiables = reusableScope.liquefiables.filter { overlapping.overlaps(it.boundsOnScreen) }
-  if (liquefiables.isEmpty()) return
-
-  val bounds = reusableScope.recordingBounds
-  val padding = reusableScope.frostRadius
-  val pivot = Offset(padding, padding)
-  val scaleX = reusableScope.inverseScaleX
-  val scaleY = reusableScope.inverseScaleY
-  val rotationZ = reusableScope.inverseRotationZ
+  val liquefiables = liquefiables.fastFilter { overlappingBounds.overlaps(it.boundsOnScreen) }
+  if (liquefiables.isEmpty()) return@with
   // We avoid unnecessary liquidScope invalidations by observing the mutableState boundsOnScreen
-  // and layers here.
-  layer.record(bounds.size.toIntSize()) {
-    liquefiables.forEach { liquefiable ->
+  // and layers here. Changes to these properties will recompose the full draw pass.
+  layer.record(recordingBounds.size.toIntSize()) {
+    liquefiables.fastForEach { liquefiable ->
       liquefiable.layer
-        ?.takeUnless { it.isReleased || it.size.isEmpty }
+        ?.takeUnless { it.isReleased }
         ?.let { liquefiableLayer ->
           // Position content where it should appear on screen.
-          val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - bounds.topLeft.orZero
+          val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - recordingBounds.topLeft.orZero
           withTransform(
             {
-              rotate(degrees = rotationZ, pivot = pivot)
-              scale(scaleX = scaleX, scaleY = scaleY, pivot = pivot)
+              rotate(degrees = inverseRotationZ, pivot = pivot)
+              scale(scaleX = inverseScaleX, scaleY = inverseScaleY, pivot = pivot)
               translate(left = x, top = y)
             },
           ) {
@@ -66,6 +60,7 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
  * Allows passing a [Shape] parameter to a composable that can be used for other GraphicsLayer requirements
  * along with being used in our liquid nodes.
  */
+@androidx.annotation.Size(value = 4)
 internal fun Shape.cornerRadiiPx(size: Size, density: Density): FloatArray = when (this) {
   CircleShape -> {
     floatArrayOf(0.5f, 0.5f, 0.5f, 0.5f)

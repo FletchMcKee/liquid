@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import io.github.fletchmckee.liquid.samples.app.displayNavIcons
 
 @Composable
 fun SliderScaffold(
@@ -45,14 +46,16 @@ fun SliderScaffold(
   topBar = {
     TopAppBar(
       navigationIcon = {
-        IconButton(
-          onClick = { navController.navigateUp() },
-        ) {
-          Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back button",
-            tint = MaterialTheme.colorScheme.onBackground,
-          )
+        if (displayNavIcons()) {
+          IconButton(
+            onClick = { navController.navigateUp() },
+          ) {
+            Icon(
+              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+              contentDescription = "Back button",
+              tint = MaterialTheme.colorScheme.onBackground,
+            )
+          }
         }
       },
       title = {
@@ -60,6 +63,7 @@ fun SliderScaffold(
           Slider(
             value = frostProvider(),
             onValueChange = onFrostChange,
+            steps = 49,
             valueRange = 0f..50f,
             thumb = {
               Box(

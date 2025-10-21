@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.util.fastFilter
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
 import kotlin.math.PI
@@ -88,19 +89,21 @@ internal abstract class AbstractLiquidNode(
 
   protected abstract fun invalidateDrawIfNeeded()
 
-  protected abstract fun ContentDrawScope.drawLiquidEffects(
+  protected abstract fun ContentDrawScope.applyLiquidEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   )
 
   internal fun invalidateLiquidBlock() {
     if (!isAttached) return
-
+    // Our frostRadius calculations rely on density. Setting it here prevents unnecessary RenderEffect
+    // invalidations in the draw pass.
+    reusableScope.density = currentValueOf(LocalDensity)
     block(reusableScope)
 
     // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
     val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
-    reusableScope.liquefiables = liquidState.liquefiables.filter { it != ancestor }
+    reusableScope.liquefiables = liquidState.liquefiables.fastFilter { it != ancestor }
 
     invalidateDrawIfNeeded()
   }
@@ -152,11 +155,10 @@ internal abstract class AbstractLiquidNode(
 
     try {
       val layer = obtainGraphicsLayer()
-      reusableScope.density = currentValueOf(LocalDensity)
       recordLiquefiablesIntoLayer(layer, reusableScope)
 
       val padding = -reusableScope.frostRadius
-      drawLiquidEffects(layer) {
+      applyLiquidEffects(layer) {
         translate(padding, padding) { drawLayer(layer) }
       }
 
