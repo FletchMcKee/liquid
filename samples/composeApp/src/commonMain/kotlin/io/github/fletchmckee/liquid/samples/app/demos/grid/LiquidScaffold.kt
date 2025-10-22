@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -84,7 +85,7 @@ fun LiquidBottomAppBar(
   content: @Composable () -> Unit = {},
 ) = Row(
   modifier = modifier
-    .fillMaxWidth()
+    .widthIn(600.dp)
     .padding(24.dp)
     .dropShadow(bottomBarShape, LiquidShadow)
     .thenIf(useLiquid) {

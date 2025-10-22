@@ -50,6 +50,7 @@ internal val LocalUseLiquid = staticCompositionLocalOf { true }
 internal val LocalInitialFrost = staticCompositionLocalOf { 0f }
 internal val LocalInitialDispersion = staticCompositionLocalOf { 0f }
 internal val LocalIsBenchmark = staticCompositionLocalOf { false }
+internal val LocalIsScreenshotTest = staticCompositionLocalOf { false }
 
 @Composable
 fun LiquidTheme(
@@ -57,11 +58,15 @@ fun LiquidTheme(
   useLiquid: Boolean = true,
   initialFrost: Float = 0f,
   initialDispersion: Float = 0f,
+  isBenchmark: Boolean = false,
+  isScreenshotTest: Boolean = false,
   content: @Composable () -> Unit,
 ) = CompositionLocalProvider(
   LocalUseLiquid provides useLiquid,
   LocalInitialFrost provides initialFrost,
   LocalInitialDispersion provides initialDispersion,
+  LocalIsBenchmark provides isBenchmark,
+  LocalIsScreenshotTest provides isScreenshotTest,
 ) {
   MaterialTheme(
     colorScheme = if (darkMode) DarkColorScheme else LightColorScheme,

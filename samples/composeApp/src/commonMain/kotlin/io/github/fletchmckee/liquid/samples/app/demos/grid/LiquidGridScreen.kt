@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app.demos.grid
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,10 +47,14 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
+import liquid_root.samples.composeapp.generated.resources.Res
+import liquid_root.samples.composeapp.generated.resources.moon_and_stars
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LiquidGridScreen(
@@ -144,6 +149,7 @@ fun LiquidGridScreen(
 fun LiquidGrid(
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier,
+  isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = LazyVerticalGrid(
   columns = GridCells.Adaptive(120.dp),
   verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -155,7 +161,10 @@ fun LiquidGrid(
     .padding(horizontal = 8.dp),
 ) {
   items(count = 100, key = { it }) { index ->
-    ImageGrid(index)
+    when {
+      isScreenshotTest -> MoonAndStarsBackup(index)
+      else -> ImageGrid(index)
+    }
   }
 }
 
@@ -165,6 +174,18 @@ private fun ImageGrid(index: Int) = AsyncImage(
   contentScale = ContentScale.Crop,
   placeholder = ColorPainter(Color.LightGray),
   error = ColorPainter(Color.Magenta),
+  contentDescription = null,
+  modifier = Modifier
+    .fillMaxWidth()
+    .aspectRatio(8f / 11f)
+    .testTag("imageGrid$index")
+    .testTagsAsResourceId(true),
+)
+
+@Composable
+private fun MoonAndStarsBackup(index: Int) = Image(
+  painter = painterResource(Res.drawable.moon_and_stars),
+  contentScale = ContentScale.Crop,
   contentDescription = null,
   modifier = Modifier
     .fillMaxWidth()

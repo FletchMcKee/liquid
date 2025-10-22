@@ -27,5 +27,5 @@ fun LiquidScreen(
 }
 ```
 !!! important
-  A `liquid` node cannot have ancestor `liquefiable` nodes outside of its own Modifier chain using the same `LiquidState`. Doing so will result in a fatal SIGSEGV exception.
-  See [Node Hirearchy](limitations.md#node-hierarchy) under [Limitations](limitations.md) for more information.
+    A `liquid` node cannot have ancestor `liquefiable` nodes outside of its own Modifier chain using the same `LiquidState`. Doing so will result in a fatal SIGSEGV exception.
+    See [Node Hirearchy](limitations.md#node-hierarchy) under [Limitations](limitations.md) for more information.

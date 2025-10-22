@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 60
 
     permissions:
@@ -133,7 +133,7 @@ jobs:
           script: ./gradlew connectedDebugAndroidTest --daemon
 
   publish:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     if: ${{ github.ref == 'refs/heads/trunk' && github.repository == 'fletchmckee/liquid' }}
     needs: [build, androidTest]
     steps:

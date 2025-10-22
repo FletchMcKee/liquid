@@ -6,7 +6,6 @@ androidXTest = "1.7.0"
 assertk = "0.28.1"
 benchmark = "1.4.1"
 binaryCompatibility = "0.18.1"
-buildConfig = "5.7.0"
 coilCompose = "3.3.0"
 composeAdaptive = "1.1.0"
 composeBom = "2025.10.00"
@@ -35,7 +34,6 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-test-runner = { module = "androidx.test:runner", version.ref = "androidXTest" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
-coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 coil-test = { module = "io.coil-kt.coil3:coil-test", version.ref = "coilCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -98,7 +96,6 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibility" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
-build-config = { id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
