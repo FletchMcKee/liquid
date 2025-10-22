@@ -41,7 +41,7 @@ kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-
 
 # Compose
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.9.3" }
+compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.9.4" }
 compose-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
