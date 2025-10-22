@@ -82,7 +82,7 @@ kotlin {
 
 dependencies {
   constraints {
-    "androidMainApi"("androidx.compose.ui:ui:1.9.3") {
+    "androidMainApi"("androidx.compose.ui:ui:1.9.4") {
       because("Library now uses JetBrains Compose Multiplatform")
     }
     "androidMainImplementation"("androidx.compose.foundation:foundation:1.9.3") {
