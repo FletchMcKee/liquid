@@ -116,6 +116,7 @@ internal abstract class AbstractLiquidNode(
   // We handle all necessary invalidations in LiquidScopeImpl.
   override val shouldAutoInvalidate: Boolean = false
 
+  // The `observeReads` call is critical here, otherwise we won't receive updates from LiquidScope/Liquefiable property mutations.
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
 
   override fun onDetach() {
@@ -159,9 +160,11 @@ internal abstract class AbstractLiquidNode(
 
       val padding = -reusableScope.frostRadius
       applyLiquidEffects(layer) {
+        // Need to translate topLeft to account for the frostRadius padding we've added for blur sampling.
         translate(padding, padding) { drawLayer(layer) }
       }
 
+      // Necessary since it isn't part of the recording.
       drawContent()
     } finally {
       reusableScope.reset()

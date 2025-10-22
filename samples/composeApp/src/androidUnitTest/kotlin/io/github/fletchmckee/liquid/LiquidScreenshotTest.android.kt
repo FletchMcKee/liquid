@@ -5,7 +5,6 @@
 package io.github.fletchmckee.liquid
 
 import android.content.ContentProvider
-import android.content.Context
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.AndroidComposeUiTestEnvironment
@@ -15,14 +14,8 @@ import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performScrollToNode
-import androidx.core.graphics.drawable.toBitmap
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import coil3.ImageLoader
-import coil3.SingletonImageLoader
 import coil3.annotation.DelicateCoilApi
-import coil3.asImage
-import coil3.test.FakeImageLoaderEngine
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.RoborazziRule
@@ -64,17 +57,6 @@ class LiquidScreenshotTest {
     @Suppress("UNCHECKED_CAST")
     val clazz = Class.forName("org.jetbrains.compose.resources.AndroidContextProvider") as Class<ContentProvider>
     Robolectric.setupContentProvider(clazz)
-
-    val context = ApplicationProvider.getApplicationContext<Context>()
-    val drawable = context.getDrawable(io.github.fletchmckee.liquid.samples.app.R.drawable.moon_and_stars)!!
-    val bitmap = drawable.toBitmap()
-    val engine = FakeImageLoaderEngine.Builder()
-      .default(bitmap.asImage())
-      .build()
-    val imageLoader = ImageLoader.Builder(context)
-      .components { add(engine) }
-      .build()
-    SingletonImageLoader.setUnsafe(imageLoader)
   }
 
   @Config(sdk = [31, 35])
@@ -160,6 +142,7 @@ class LiquidScreenshotTest {
             darkMode = darkMode,
             initialFrost = initialFrost,
             initialDispersion = initialDispersion,
+            isScreenshotTest = true,
           ) {
             content()
           }

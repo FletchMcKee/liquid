@@ -42,11 +42,13 @@ import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 import liquid_root.samples.composeapp.generated.resources.Res
 import liquid_root.samples.composeapp.generated.resources.dotonbori
+import liquid_root.samples.composeapp.generated.resources.moon_and_stars
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -111,6 +113,7 @@ private fun LiquidCard(
   initialFrost: Float,
   cardShape: Shape = RoundedCornerShape(10),
   containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
+  isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = Column(
   modifier = Modifier
     .fillMaxWidth()
@@ -131,7 +134,10 @@ private fun LiquidCard(
   Row(
     verticalAlignment = Alignment.CenterVertically,
   ) {
-    CardImage(index)
+    when {
+      isScreenshotTest -> MoonAndStarsBackup()
+      else -> CardImage(index)
+    }
 
     Column(verticalArrangement = Arrangement.SpaceEvenly) {
       Text(
@@ -172,6 +178,18 @@ private fun CardImage(
   contentScale = ContentScale.Crop,
   placeholder = ColorPainter(Color.LightGray),
   error = ColorPainter(Color.Magenta),
+  contentDescription = null,
+  modifier = Modifier
+    .size(80.dp)
+    .clip(shape),
+)
+
+@Composable
+private fun MoonAndStarsBackup(
+  shape: Shape = RoundedCornerShape(10),
+) = Image(
+  painter = painterResource(Res.drawable.moon_and_stars),
+  contentScale = ContentScale.Crop,
   contentDescription = null,
   modifier = Modifier
     .size(80.dp)

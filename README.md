@@ -1,4 +1,4 @@
-## Liquid
+# Liquid
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.fletchmckee.liquid/liquid)](https://search.maven.org/search?q=g:io.github.fletchmckee.liquid)
 ![Build status](https://github.com/fletchmckee/liquid/actions/workflows/build.yml/badge.svg)

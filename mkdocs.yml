@@ -11,6 +11,8 @@ docs_dir: docs
 repo_name: 'Liquid'
 repo_url: 'https://github.com/fletchmckee/liquid'
 
+copyright: 'Copyright &copy; 2025 Colin McKee'
+
 # Configuration
 theme:
   name: 'material'
@@ -44,6 +46,8 @@ theme:
   font:
     text: 'Roboto'
     code: 'Roboto Mono'
+  features:
+    - content.code.copy
 
 # Navigation
 nav:

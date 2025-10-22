@@ -102,7 +102,6 @@ kotlin {
       implementation(libs.roborazzi.compose)
       implementation(libs.roborazzi.rule)
       implementation(libs.roborazzi.core)
-      implementation(libs.coil.test)
     }
   }
 }

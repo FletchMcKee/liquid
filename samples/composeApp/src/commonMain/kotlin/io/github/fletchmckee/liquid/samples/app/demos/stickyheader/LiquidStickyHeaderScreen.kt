@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app.demos.stickyheader
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,10 +47,14 @@ import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.demos.many.LoremIpsum
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
+import liquid_root.samples.composeapp.generated.resources.Res
+import liquid_root.samples.composeapp.generated.resources.moon_and_stars
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun LiquidStickyHeaderScreen(
@@ -153,6 +158,7 @@ private fun CardItem(
   liquidState: LiquidState,
   index: Int,
   shape: Shape = RoundedCornerShape(5),
+  isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = Column(
   modifier = Modifier
     .fillMaxWidth()
@@ -162,7 +168,11 @@ private fun CardItem(
     .background(MaterialTheme.colorScheme.background),
   horizontalAlignment = Alignment.CenterHorizontally,
 ) {
-  ImageItem(index)
+  when {
+    isScreenshotTest -> MoonAndStarsBackup(index)
+    else -> ImageItem(index)
+  }
+
   Text(
     text = "Card $index",
     color = MaterialTheme.colorScheme.onBackground,
@@ -190,6 +200,18 @@ private fun ImageItem(
   contentDescription = null,
   modifier = Modifier
     .widthIn(max = 600.dp)
+    .aspectRatio(1f)
+    .testTag("imageItem$index")
+    .testTagsAsResourceId(true),
+)
+
+@Composable
+private fun MoonAndStarsBackup(index: Int) = Image(
+  painter = painterResource(Res.drawable.moon_and_stars),
+  contentScale = ContentScale.Crop,
+  contentDescription = null,
+  modifier = Modifier
+    .fillMaxWidth()
     .aspectRatio(1f)
     .testTag("imageItem$index")
     .testTagsAsResourceId(true),
