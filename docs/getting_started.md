@@ -2,14 +2,16 @@
 
 ```gradle
 repositories {
-  mavenCentral() // Release versions
+  // Release versions
+  mavenCentral()
+  // Snapshot versions
   maven {
-    url = uri("https://central.sonatype.com/repository/maven-snapshots/") // Snapshot versions
+    url = uri("https://central.sonatype.com/repository/maven-snapshots/")
   }
 }
 
 dependencies {
-  implementation("io.github.fletchmckee.liquid:liquid:0.3.1")
+  implementation("io.github.fletchmckee.liquid:liquid:1.0.0-SNAPSHOT")
 }
 ```
 ### LiquidScope

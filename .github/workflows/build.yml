@@ -77,8 +77,11 @@ jobs:
           disable_globbing: true
           commit_message: "🤖 Updates screenshots"
 
-      - name: Build
-        run: ./gradlew build
+      - name: Run all tests
+        run: ./gradlew allTests
+
+      - name: Assemble samples
+        run: ./gradlew :samples:composeApp:assembleDebug
 
       - name: Upload screenshot results if failed
         if: ${{ !cancelled() && steps.screenshotsverify.outcome == 'failure' }}
