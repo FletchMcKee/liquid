@@ -1,5 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+import com.android.build.api.variant.HasUnitTestBuilder
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.compose.ExperimentalComposeLibrary
@@ -91,6 +92,14 @@ dependencies {
 
   androidTestImplementation(libs.androidx.junit)
   debugImplementation(libs.compose.test.manifest)
+}
+
+androidComponents {
+  beforeVariants { variantBuilder ->
+    (variantBuilder as? HasUnitTestBuilder)?.apply {
+      enableUnitTest = false
+    }
+  }
 }
 
 tasks.withType<KotlinJsTest> {

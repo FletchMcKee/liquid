@@ -4,7 +4,10 @@ import com.android.build.api.variant.HasUnitTestBuilder
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
   alias(libs.plugins.kotlin.multiplatform)
@@ -34,7 +37,7 @@ kotlin {
     iosArm64(),
     iosSimulatorArm64(),
   ).forEach { iosTarget ->
-    iosTarget.binaries.framework {
+    iosTarget.binaries.framework(buildTypes = setOf(NativeBuildType.DEBUG)) {
       baseName = "ComposeApp"
       isStatic = true
     }
@@ -173,11 +176,11 @@ compose.desktop {
   }
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest> {
+tasks.withType<KotlinNativeSimulatorTest> {
   enabled = false
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest> {
+tasks.withType<KotlinNativeHostTest> {
   enabled = false
 }
 

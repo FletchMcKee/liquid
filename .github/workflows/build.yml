@@ -47,12 +47,12 @@ jobs:
         run: ./gradlew spotlessCheck
 
       - name: API check
-        run: ./gradlew apiCheck
+        run: ./gradlew :liquid:apiCheck
 
       - name: Run Roborazzi screenshot tests
         id: screenshotsverify
         continue-on-error: true
-        run: ./gradlew verifyRoborazziDebug
+        run: ./gradlew :samples:composeApp:verifyRoborazziDebug
 
       - name: Prevent pushing new screenshots if this is a fork
         id: checkfork_screenshots
@@ -67,7 +67,7 @@ jobs:
         id: screenshotsrecord
         if: steps.screenshotsverify.outcome == 'failure' && github.event_name == 'pull_request'
         run: |
-          ./gradlew recordRoborazziDebug
+          ./gradlew :samples:composeApp:recordRoborazziDebug
 
       - name: Push new screenshots if available
         uses: stefanzweifel/git-auto-commit-action@v7
