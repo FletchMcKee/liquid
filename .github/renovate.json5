@@ -20,4 +20,13 @@
       extractVersionTemplate: '^(?<version>\\d+)',
     },
   ],
+  packageRules: [
+    {
+      packagePatterns: [
+        '^androidx.compose.ui:ui',
+        '^androidx.compose.foundation:foundation',
+      ],
+      enabled: false,
+    },
+  ]
 }

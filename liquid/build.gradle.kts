@@ -17,6 +17,7 @@ plugins {
   alias(libs.plugins.liquid.compose.multiplatform)
   alias(libs.plugins.maven.publish)
   alias(libs.plugins.binary.compatibility.validator)
+  alias(libs.plugins.dokka)
 }
 
 android {
@@ -117,8 +118,7 @@ tasks.withType<KotlinNativeHostTest> {
 mavenPublishing {
   configure(
     KotlinMultiplatform(
-      // TODO: Set up dokka
-      javadocJar = JavadocJar.None(),
+      javadocJar = JavadocJar.Dokka("dokkaGenerate"),
       sourcesJar = true,
       androidVariantsToPublish = listOf("release"),
     ),
