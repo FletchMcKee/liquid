@@ -1,0 +1,34 @@
+public final class io/github/fletchmckee/liquid/LiquefiableKt {
+	public static final fun liquefiable (Landroidx/compose/ui/Modifier;Lio/github/fletchmckee/liquid/LiquidState;)Landroidx/compose/ui/Modifier;
+}
+
+public final class io/github/fletchmckee/liquid/LiquidKt {
+	public static final fun liquid (Landroidx/compose/ui/Modifier;Lio/github/fletchmckee/liquid/LiquidState;Lkotlin/jvm/functions/Function1;)Landroidx/compose/ui/Modifier;
+	public static synthetic fun liquid$default (Landroidx/compose/ui/Modifier;Lio/github/fletchmckee/liquid/LiquidState;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Landroidx/compose/ui/Modifier;
+	public static final fun rememberLiquidState (Landroidx/compose/runtime/Composer;I)Lio/github/fletchmckee/liquid/LiquidState;
+}
+
+public abstract interface class io/github/fletchmckee/liquid/LiquidScope {
+	public abstract fun getCurve ()F
+	public abstract fun getDispersion ()F
+	public abstract fun getEdge ()F
+	public abstract fun getFrost-D9Ej5fM ()F
+	public abstract fun getRefraction ()F
+	public abstract fun getSaturation ()F
+	public abstract fun getShape ()Landroidx/compose/ui/graphics/Shape;
+	public abstract fun getTint-0d7_KjU ()J
+	public abstract fun setCurve (F)V
+	public abstract fun setDispersion (F)V
+	public abstract fun setEdge (F)V
+	public abstract fun setFrost-0680j_4 (F)V
+	public abstract fun setRefraction (F)V
+	public abstract fun setSaturation (F)V
+	public abstract fun setShape (Landroidx/compose/ui/graphics/Shape;)V
+	public abstract fun setTint-8_81llA (J)V
+}
+
+public final class io/github/fletchmckee/liquid/LiquidState {
+	public static final field $stable I
+	public fun <init> ()V
+}
+

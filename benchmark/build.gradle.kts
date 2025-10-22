@@ -23,10 +23,10 @@ android {
     }
   }
 
-  targetProjectPath = ":samples:app"
+  targetProjectPath = ":samples:composeApp"
   experimentalProperties["android.experimental.self-instrumenting"] = true
 
-  testOptions.managedDevices.devices {
+  testOptions.managedDevices.allDevices {
     create<ManagedVirtualDevice>("pixel5Api34") {
       device = "Pixel 5"
       apiLevel = 34

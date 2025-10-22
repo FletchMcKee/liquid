@@ -1,0 +1,89 @@
+# Project information
+site_name: 'Liquid'
+site_description: 'Liquid RuntimeShader effects for Compose Multiplatform'
+site_author: 'Colin McKee'
+site_url: 'https://fletchmckee.github.io/liquid/'
+remote_branch: gh-pages
+edit_uri: ""
+docs_dir: docs
+
+# Repository
+repo_name: 'Liquid'
+repo_url: 'https://github.com/fletchmckee/liquid'
+
+copyright: 'Copyright &copy; 2025 Colin McKee'
+
+# Configuration
+theme:
+  name: 'material'
+  language: 'en'
+  icon:
+    logo: material/sine-wave
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: white
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: 'Roboto'
+    code: 'Roboto Mono'
+  features:
+    - content.code.copy
+
+# Navigation
+nav:
+  - 'Overview': index.md
+  - 'Getting Started': getting_started.md
+  - 'Usage': usage.md
+  - 'Limitations': limitations.md
+  - 'WASM Sample ⏏': sample/wasm/index.html
+  - 'JS Sample ⏏': sample/js/index.html
+
+# CSS
+extra_css:
+  - 'css/site.css'
+
+# Extensions
+markdown_extensions:
+  - admonition
+  - footnotes
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+# Plugins
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+validation:
+  links:
+    absolute_links: ignore
+  nav:
+    omitted_files: ignore
+
+# Built with https://github.com/squidfunk/mkdocs-material
