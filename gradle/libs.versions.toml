@@ -8,7 +8,6 @@ benchmark = "1.4.1"
 binaryCompatibility = "0.18.1"
 coilCompose = "3.3.0"
 composeAdaptive = "1.1.0"
-composeBom = "2025.10.00"
 composeHotReload = "1.0.0-beta07"
 composeMultiplatform = "1.9.0"
 composeRules = "0.4.27"
@@ -43,10 +42,6 @@ kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-
 
 # Compose
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
-compose-ui = { group = "androidx.compose.ui", name = "ui" }
-compose-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-compose-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version = "1.9.3" }
 compose-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 compose-material3 = { group = "androidx.compose.material3", name = "material3" }

@@ -147,9 +147,7 @@ android {
 
 androidComponents {
   beforeVariants(selector().withBuildType("release")) { variantBuilder ->
-    (variantBuilder as? HasUnitTestBuilder)?.apply {
-      enableUnitTest = false
-    }
+    variantBuilder.enable = false
   }
 
   beforeVariants(selector().withBuildType("benchmark")) { variantBuilder ->

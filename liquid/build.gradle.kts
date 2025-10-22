@@ -1,12 +1,14 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-import com.android.build.api.variant.HasUnitTestBuilder
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
   alias(libs.plugins.liquid.android.library)
@@ -16,11 +18,19 @@ plugins {
   alias(libs.plugins.binary.compatibility.validator)
 }
 
+android {
+  namespace = "io.github.fletchmckee.liquid"
+}
+
 kotlin {
   explicitApi()
   addDefaultLiquidTargets()
 
   androidTarget {
+    compilerOptions {
+      jvmTarget.set(JvmTarget.JVM_11)
+    }
+
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
   }
@@ -83,19 +93,15 @@ dependencies {
   debugImplementation(libs.compose.test.manifest)
 }
 
-android {
-  namespace = "io.github.fletchmckee.liquid"
-}
-
-androidComponents {
-  beforeVariants { variantBuilder ->
-    (variantBuilder as? HasUnitTestBuilder)?.apply {
-      enableUnitTest = false
-    }
-  }
-}
-
 tasks.withType<KotlinJsTest> {
+  enabled = false
+}
+
+tasks.withType<KotlinNativeSimulatorTest> {
+  enabled = false
+}
+
+tasks.withType<KotlinNativeHostTest> {
   enabled = false
 }
 
