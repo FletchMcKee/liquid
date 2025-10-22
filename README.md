@@ -13,6 +13,45 @@ Powered by RuntimeShaders/RuntimeEffects and ModifierNodeElement APIs, it delive
   <img src="https://github.com/user-attachments/assets/0a9fa7f9-d1ba-47fd-95d4-238d699025f4" width="400" />
 </div>
 
+## Quick Start
+
+**Add `mavenCentral()` and Liquid to your list of repositories and dependencies:**
+
+```gradle
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation("io.github.fletchmckee.liquid:liquid:1.0.0-SNAPSHOT")
+}
+```
+
+Below is a simple implementation:
+
+```kotlin
+@Composable
+fun LiquidScreen(
+  modifier: Modifier = Modifier,
+  liquidState: LiquidState = rememberLiquidState(),
+) = Box(modifier) {
+  // Content layer for `liquefiable` source nodes
+  ImageBackground(
+    Modifier
+      .fillMaxSize()
+      .liquefiable(liquidState),
+  )
+  // Control layer for `liquid` effect nodes
+  LiquidButton(
+    Modifier
+      .align(Alignment.TopStart)
+      .liquid(liquidState),
+  )
+}
+```
+
+See [full documentation here](https://fletchmckee.github.io/liquid/).
+
 ## Acknowledgements
 
 - The [Haze](https://github.com/chrisbanes/haze) library developed by [Chris Banes](https://github.com/chrisbanes) was a large source of
@@ -26,10 +65,10 @@ class.
 [AndroidLiquidGlass](https://github.com/Kyant0/AndroidLiquidGlass) library.
 - The dispersion effect was inspired by ShaderToy user [PuZo](https://www.shadertoy.com/user/PuZo) with their
 [Chromatic Aberration example](https://www.shadertoy.com/view/ltByR3).
-- Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](./samples/app/src/main/res/drawable-nodpi/northern_lights.webp)
-- Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](./samples/app/src/main/res/drawable-nodpi/ny_city.webp).
-- Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](./samples/app/src/main/res/drawable-nodpi/dotonbori.webp).
-- Efrem Efre [@efrem-efre-2786187](https://www.pexels.com/@efrem-efre-2786187/) for the [prague_clock.webp](./samples/app/src/main/res/drawable-nodpi/prague_clock.webp).
+- Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable/northern_lights.webp)
+- Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable/ny_city.webp).
+- Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable/dotonbori.webp).
+- Efrem Efre [@efrem-efre-2786187](https://www.pexels.com/@efrem-efre-2786187/) for the [prague_clock.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable-xxhdpi/prague_clock.webp).
 
 ## License
 

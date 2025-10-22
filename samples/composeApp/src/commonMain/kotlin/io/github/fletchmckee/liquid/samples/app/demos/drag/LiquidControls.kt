@@ -248,7 +248,8 @@ fun LiquidSliderRow(
     thumb = {
       Box(
         Modifier
-          .size(20.dp)
+          .size(32.dp)
+          .padding(6.dp)
           .clip(CircleShape)
           .background(MaterialTheme.colorScheme.primary)
           .testTag(thumbTestTag),
@@ -258,6 +259,7 @@ fun LiquidSliderRow(
       SliderDefaults.Track(
         sliderState = state,
         drawStopIndicator = null,
+        thumbTrackGapSize = 2.dp,
         drawTick = { _, _ -> },
         modifier = Modifier.height(8.dp),
       )

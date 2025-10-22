@@ -55,6 +55,7 @@ nav:
   - 'Getting Started': getting_started.md
   - 'Usage': usage.md
   - 'Limitations': limitations.md
+  - 'API ⏏': api/index.html
   - 'WASM Sample ⏏': sample/wasm/index.html
   - 'JS Sample ⏏': sample/js/index.html
 

@@ -45,6 +45,7 @@ import coil3.compose.AsyncImage
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.displayNavIcons
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
@@ -75,14 +76,16 @@ fun LiquidGridScreen(
         useLiquid = useLiquid,
         frostProvider = { frostRadius },
         navigationIcon = {
-          IconButton(
-            onClick = { navController.navigateUp() },
-          ) {
-            Icon(
-              imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = "Back button",
-              tint = MaterialTheme.colorScheme.onBackground,
-            )
+          if (displayNavIcons()) {
+            IconButton(
+              onClick = { navController.navigateUp() },
+            ) {
+              Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back button",
+                tint = MaterialTheme.colorScheme.onBackground,
+              )
+            }
           }
         },
       ) {

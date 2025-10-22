@@ -75,14 +75,22 @@ fun LiquidDraggableScreen(
   var showSliders by rememberSaveable { mutableStateOf(true) }
 
   Box(modifier) {
+    // Content layer
     PagerBackground(liquidState)
+
+    // Controls layer
+    BackButton(
+      liquidState = liquidState,
+      onClick = { navController.navigateUp() },
+      containerColor = sliderContainerColor,
+      modifier = Modifier.align(Alignment.TopStart),
+    )
 
     SettingsColumn(
       liquidState = liquidState,
-      onBackClick = { navController.navigateUp() },
       onControlsClick = { showSliders = !showSliders },
       containerColor = sliderContainerColor,
-      modifier = Modifier.align(Alignment.TopStart),
+      modifier = Modifier.align(Alignment.TopEnd),
     )
 
     LiquidControls(
@@ -146,25 +154,16 @@ private fun PagerBackground(
 @Composable
 private fun SettingsColumn(
   liquidState: LiquidState,
-  onBackClick: () -> Unit,
   onControlsClick: () -> Unit,
   containerColor: Color,
   modifier: Modifier = Modifier,
 ) = Column(
   modifier = modifier
     .systemBarsPadding()
-    .padding(top = 24.dp, start = 24.dp)
+    .padding(top = 24.dp, end = 24.dp)
     .zIndex(3f),
   verticalArrangement = Arrangement.spacedBy(16.dp),
 ) {
-  if (displayNavIcons()) {
-    BackButton(
-      liquidState = liquidState,
-      onClick = onBackClick,
-      containerColor = containerColor,
-    )
-  }
-
   ControlsButton(
     liquidState = liquidState,
     onClick = onControlsClick,
@@ -177,24 +176,32 @@ private fun BackButton(
   liquidState: LiquidState,
   onClick: () -> Unit,
   containerColor: Color,
-) = IconButton(
-  modifier = Modifier
-    .dropShadow(CircleShape, LiquidShadow)
-    .thenIf(LocalUseLiquid.current) {
-      liquid(liquidState) {
-        frost = 10.dp
-        shape = CircleShape
-        tint = containerColor
-        edge = 0.05f
-      }
-    },
-  onClick = onClick,
+  modifier: Modifier = Modifier,
 ) {
-  Icon(
-    imageVector = Icons.AutoMirrored.Default.ArrowBack,
-    contentDescription = "Sliders visibility button",
-    tint = MaterialTheme.colorScheme.onBackground,
-  )
+  if (displayNavIcons()) {
+    IconButton(
+      modifier = modifier
+        .systemBarsPadding()
+        .padding(top = 24.dp, start = 24.dp)
+        .zIndex(3f)
+        .dropShadow(CircleShape, LiquidShadow)
+        .thenIf(LocalUseLiquid.current) {
+          liquid(liquidState) {
+            frost = 10.dp
+            shape = CircleShape
+            tint = containerColor
+            edge = 0.05f
+          }
+        },
+      onClick = onClick,
+    ) {
+      Icon(
+        imageVector = Icons.AutoMirrored.Default.ArrowBack,
+        contentDescription = "Back button",
+        tint = MaterialTheme.colorScheme.onBackground,
+      )
+    }
+  }
 }
 
 @Composable
