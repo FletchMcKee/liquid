@@ -74,7 +74,6 @@ jobs:
           kotlinUpgradeYarnLock
           kotlinWasmUpgradeYarnLock
           allTests
-          # Disabled until I figure out the Roborazzi issue.
           -x :samples:composeApp:testDebugUnitTest
 
       - name: Assemble samples
