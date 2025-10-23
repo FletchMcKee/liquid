@@ -28,8 +28,7 @@ jobs:
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
 
-      - run: chmod +x gradlew
-      - run: ./scripts/enforce_git_lfs.sh
+      - run: bash ./scripts/enforce_git_lfs.sh
 
       - run: >
           ./gradlew
@@ -46,11 +45,7 @@ jobs:
   build:
     runs-on: macos-latest
     timeout-minutes: 60
-
-    permissions:
-      contents: write
-      pull-requests: write
-
+    needs: [check-no-tests]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -94,7 +89,7 @@ jobs:
     strategy:
       matrix:
         api-level: [ 33, 35 ]
-
+    needs: [check-no-tests]
     steps:
       - uses: actions/checkout@v5
 
@@ -140,6 +135,7 @@ jobs:
       contents: write
       pull-requests: write
 
+    needs: [check-no-tests]
     steps:
       - uses: actions/checkout@v5
         with:
