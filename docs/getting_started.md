@@ -40,7 +40,7 @@ fun LiquidScreen(
     Modifier
       .align(Alignment.TopStart)
       // Can also call `.liquid(liquidState)` without the LiquidScope block.
-      // Doing so will apply the default values. # (1)!
+      // Doing so will apply the default values. // (1)
       .liquid(liquidState) {
         // Defaults to 0.dp
         frost = 10.dp
