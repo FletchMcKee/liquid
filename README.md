@@ -10,7 +10,7 @@ It lets you refract, frost, and curve the content behind your UI elements, creat
 Powered by RuntimeShaders/RuntimeEffects and ModifierNodeElement APIs, it delivers GPU-accelerated visuals to your Compose UI.
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/0a9fa7f9-d1ba-47fd-95d4-238d699025f4" width="400" />
+  <img src="https://github.com/user-attachments/assets/b50bd720-e786-41fa-9914-42ee44fc9271" width="400" />
 </div>
 
 ## Quick Start
