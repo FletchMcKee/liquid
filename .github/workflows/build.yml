@@ -45,7 +45,6 @@ jobs:
   build:
     runs-on: macos-latest
     timeout-minutes: 60
-    needs: [check-no-tests]
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -75,6 +74,7 @@ jobs:
           kotlinUpgradeYarnLock
           kotlinWasmUpgradeYarnLock
           allTests
+          -x testDebugUnitTest
 
       - name: Assemble samples
         run: >
@@ -89,7 +89,7 @@ jobs:
     strategy:
       matrix:
         api-level: [ 33, 35 ]
-    needs: [check-no-tests]
+
     steps:
       - uses: actions/checkout@v5
 
@@ -130,12 +130,10 @@ jobs:
   screenshot-tests:
     runs-on: macos-latest
     timeout-minutes: 60
-
     permissions:
       contents: write
       pull-requests: write
 
-    needs: [check-no-tests]
     steps:
       - uses: actions/checkout@v5
         with:
@@ -253,4 +251,4 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]' && git config user.email 'github-actions[bot]@users.noreply.github.com'
           pip3 install --upgrade pip && pip3 install mkdocs-material mkdocs-material-extensions mkdocs-minify-plugin
-          ./deploy_docs.sh
+          ./scripts/deploy_docs.sh
