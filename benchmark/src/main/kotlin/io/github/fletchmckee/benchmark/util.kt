@@ -9,6 +9,7 @@ import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
 import io.github.fletchmckee.benchmark.LiquidBenchmark.Companion.INITIAL_FROST
+import io.github.fletchmckee.benchmark.LiquidBenchmark.Companion.IS_BENCHMARK
 import io.github.fletchmckee.benchmark.LiquidBenchmark.Companion.START_DESTINATION
 import io.github.fletchmckee.benchmark.LiquidBenchmark.Companion.USE_LIQUID
 
@@ -29,6 +30,7 @@ internal fun MacrobenchmarkScope.navigateTo(
     intent.putExtra(START_DESTINATION, startDestination)
     intent.putExtra(USE_LIQUID, useLiquid)
     intent.putExtra(INITIAL_FROST, initialFrost)
+    intent.putExtra(IS_BENCHMARK, true)
   }
 
   device.waitForIdle()

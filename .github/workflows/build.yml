@@ -74,7 +74,8 @@ jobs:
           kotlinUpgradeYarnLock
           kotlinWasmUpgradeYarnLock
           allTests
-          -x testDebugUnitTest
+          # Disabled until I figure out the Roborazzi issue.
+          -x :samples:composeApp:testDebugUnitTest
 
       - name: Assemble samples
         run: >
@@ -251,4 +252,4 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]' && git config user.email 'github-actions[bot]@users.noreply.github.com'
           pip3 install --upgrade pip && pip3 install mkdocs-material mkdocs-material-extensions mkdocs-minify-plugin
-          ./scripts/deploy_docs.sh
+          bash ./scripts/deploy_docs.sh

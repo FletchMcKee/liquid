@@ -48,12 +48,13 @@ theme:
     code: 'Roboto Mono'
   features:
     - content.code.copy
+    - content.code.annotate
 
 # Navigation
 nav:
   - 'Overview': index.md
   - 'Getting Started': getting_started.md
-  - 'Usage': usage.md
+  - 'LiquidScope': liquidscope.md
   - 'Limitations': limitations.md
   - 'API ⏏': api/index.html
   - 'WASM Sample ⏏': sample/wasm/index.html
