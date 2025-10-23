@@ -11,7 +11,7 @@ You can also apply this effect while setting `refraction` or `curve` to 0f if yo
 
 This property is no-op on Android 11 and lower.
 !!! note
-This is the most expensive property in the LiquidScope as it creates extras RuntimeShaders to achieve the blur effect.
+    This is the most expensive property in the LiquidScope as it creates extras RuntimeShaders to achieve the blur effect.
 
 <div align="center">
   <img
