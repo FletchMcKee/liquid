@@ -23,7 +23,8 @@ A modifier node can’t see pixels drawn behind it or by its ancestors. Liquid m
 
 Below is a simple example of how to coordinate this pattern:
 
-```kotlin
+``` kotlin
+
 @Composable
 fun LiquidScreen(
   modifier: Modifier = Modifier,
@@ -39,9 +40,7 @@ fun LiquidScreen(
   LiquidButton(
     Modifier
       .align(Alignment.TopStart)
-      // Can also call `.liquid(liquidState)` without the LiquidScope block.
-      // Doing so will apply the default values. // (1)
-      .liquid(liquidState) {
+      .liquid(liquidState) { // (1)!
         // Defaults to 0.dp
         frost = 10.dp
         // Defaults to CircleShape
@@ -62,8 +61,9 @@ fun LiquidScreen(
   )
 }
 ```
+
+1.  See [LiquidScope](liquidscope.md) for more information.
+
 !!! important
     A `liquid` node cannot have ancestor `liquefiable` nodes outside of its own Modifier chain using the same `LiquidState`. Doing so will result in a fatal SIGSEGV exception.
     See [Node Hirearchy](limitations.md#node-hierarchy) under [Limitations](limitations.md) for more information.
-
-1. See [LiquidScope](liquidscope.md) for more information.
