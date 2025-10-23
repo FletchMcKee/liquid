@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import io.github.fletchmckee.liquid.samples.app.demos.clock.Clock
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
@@ -22,12 +20,14 @@ class MainActivity : ComponentActivity() {
     val useLiquid = intent.getBooleanExtra(USE_LIQUID, true)
     val initialFrost = intent.getFloatExtra(INITIAL_FROST, 0f)
     val initialDispersion = intent.getFloatExtra(INITIAL_DISPERSION, 0f)
+    val isBenchmark = intent.getBooleanExtra(IS_BENCHMARK, false)
     setContent {
       LiquidDemos(
         startDestination = startDestination,
         useLiquid = useLiquid,
         initialFrost = initialFrost,
         initialDispersion = initialDispersion,
+        isBenchmark = isBenchmark,
       )
     }
   }
@@ -51,13 +51,8 @@ class MainActivity : ComponentActivity() {
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"
     const val INITIAL_DISPERSION = "$PACKAGE_NAME.INITIAL_DISPERSION"
+    const val IS_BENCHMARK = "$PACKAGE_NAME.IS_BENCHMARK"
 
     enum class StartDestination { DemosList, Drag, Grid, StickyHeader, Many, Clock }
   }
-}
-
-@Preview
-@Composable
-private fun AppAndroidPreview() {
-  LiquidDemos()
 }

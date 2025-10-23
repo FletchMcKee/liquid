@@ -56,7 +56,6 @@ import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import kotlinx.serialization.Serializable
-// import okio.Path.Companion.toOkioPath
 
 @Serializable
 data object DemosList
@@ -74,11 +73,13 @@ fun LiquidDemos(
   useLiquid: Boolean = true,
   initialFrost: Float = 0f,
   initialDispersion: Float = 0f,
+  isBenchmark: Boolean = false,
   navController: NavHostController = rememberNavController(),
 ) = LiquidTheme(
   useLiquid = useLiquid,
   initialFrost = initialFrost,
   initialDispersion = initialDispersion,
+  isBenchmark = isBenchmark,
 ) {
   // Eventually I will look into a better setup, but I don't want the benchmarks performing a bunch of network requests.
   setSingletonImageLoaderFactory { context ->

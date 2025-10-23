@@ -19,6 +19,7 @@ theme:
   language: 'en'
   icon:
     logo: material/sine-wave
+    annotation: material/arrow-right-circle
   palette:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
@@ -48,12 +49,13 @@ theme:
     code: 'Roboto Mono'
   features:
     - content.code.copy
+    - content.code.annotate
 
 # Navigation
 nav:
   - 'Overview': index.md
   - 'Getting Started': getting_started.md
-  - 'Usage': usage.md
+  - 'LiquidScope': liquidscope.md
   - 'Limitations': limitations.md
   - 'API ⏏': api/index.html
   - 'WASM Sample ⏏': sample/wasm/index.html
@@ -74,6 +76,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - attr_list
+  - md_in_html
 
 # Plugins
 plugins:

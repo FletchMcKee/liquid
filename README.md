@@ -4,13 +4,14 @@
 ![Build status](https://github.com/fletchmckee/liquid/actions/workflows/build.yml/badge.svg)
 ![Compose Multiplatform](https://img.shields.io/badge/Compose%20Multiplatform-4285F4?style=flat&logo=jetpackcompose&logoColor=white)
 
-**Liquid** brings [Liquid Glass](https://developer.apple.com/documentation/SwiftUI/Applying-Liquid-Glass-to-custom-views)-style effects to Compose Multiplatform.
-It lets you refract, frost, and curve the content behind your UI elements, creating dynamic frosted glass, lens, and liquid-like effects.
+**Liquid** unlocks a new capability for Compose Multiplatform: letting modifier nodes sample and manipulate the pixels behind them.
+By tagging nodes as `liquefiable`, you can create effects that distort the underlying content in a way that isn't normally possible with Compose's rendering pipeline.
 
+This enables [Liquid Glass](https://developer.apple.com/documentation/SwiftUI/Applying-Liquid-Glass-to-custom-views)-style effects like dynamic frosted glass, lenses, and other distortions.
 Powered by RuntimeShaders/RuntimeEffects and ModifierNodeElement APIs, it delivers GPU-accelerated visuals to your Compose UI.
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/0a9fa7f9-d1ba-47fd-95d4-238d699025f4" width="400" />
+  <img src="https://github.com/user-attachments/assets/b50bd720-e786-41fa-9914-42ee44fc9271" width="400" />
 </div>
 
 ## Quick Start
