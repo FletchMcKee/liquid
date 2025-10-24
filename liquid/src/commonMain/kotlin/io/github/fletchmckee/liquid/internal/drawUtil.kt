@@ -31,21 +31,21 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   reusableScope: LiquidScopeImpl,
 ) = with(reusableScope) {
   // Only record content inside the effect's bounds.
-  val liquefiables = liquefiables.fastFilter { overlappingBounds.overlaps(it.boundsOnScreen) }
+  val liquefiables = liquefiables.fastFilter { boundsInRoot.overlaps(it.boundsOnScreen) }
   if (liquefiables.isEmpty()) return@with
   // We avoid unnecessary liquidScope invalidations by observing the mutableState boundsOnScreen
   // and layers here. Changes to these properties will recompose the full draw pass.
-  layer.record(recordingBounds.size.toIntSize()) {
+  layer.record(size.toIntSize()) {
     liquefiables.fastForEach { liquefiable ->
       liquefiable.layer
         ?.takeUnless { it.isReleased }
         ?.let { liquefiableLayer ->
           // Position content where it should appear on screen.
-          val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - recordingBounds.topLeft.orZero
+          val (x, y) = liquefiable.boundsOnScreen.topLeft.orZero - positionOnScreen.orZero
           withTransform(
             {
-              rotate(degrees = inverseRotationZ, pivot = pivot)
-              scale(scaleX = inverseScaleX, scaleY = inverseScaleY, pivot = pivot)
+              rotate(degrees = inverseRotationZ, pivot = Offset.Zero)
+              scale(scaleX = inverseScaleX, scaleY = inverseScaleY, pivot = Offset.Zero)
               translate(left = x, top = y)
             },
           ) {

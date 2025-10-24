@@ -3,19 +3,15 @@
 package io.github.fletchmckee.liquid.internal
 
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.asComposeRenderEffect
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInWindow
-import androidx.compose.ui.node.invalidateDraw
-import androidx.compose.ui.util.fastRoundToInt
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
 import org.jetbrains.skia.FilterTileMode
-import org.jetbrains.skia.IRect
 import org.jetbrains.skia.ImageFilter
 import org.jetbrains.skia.RuntimeEffect
 import org.jetbrains.skia.RuntimeShaderBuilder
@@ -25,6 +21,10 @@ internal actual fun liquidElement(
   block: LiquidScope.() -> Unit,
 ): AbstractLiquidElement<out AbstractLiquidNode> = LiquidElement(liquidState, block)
 
+/**
+ * Using `positionOnScreen()` results in incorrect positioning. Will need to monitor if this
+ * changes in the future.
+ */
 internal actual fun LayoutCoordinates.liquidPositionOnScreen(): Offset = positionInWindow()
 
 internal class LiquidElement(
@@ -39,28 +39,12 @@ internal class LiquidNode(
   block: LiquidScope.() -> Unit,
 ) : AbstractLiquidNode(liquidState, block) {
   private val liquidShader = RuntimeShaderBuilder(RuntimeEffect.makeForShader(LiquidShader))
-  private var cachedRenderEffect: RenderEffect? = null
   private var cachedBlurImageFilter: ImageFilter? = null
 
-  override fun invalidateDrawIfNeeded() {
-    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
-      if (reusableScope.mutatedFields has Fields.RenderEffectFields) {
-        cachedRenderEffect = createRenderEffect()
-      }
-      invalidateDraw()
-    }
-  }
+  override fun createRenderEffect(): RenderEffect? {
+    // We shouldn't have empty bounds at this point, but set the RenderEffect to null if we do.
+    if (reusableScope.size.isUnspecified) return null
 
-  override fun ContentDrawScope.applyLiquidEffects(
-    layer: GraphicsLayer,
-    drawBlock: () -> Unit,
-  ) {
-    layer.renderEffect = cachedRenderEffect
-    drawBlock()
-  }
-
-  private fun createRenderEffect(): RenderEffect? {
-    if (reusableScope.recordingBounds.isEmpty) return null
     liquidShader.updateLiquidUniforms()
     val blurEffect = if (reusableScope.sigma > 0f) {
       cachedBlurImageFilter?.takeUnless { reusableScope.mutatedFields has Fields.BlurEffectFields }
@@ -68,20 +52,12 @@ internal class LiquidNode(
           sigmaX = reusableScope.sigma,
           sigmaY = reusableScope.sigma,
           mode = FilterTileMode.CLAMP,
-          crop = with(reusableScope) {
-            val frostInt = frostRadius.fastRoundToInt()
-            IRect.makeLTRB(
-              l = frostInt,
-              t = frostInt,
-              r = recordingBounds.width.fastRoundToInt() - frostInt,
-              b = recordingBounds.height.fastRoundToInt() - frostInt,
-            )
-          },
         )
     } else {
       null
     }.also { cachedBlurImageFilter = it }
 
+    // Logic differs from Android slightly as we can set the blurEffect as an input.
     return ImageFilter.makeRuntimeShader(
       runtimeShaderBuilder = liquidShader,
       shaderNames = arrayOf("content"),
@@ -91,11 +67,9 @@ internal class LiquidNode(
 
   private fun RuntimeShaderBuilder.updateLiquidUniforms() = with(reusableScope) {
     uniform(
-      "effectRect",
-      frostRadius, // left
-      frostRadius, // top
-      recordingBounds.width - frostRadius, // right
-      recordingBounds.height - frostRadius, // bottom
+      "size",
+      size.width,
+      size.height,
     )
     uniform("cornerRadii", cornerRadii)
     uniform("refraction", refraction)

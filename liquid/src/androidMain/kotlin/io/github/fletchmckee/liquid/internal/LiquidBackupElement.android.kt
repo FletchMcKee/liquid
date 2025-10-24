@@ -4,17 +4,18 @@ package io.github.fletchmckee.liquid.internal
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.isSpecified
 import androidx.compose.ui.graphics.layer.GraphicsLayer
-import androidx.compose.ui.node.invalidateDraw
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
 
@@ -30,20 +31,18 @@ internal class LiquidBackupNode(
   block: LiquidScope.() -> Unit,
 ) : AbstractLiquidNode(liquidState, block) {
   private val canUseRenderEffect = Build.VERSION.SDK_INT >= 31
-  private var cachedRenderEffect: RenderEffect? = null
 
-  override fun invalidateDrawIfNeeded() {
-    val shouldInvalidate = reusableScope.mutatedFields has when {
-      canUseRenderEffect -> Fields.PreTiramisuInvalidateFlags
-      else -> Fields.PreSnowConeInvalidateFlags
-    }
-
-    if (shouldInvalidate) {
-      invalidateDraw()
-    }
+  override val invalidateFlags: Int = when {
+    canUseRenderEffect -> Fields.PreTiramisuInvalidateFlags
+    else -> Fields.PreSnowConeInvalidateFlags
   }
 
-  override fun ContentDrawScope.applyLiquidEffects(
+  override val renderEffectFlags: Int = when {
+    canUseRenderEffect -> Fields.Frost
+    else -> 0 // No render effect
+  }
+
+  override fun ContentDrawScope.applyAdditionalEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) {
@@ -55,10 +54,6 @@ internal class LiquidBackupNode(
       ?.let {
         ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(reusableScope.saturation) })
       }
-
-    if (canUseRenderEffect) {
-      layer.renderEffect = obtainRenderEffect()
-    }
 
     clipPath(shapePath) { drawBlock() }
 
@@ -76,14 +71,14 @@ internal class LiquidBackupNode(
   }
 
   @RequiresApi(31)
-  private fun obtainRenderEffect(): RenderEffect? {
+  override fun createRenderEffect(): RenderEffect? {
     val frostRadius = reusableScope.frostRadius
-    if (frostRadius <= 0f) return null
+    if (frostRadius <= 0f && reusableScope.size.isSpecified) return null
 
-    return cachedRenderEffect?.takeUnless { reusableScope.mutatedFields has Fields.Frost }
-      ?: BlurEffect(
-        radiusX = frostRadius,
-        radiusY = frostRadius,
-      ).also { cachedRenderEffect = it }
+    return BlurEffect(
+      radiusX = frostRadius,
+      radiusY = frostRadius,
+      edgeTreatment = TileMode.Clamp,
+    )
   }
 }

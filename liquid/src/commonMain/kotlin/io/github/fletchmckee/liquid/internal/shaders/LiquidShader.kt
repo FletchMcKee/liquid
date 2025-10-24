@@ -4,7 +4,7 @@ package io.github.fletchmckee.liquid.internal.shaders
 
 internal const val LiquidShader = """
   uniform shader content;
-  uniform float4 effectRect;
+  uniform float2 size;
   uniform float4 cornerRadii;
   uniform float refraction;
   uniform float curve;
@@ -38,12 +38,10 @@ internal const val LiquidShader = """
   }
 
   half4 main(float2 fragCoord) {
-    float2 liquidSize = effectRect.zw - effectRect.xy;
-
-    float minDimension = min(liquidSize.x, liquidSize.y);
-    float2 center = effectRect.xy + liquidSize * 0.5;
+    float minDimension = min(size.x, size.y);
+    float2 center = size * 0.5;
     float2 shapeCoord = (fragCoord - center) / minDimension;
-    float2 shapeSize = liquidSize / minDimension;
+    float2 shapeSize = size / minDimension;
     float2 halfShapeSize = shapeSize * 0.5;
     half4 shapeVr = half4(cornerRadii);
     float shapeSdf = computeSdf(shapeCoord, halfShapeSize, shapeVr);
@@ -67,7 +65,7 @@ internal const val LiquidShader = """
 
     // Applies the dispersion effect.
     if (dispersion > 0.0) {
-      float2 distFromCenter = (fragCoord - center) / liquidSize;
+      float2 distFromCenter = (fragCoord - center) / size;
       // Cubic multiply is more efficient than pow() for integer exponents.
       // Also pow() didn't work for screenshot tests while this does.
       float2 aberration = dispersion * distFromCenter * distFromCenter * distFromCenter * minDimension;

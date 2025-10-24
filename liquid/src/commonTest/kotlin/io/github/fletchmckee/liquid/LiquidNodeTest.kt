@@ -20,14 +20,12 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionOnScreen
-import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.runComposeUiTest
 import androidx.compose.ui.unit.IntOffset
@@ -38,8 +36,6 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
 import io.github.fletchmckee.liquid.internal.AbstractLiquidNode
-import io.github.fletchmckee.liquid.internal.Fields
-import io.github.fletchmckee.liquid.internal.has
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
@@ -553,16 +549,5 @@ private class LiquidNode(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
 ) : AbstractLiquidNode(liquidState, block) {
-  override fun invalidateDrawIfNeeded() {
-    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
-      invalidateDraw()
-    }
-  }
-
-  override fun ContentDrawScope.applyLiquidEffects(
-    layer: GraphicsLayer,
-    drawBlock: () -> Unit,
-  ) {
-    // No-op for testing
-  }
+  override fun createRenderEffect(): RenderEffect? = null
 }

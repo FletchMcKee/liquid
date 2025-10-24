@@ -8,7 +8,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
-import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
@@ -121,19 +120,15 @@ internal class LiquidScopeImpl : InternalLiquidScope {
         field = value
         if (value.isSpecified) {
           cornerRadii = shape.cornerRadiiPx(value, density)
-          recordingBounds = computeRecordedBounds()
         }
       }
     }
 
-  override var positionOnScreen: Offset = Offset.Zero
+  override var positionOnScreen: Offset = Offset.Unspecified
     set(value) {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.PositionOnScreen
         field = value
-        if (value.isSpecified) {
-          recordingBounds = computeRecordedBounds()
-        }
       }
     }
 
@@ -162,16 +157,6 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     }
 
   override var boundsInRoot: Rect = Rect.Zero
-    set(value) {
-      if (field != value) {
-        field = value
-        overlappingBounds = if (value != Rect.Zero) {
-          value.inflate(frostRadius)
-        } else {
-          Rect.Zero
-        }
-      }
-    }
 
   override var liquefiables: List<Liquefiable> = emptyList()
     set(value) {
@@ -195,14 +180,8 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.Frost
         field = value
-        recordingBounds = computeRecordedBounds()
-        overlappingBounds = if (boundsInRoot != Rect.Zero) {
-          boundsInRoot.inflate(frostRadius)
-        } else {
-          Rect.Zero
-        }
-        pivot = Offset(value, value)
-        sigma = value / 3f
+        // This is how radius is converted to sigma internally.
+        sigma = 0.57735f * value + 0.5f
       }
     }
 
@@ -222,34 +201,11 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   internal var colorComponents: FloatArray = Float4Zero
     private set
 
-  internal var recordingBounds: Rect = Rect.Zero
-    private set
-
-  // We have to track the overlapping bounds separately as this will differ from the
-  // recordedBounds when we have rotated/scaled nodes.
-  internal var overlappingBounds: Rect = Rect.Zero
-    private set
-
-  internal var pivot: Offset = Offset.Zero
-    private set
-
   internal var sigma: Float = 0f
     private set
 
-  internal fun reset() {
+  internal fun clean() {
     mutatedFields = 0
-  }
-
-  internal fun computeRecordedBounds(): Rect {
-    // If size or position is unspecified, returning Rect.Zero will prevent the effect from being drawn.
-    if (size.isUnspecified || positionOnScreen.isUnspecified) return Rect.Zero
-
-    return Rect(
-      left = positionOnScreen.x - frostRadius,
-      top = positionOnScreen.y - frostRadius,
-      right = positionOnScreen.x + size.width + frostRadius,
-      bottom = positionOnScreen.y + size.height + frostRadius,
-    )
   }
 
   @androidx.annotation.Size(value = 4)

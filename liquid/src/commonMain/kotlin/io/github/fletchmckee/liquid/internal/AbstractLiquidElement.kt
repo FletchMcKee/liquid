@@ -5,9 +5,10 @@ package io.github.fletchmckee.liquid.internal
 import androidx.annotation.VisibleForTesting
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.Matrix
+import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutCoordinates
@@ -19,6 +20,7 @@ import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.node.ObserverModifierNode
 import androidx.compose.ui.node.currentValueOf
 import androidx.compose.ui.node.findNearestAncestor
+import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.node.observeReads
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalDensity
@@ -31,14 +33,19 @@ import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
-// We could alter the logic to use a shared LiquidNode between all targets, but this would mean the
-// RuntimeShaders would have to be created in the draw pass. This allows us to create them once per node.
+/**
+ * Will explore better alternatives, but we have separate nodes so that Android and Skiko
+ * can create their RuntimeShader/RuntimeEffect in init rather than the draw pass as this
+ * has shown better performance.
+ */
 internal expect fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
 ): AbstractLiquidElement<out AbstractLiquidNode>
 
-// The skiko targets need to use `positionInWindow` instead of `positionOnScreen`.
+/**
+ * `positionOnScreen()` doesn't return the same thing between Android and Skiko,
+ */
 internal expect fun LayoutCoordinates.liquidPositionOnScreen(): Offset
 
 internal abstract class AbstractLiquidElement<N : AbstractLiquidNode>(
@@ -86,13 +93,19 @@ internal abstract class AbstractLiquidNode(
   internal val reusableScope = LiquidScopeImpl()
   private val matrix = Matrix()
   private var cachedLayer: GraphicsLayer? = null
+  private var cachedRenderEffect: RenderEffect? = null
 
-  protected abstract fun invalidateDrawIfNeeded()
+  protected abstract fun createRenderEffect(): RenderEffect?
 
-  protected abstract fun ContentDrawScope.applyLiquidEffects(
+  // This method along with the open flags can be removed once our minSdk is 33+.
+  protected open fun ContentDrawScope.applyAdditionalEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
-  )
+  ) = drawBlock()
+
+  protected open val invalidateFlags: Int = Fields.InvalidateFlags
+
+  protected open val renderEffectFlags: Int = Fields.RenderEffectFields
 
   internal fun invalidateLiquidBlock() {
     if (!isAttached) return
@@ -105,7 +118,22 @@ internal abstract class AbstractLiquidNode(
     val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
     reusableScope.liquefiables = liquidState.liquefiables.fastFilter { it != ancestor }
 
-    invalidateDrawIfNeeded()
+    // This avoids unnecessary invalidateDraw calls as this could be called multiple times before we have
+    // a valid size and position.
+    if (reusableScope.size.isSpecified) {
+      invalidateDrawIfNeeded()
+    }
+  }
+
+  private fun invalidateDrawIfNeeded() {
+    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
+      if (reusableScope.mutatedFields has Fields.RenderEffectFields) {
+        cachedRenderEffect = createRenderEffect()
+      }
+
+      reusableScope.clean()
+      invalidateDraw()
+    }
   }
 
   private fun obtainGraphicsLayer() = cachedLayer?.takeUnless { it.isReleased }
@@ -116,13 +144,14 @@ internal abstract class AbstractLiquidNode(
   // We handle all necessary invalidations in LiquidScopeImpl.
   override val shouldAutoInvalidate: Boolean = false
 
-  // The `observeReads` call is critical here, otherwise we won't receive updates from LiquidScope/Liquefiable property mutations.
+  // The `observeReads` call is critical here, otherwise we won't receive updates from
+  // LiquidScope/Liquefiable property mutations.
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
 
   override fun onDetach() {
     cachedLayer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     cachedLayer = null
-    reusableScope.reset()
+    reusableScope.clean()
   }
 
   override fun onObservedReadsChanged() = invalidateLiquidBlock()
@@ -154,21 +183,16 @@ internal abstract class AbstractLiquidNode(
       return
     }
 
-    try {
-      val layer = obtainGraphicsLayer()
-      recordLiquefiablesIntoLayer(layer, reusableScope)
+    val layer = obtainGraphicsLayer()
+    recordLiquefiablesIntoLayer(layer, reusableScope)
 
-      val padding = -reusableScope.frostRadius
-      applyLiquidEffects(layer) {
-        // Need to translate topLeft to account for the frostRadius padding we've added for blur sampling.
-        translate(padding, padding) { drawLayer(layer) }
-      }
-
-      // Necessary since it isn't part of the recording.
-      drawContent()
-    } finally {
-      reusableScope.reset()
+    layer.renderEffect = cachedRenderEffect
+    applyAdditionalEffects(layer) {
+      drawLayer(layer)
     }
+
+    // Necessary since it isn't part of the recording.
+    drawContent()
   }
 }
 
