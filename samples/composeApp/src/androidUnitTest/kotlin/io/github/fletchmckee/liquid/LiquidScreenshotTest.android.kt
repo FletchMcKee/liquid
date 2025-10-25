@@ -15,7 +15,6 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performScrollToNode
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import coil3.annotation.DelicateCoilApi
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.RoborazziRule
@@ -51,7 +50,6 @@ class LiquidScreenshotTest {
     ),
   )
 
-  @DelicateCoilApi
   @BeforeTest
   fun before() {
     @Suppress("UNCHECKED_CAST")

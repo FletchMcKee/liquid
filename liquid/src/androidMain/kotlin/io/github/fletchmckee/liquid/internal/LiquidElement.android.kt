@@ -2,25 +2,27 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal
 
+import android.graphics.RenderEffect.createBlurEffect
 import android.graphics.RenderEffect.createChainEffect
 import android.graphics.RenderEffect.createRuntimeShaderEffect
 import android.graphics.RuntimeShader
+import android.graphics.Shader
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.asComposeRenderEffect
-import androidx.compose.ui.graphics.drawscope.ContentDrawScope
-import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
-import androidx.compose.ui.node.invalidateDraw
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
-import io.github.fletchmckee.liquid.internal.shaders.HorizontalFrostShader
 import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
-import io.github.fletchmckee.liquid.internal.shaders.VerticalFrostShader
 
+/**
+ * Android 12 and lower can't reference a RuntimeShader, so this is split into separate
+ * node types. Once minSdk is 33, this can be simplified to LiquidElement only.
+ */
 internal actual fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
@@ -29,6 +31,9 @@ internal actual fun liquidElement(
   else -> LiquidBackupElement(liquidState, block)
 }
 
+/**
+ * Using positionOnScreen so that dialogs/popups share the same logic as other views.
+ */
 internal actual fun LayoutCoordinates.liquidPositionOnScreen(): Offset = positionOnScreen()
 
 @RequiresApi(33)
@@ -45,30 +50,12 @@ internal class LiquidNode(
   block: LiquidScope.() -> Unit,
 ) : AbstractLiquidNode(liquidState, block) {
   private val liquidShader = RuntimeShader(LiquidShader)
-  private val horizontalShader = RuntimeShader(HorizontalFrostShader)
-  private val verticalShader = RuntimeShader(VerticalFrostShader)
-  private var cachedRenderEffect: RenderEffect? = null
   private var cachedBlurEffect: android.graphics.RenderEffect? = null
 
-  override fun invalidateDrawIfNeeded() {
-    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
-      if (reusableScope.mutatedFields has Fields.RenderEffectFields) {
-        cachedRenderEffect = createRenderEffect()
-      }
-      invalidateDraw()
-    }
-  }
+  override fun createRenderEffect(): RenderEffect? {
+    // We shouldn't have empty bounds at this point, but set the RenderEffect to null if we do.
+    if (reusableScope.size.isUnspecified) return null
 
-  override fun ContentDrawScope.applyLiquidEffects(
-    layer: GraphicsLayer,
-    drawBlock: () -> Unit,
-  ) {
-    layer.renderEffect = cachedRenderEffect
-    drawBlock()
-  }
-
-  private fun createRenderEffect(): RenderEffect? {
-    if (reusableScope.recordingBounds.isEmpty) return null
     liquidShader.updateLiquidUniforms()
     val liquidEffect = createRuntimeShaderEffect(liquidShader, "content")
 
@@ -79,24 +66,20 @@ internal class LiquidNode(
 
     val blurEffect = cachedBlurEffect
       ?.takeUnless { reusableScope.mutatedFields has Fields.BlurEffectFields }
-      ?: run {
-        horizontalShader.updateFrostUniforms()
-        verticalShader.updateFrostUniforms()
-        val horizontalFrost = createRuntimeShaderEffect(horizontalShader, "content")
-        val verticalFrost = createRuntimeShaderEffect(verticalShader, "content")
-        createChainEffect(horizontalFrost, verticalFrost)
-      }.also { cachedBlurEffect = it }
+      ?: createBlurEffect(
+        reusableScope.frostRadius,
+        reusableScope.frostRadius,
+        Shader.TileMode.CLAMP,
+      ).also { cachedBlurEffect = it }
 
     return createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()
   }
 
   private fun RuntimeShader.updateLiquidUniforms() = with(reusableScope) {
     setFloatUniform(
-      "effectRect",
-      frostRadius, // left
-      frostRadius, // top
-      recordingBounds.width - frostRadius, // right
-      recordingBounds.height - frostRadius, // bottom
+      "size",
+      size.width,
+      size.height,
     )
     setFloatUniform("cornerRadii", cornerRadii)
     setFloatUniform("refraction", refraction)
@@ -105,17 +88,5 @@ internal class LiquidNode(
     setColorUniform("tint", argbColor)
     setFloatUniform("saturation", saturation)
     setFloatUniform("dispersion", dispersion)
-  }
-
-  private fun RuntimeShader.updateFrostUniforms() = with(reusableScope) {
-    setFloatUniform("blurRadius", frostRadius)
-    setFloatUniform(
-      "effectRect",
-      frostRadius, // left
-      frostRadius, // top
-      recordingBounds.width - frostRadius, // right
-      recordingBounds.height - frostRadius, // bottom
-    )
-    setFloatUniform("cornerRadii", cornerRadii)
   }
 }

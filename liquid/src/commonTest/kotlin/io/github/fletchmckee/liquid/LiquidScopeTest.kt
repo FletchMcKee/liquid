@@ -38,7 +38,7 @@ class LiquidScopeTest {
     assertThat(scope.dispersion).isZero()
     assertThat(scope.argbColor).isZero()
     assertThat(scope.size).isEqualTo(Size.Unspecified)
-    assertThat(scope.positionOnScreen).isEqualTo(Offset.Zero)
+    assertThat(scope.positionOnScreen).isEqualTo(Offset.Unspecified)
     assertThat(scope.inverseScaleX).isEqualTo(1f)
     assertThat(scope.inverseScaleY).isEqualTo(1f)
     assertThat(scope.inverseRotationZ).isZero()
@@ -50,7 +50,7 @@ class LiquidScopeTest {
   @Test fun reset_cleansMutatedFields() {
     scope.setNonDefaultValues()
     assertThat(scope.mutatedFields).isNotZero()
-    scope.reset()
+    scope.clean()
     assertThat(scope.mutatedFields).isZero()
   }
 
@@ -199,7 +199,7 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
-    scope.reset() // Clean the tracker.
+    scope.clean() // Clean the tracker.
 
     scope.density = Density(3f)
     assertThat(scope.frost).isEqualTo(10.dp) // This should remain 10.dp.
@@ -208,45 +208,6 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
-  }
-
-  @Test fun computePaddedBounds_padsCorrectly() {
-    // First verify we can handle unspecified Size correctly
-    val unspecifiedBounds = scope.computeRecordedBounds()
-    assertThat(unspecifiedBounds).isEqualTo(Rect.Zero)
-
-    scope.size = Size(width = 50f, height = 50f)
-    val noFrostBounds = scope.computeRecordedBounds()
-    assertThat(noFrostBounds).isEqualTo(
-      Rect(
-        left = 0f,
-        top = 0f,
-        right = 50f,
-        bottom = 50f,
-      ),
-    )
-
-    scope.positionOnScreen = Offset(x = 10f, y = 5f)
-    val noFrostWithOffsetBounds = scope.computeRecordedBounds()
-    assertThat(noFrostWithOffsetBounds).isEqualTo(
-      Rect(
-        left = 10f,
-        top = 5f,
-        right = 60f, // x + width
-        bottom = 55f, // y + width
-      ),
-    )
-
-    scope.frost = 10.dp
-    val frostWithOffsetBounds = scope.computeRecordedBounds()
-    assertThat(frostWithOffsetBounds).isEqualTo(
-      Rect(
-        left = 0f, // x - padding
-        top = -5f, // y - padding
-        right = 70f, // x + width + padding
-        bottom = 65f, // y + width + padding
-      ),
-    )
   }
 
   private fun LiquidScope.setNonDefaultValues() {
