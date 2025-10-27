@@ -1,0 +1,45 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64, iosX64, js, macosArm64, macosX64, wasmJs]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <liquid-root:liquid>
+abstract interface io.github.fletchmckee.liquid/LiquidScope { // io.github.fletchmckee.liquid/LiquidScope|null[0]
+    abstract var curve // io.github.fletchmckee.liquid/LiquidScope.curve|{}curve[0]
+        abstract fun <get-curve>(): kotlin/Float // io.github.fletchmckee.liquid/LiquidScope.curve.<get-curve>|<get-curve>(){}[0]
+        abstract fun <set-curve>(kotlin/Float) // io.github.fletchmckee.liquid/LiquidScope.curve.<set-curve>|<set-curve>(kotlin.Float){}[0]
+    abstract var dispersion // io.github.fletchmckee.liquid/LiquidScope.dispersion|{}dispersion[0]
+        abstract fun <get-dispersion>(): kotlin/Float // io.github.fletchmckee.liquid/LiquidScope.dispersion.<get-dispersion>|<get-dispersion>(){}[0]
+        abstract fun <set-dispersion>(kotlin/Float) // io.github.fletchmckee.liquid/LiquidScope.dispersion.<set-dispersion>|<set-dispersion>(kotlin.Float){}[0]
+    abstract var edge // io.github.fletchmckee.liquid/LiquidScope.edge|{}edge[0]
+        abstract fun <get-edge>(): kotlin/Float // io.github.fletchmckee.liquid/LiquidScope.edge.<get-edge>|<get-edge>(){}[0]
+        abstract fun <set-edge>(kotlin/Float) // io.github.fletchmckee.liquid/LiquidScope.edge.<set-edge>|<set-edge>(kotlin.Float){}[0]
+    abstract var frost // io.github.fletchmckee.liquid/LiquidScope.frost|{}frost[0]
+        abstract fun <get-frost>(): androidx.compose.ui.unit/Dp // io.github.fletchmckee.liquid/LiquidScope.frost.<get-frost>|<get-frost>(){}[0]
+        abstract fun <set-frost>(androidx.compose.ui.unit/Dp) // io.github.fletchmckee.liquid/LiquidScope.frost.<set-frost>|<set-frost>(androidx.compose.ui.unit.Dp){}[0]
+    abstract var refraction // io.github.fletchmckee.liquid/LiquidScope.refraction|{}refraction[0]
+        abstract fun <get-refraction>(): kotlin/Float // io.github.fletchmckee.liquid/LiquidScope.refraction.<get-refraction>|<get-refraction>(){}[0]
+        abstract fun <set-refraction>(kotlin/Float) // io.github.fletchmckee.liquid/LiquidScope.refraction.<set-refraction>|<set-refraction>(kotlin.Float){}[0]
+    abstract var saturation // io.github.fletchmckee.liquid/LiquidScope.saturation|{}saturation[0]
+        abstract fun <get-saturation>(): kotlin/Float // io.github.fletchmckee.liquid/LiquidScope.saturation.<get-saturation>|<get-saturation>(){}[0]
+        abstract fun <set-saturation>(kotlin/Float) // io.github.fletchmckee.liquid/LiquidScope.saturation.<set-saturation>|<set-saturation>(kotlin.Float){}[0]
+    abstract var shape // io.github.fletchmckee.liquid/LiquidScope.shape|{}shape[0]
+        abstract fun <get-shape>(): androidx.compose.ui.graphics/Shape // io.github.fletchmckee.liquid/LiquidScope.shape.<get-shape>|<get-shape>(){}[0]
+        abstract fun <set-shape>(androidx.compose.ui.graphics/Shape) // io.github.fletchmckee.liquid/LiquidScope.shape.<set-shape>|<set-shape>(androidx.compose.ui.graphics.Shape){}[0]
+    abstract var tint // io.github.fletchmckee.liquid/LiquidScope.tint|{}tint[0]
+        abstract fun <get-tint>(): androidx.compose.ui.graphics/Color // io.github.fletchmckee.liquid/LiquidScope.tint.<get-tint>|<get-tint>(){}[0]
+        abstract fun <set-tint>(androidx.compose.ui.graphics/Color) // io.github.fletchmckee.liquid/LiquidScope.tint.<set-tint>|<set-tint>(androidx.compose.ui.graphics.Color){}[0]
+}
+
+final class io.github.fletchmckee.liquid/LiquidState { // io.github.fletchmckee.liquid/LiquidState|null[0]
+    constructor <init>() // io.github.fletchmckee.liquid/LiquidState.<init>|<init>(){}[0]
+}
+
+final val io.github.fletchmckee.liquid/io_github_fletchmckee_liquid_LiquidState$stableprop // io.github.fletchmckee.liquid/io_github_fletchmckee_liquid_LiquidState$stableprop|#static{}io_github_fletchmckee_liquid_LiquidState$stableprop[0]
+
+final fun (androidx.compose.ui/Modifier).io.github.fletchmckee.liquid/liquefiable(io.github.fletchmckee.liquid/LiquidState): androidx.compose.ui/Modifier // io.github.fletchmckee.liquid/liquefiable|liquefiable@androidx.compose.ui.Modifier(io.github.fletchmckee.liquid.LiquidState){}[0]
+final fun (androidx.compose.ui/Modifier).io.github.fletchmckee.liquid/liquid(io.github.fletchmckee.liquid/LiquidState, kotlin/Function1<io.github.fletchmckee.liquid/LiquidScope, kotlin/Unit> = ...): androidx.compose.ui/Modifier // io.github.fletchmckee.liquid/liquid|liquid@androidx.compose.ui.Modifier(io.github.fletchmckee.liquid.LiquidState;kotlin.Function1<io.github.fletchmckee.liquid.LiquidScope,kotlin.Unit>){}[0]
+final fun io.github.fletchmckee.liquid/io_github_fletchmckee_liquid_LiquidState$stableprop_getter(): kotlin/Int // io.github.fletchmckee.liquid/io_github_fletchmckee_liquid_LiquidState$stableprop_getter|io_github_fletchmckee_liquid_LiquidState$stableprop_getter(){}[0]
+final fun io.github.fletchmckee.liquid/rememberLiquidState(androidx.compose.runtime/Composer?, kotlin/Int): io.github.fletchmckee.liquid/LiquidState // io.github.fletchmckee.liquid/rememberLiquidState|rememberLiquidState(androidx.compose.runtime.Composer?;kotlin.Int){}[0]

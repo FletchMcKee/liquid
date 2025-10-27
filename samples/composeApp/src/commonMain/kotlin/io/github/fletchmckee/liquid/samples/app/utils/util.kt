@@ -51,7 +51,7 @@ internal fun Modifier.drag(
   }
 
 @Composable
-internal fun rememberShaderBrush(
+fun rememberShaderBrush(
   colors: List<Color> = listOf(MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.surfaceTint),
 ): ShaderBrush = remember(colors) {
   object : ShaderBrush() {

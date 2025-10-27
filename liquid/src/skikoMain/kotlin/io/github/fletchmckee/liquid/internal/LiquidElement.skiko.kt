@@ -10,7 +10,6 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInWindow
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
-import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
 import org.jetbrains.skia.FilterTileMode
 import org.jetbrains.skia.ImageFilter
 import org.jetbrains.skia.RuntimeEffect
@@ -40,6 +39,12 @@ internal class LiquidNode(
 ) : AbstractLiquidNode(liquidState, block) {
   private val liquidShader = RuntimeShaderBuilder(RuntimeEffect.makeForShader(LiquidShader))
   private var cachedBlurImageFilter: ImageFilter? = null
+
+  override fun onDetach() {
+    super.onDetach()
+    cachedBlurImageFilter?.close()
+    cachedBlurImageFilter = null
+  }
 
   override fun createRenderEffect(): RenderEffect? {
     // We shouldn't have empty bounds at this point, but set the RenderEffect to null if we do.

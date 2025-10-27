@@ -73,11 +73,14 @@ class LiquidScreenshotTest {
     LiquidDraggableScreen()
   }
 
-  @Test fun capture_grid_no_frost() = runScreenshotTest {
+  @Test fun capture_grid_no_frost() = runScreenshotTest(darkMode = false) {
     LiquidGridScreen()
   }
 
-  @Test fun capture_grid_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
+  @Test fun capture_grid_10_dp_frost() = runScreenshotTest(
+    darkMode = false,
+    initialFrost = 10f,
+  ) {
     LiquidGridScreen()
   }
 

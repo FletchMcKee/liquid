@@ -3,13 +3,12 @@
 import com.android.build.api.variant.HasUnitTestBuilder
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
+import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
   alias(libs.plugins.liquid.android.library)
@@ -107,12 +106,11 @@ tasks.withType<KotlinJsTest> {
   enabled = false
 }
 
-tasks.withType<KotlinNativeSimulatorTest> {
-  enabled = false
-}
-
-tasks.withType<KotlinNativeHostTest> {
-  enabled = false
+apiValidation {
+  @OptIn(ExperimentalBCVApi::class)
+  klib {
+    enabled = true
+  }
 }
 
 mavenPublishing {

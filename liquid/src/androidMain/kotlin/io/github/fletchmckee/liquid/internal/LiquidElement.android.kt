@@ -17,12 +17,9 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
 import io.github.fletchmckee.liquid.LiquidScope
 import io.github.fletchmckee.liquid.LiquidState
-import io.github.fletchmckee.liquid.internal.shaders.LiquidShader
 
-/**
- * Android 12 and lower can't reference a RuntimeShader, so this is split into separate
- * node types. Once minSdk is 33, this can be simplified to LiquidElement only.
- */
+// Android 12 and lower can't reference a RuntimeShader, so this is split into separate
+// node types. Once minSdk is 33, this can be simplified to LiquidElement only.
 internal actual fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
@@ -31,9 +28,7 @@ internal actual fun liquidElement(
   else -> LiquidBackupElement(liquidState, block)
 }
 
-/**
- * Using positionOnScreen so that dialogs/popups share the same logic as other views.
- */
+// Using `positionOnScreen()` so that dialogs/popups share the same logic as other views.
 internal actual fun LayoutCoordinates.liquidPositionOnScreen(): Offset = positionOnScreen()
 
 @RequiresApi(33)
@@ -51,6 +46,11 @@ internal class LiquidNode(
 ) : AbstractLiquidNode(liquidState, block) {
   private val liquidShader = RuntimeShader(LiquidShader)
   private var cachedBlurEffect: android.graphics.RenderEffect? = null
+
+  override fun onDetach() {
+    super.onDetach()
+    cachedBlurEffect = null
+  }
 
   override fun createRenderEffect(): RenderEffect? {
     // We shouldn't have empty bounds at this point, but set the RenderEffect to null if we do.

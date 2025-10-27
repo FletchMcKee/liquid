@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
   private fun String?.toStartDestination(): Any {
     val startDestination = this?.let { enumValueOf<StartDestination>(it) } ?: StartDestination.DemosList
     return when (startDestination) {
-      StartDestination.DemosList -> DemosList
+      StartDestination.DemosList -> Demos
       StartDestination.Drag -> Drag
       StartDestination.Grid -> Grid
       StartDestination.StickyHeader -> StickyHeader

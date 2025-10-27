@@ -7,11 +7,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -19,6 +20,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
@@ -28,10 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
@@ -55,21 +56,14 @@ import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.stickyHeaderD
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
-import kotlinx.serialization.Serializable
-
-@Serializable
-data object DemosList
-
-fun NavGraphBuilder.demosListDestination(
-  navController: NavController,
-) = composable<DemosList> {
-  DemosList(navController)
-}
+import liquid_root.samples.composeapp.generated.resources.Res
+import liquid_root.samples.composeapp.generated.resources.liquid_demos_platform
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LiquidDemos(
   modifier: Modifier = Modifier,
-  startDestination: Any = DemosList,
+  startDestination: Any = Demos,
   useLiquid: Boolean = true,
   initialFrost: Float = 0f,
   initialDispersion: Float = 0f,
@@ -117,13 +111,16 @@ fun LiquidDemos(
 }
 
 @Composable
-private fun DemosList(
+internal fun Demos(
   navController: NavController,
   liquidState: LiquidState = rememberLiquidState(),
+  demosList: List<DemoData> = DemosList,
 ) = Scaffold(
   topBar = {
     TopAppBar(
-      title = { Text(text = "Liquid Demos (${getPlatform().name})") },
+      title = {
+        Text(text = stringResource(Res.string.liquid_demos_platform, getPlatform().name))
+      },
       colors = TopAppBarDefaults.topAppBarColors(
         containerColor = Color.Transparent,
       ),
@@ -138,42 +135,23 @@ private fun DemosList(
       .background(rememberShaderBrush()),
   )
   // Control layer
-  Column(
+  LazyColumn(
     modifier = Modifier
       .fillMaxSize()
       .padding(padding)
       .padding(horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(8.dp),
   ) {
-    DemoItem(
-      name = "Animating Clock",
-      onClick = { navController.navigate(Clock) },
-      liquidState = liquidState,
-    )
-
-    DemoItem(
-      name = "Drag",
-      onClick = { navController.navigate(Drag) },
-      liquidState = liquidState,
-    )
-
-    DemoItem(
-      name = "Grid",
-      onClick = { navController.navigate(Grid) },
-      liquidState = liquidState,
-    )
-
-    DemoItem(
-      name = "Sticky Header",
-      onClick = { navController.navigate(StickyHeader) },
-      liquidState = liquidState,
-    )
-
-    DemoItem(
-      name = "500 Liquid Nodes",
-      onClick = { navController.navigate(Many) },
-      liquidState = liquidState,
-    )
+    items(
+      items = demosList,
+      key = { it.name },
+    ) { demo ->
+      DemoItem(
+        name = demo.name,
+        onClick = { navController.navigate(demo.navType) },
+        liquidState = liquidState,
+      )
+    }
   }
 }
 
@@ -209,3 +187,18 @@ private fun DemoItem(
     modifier = Modifier.padding(16.dp),
   )
 }
+
+@Immutable
+internal data class DemoData(
+  val name: String,
+  val navType: Any,
+)
+
+@Stable
+private val DemosList = listOf(
+  DemoData("Rotating Clock", Clock),
+  DemoData("Drag", Drag),
+  DemoData("Grid", Grid),
+  DemoData("Sticky Header", StickyHeader),
+  DemoData("500 Liquid Nodes", Many),
+)

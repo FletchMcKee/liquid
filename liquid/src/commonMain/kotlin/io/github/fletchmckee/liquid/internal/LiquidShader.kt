@@ -1,6 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-package io.github.fletchmckee.liquid.internal.shaders
+package io.github.fletchmckee.liquid.internal
 
 internal const val LiquidShader = """
   uniform shader content;

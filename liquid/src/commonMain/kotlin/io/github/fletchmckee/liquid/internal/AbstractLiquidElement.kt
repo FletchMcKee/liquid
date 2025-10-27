@@ -33,19 +33,14 @@ import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
-/**
- * Will explore better alternatives, but we have separate nodes so that Android and Skiko
- * can create their RuntimeShader/RuntimeEffect in init rather than the draw pass as this
- * has shown better performance.
- */
+// We have separate nodes so that Android and Skiko can create their RuntimeShader/RuntimeEffect
+// in `init` rather than the draw pass as this has shown better performance.
 internal expect fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
 ): AbstractLiquidElement<out AbstractLiquidNode>
 
-/**
- * `positionOnScreen()` doesn't return the same thing between Android and Skiko,
- */
+// The `positionOnScreen()` doesn't return the same thing between Android and Skiko.
 internal expect fun LayoutCoordinates.liquidPositionOnScreen(): Offset
 
 internal abstract class AbstractLiquidElement<N : AbstractLiquidNode>(
@@ -151,6 +146,7 @@ internal abstract class AbstractLiquidNode(
   override fun onDetach() {
     cachedLayer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     cachedLayer = null
+    cachedRenderEffect = null
     reusableScope.clean()
   }
 
@@ -186,7 +182,7 @@ internal abstract class AbstractLiquidNode(
     val layer = obtainGraphicsLayer()
     recordLiquefiablesIntoLayer(layer, reusableScope)
 
-    layer.renderEffect = cachedRenderEffect
+    layer.renderEffect = cachedRenderEffect ?: createRenderEffect()
     applyAdditionalEffects(layer) {
       drawLayer(layer)
     }

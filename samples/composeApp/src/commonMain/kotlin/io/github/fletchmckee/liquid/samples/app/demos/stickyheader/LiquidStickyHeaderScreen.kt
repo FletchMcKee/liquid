@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -46,6 +47,7 @@ import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.demos.many.LoremIpsum
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
+import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
@@ -122,6 +124,7 @@ private fun StickyHeaderList(
         modifier = Modifier
           .fillMaxWidth()
           .padding(top = 8.dp)
+          .dropShadow(headerShape, LiquidShadow)
           .thenIf(useLiquid) {
             liquid(liquidState) {
               frost = initialFrost.dp
@@ -193,7 +196,7 @@ private fun CardItem(
 private fun ImageItem(
   index: Int,
 ) = AsyncImage(
-  model = "https://picsum.photos/id/${index.toPicsumId()}/300/300",
+  model = "https://picsum.photos/id/${index.toPicsumId()}/600/600",
   contentScale = ContentScale.Crop,
   placeholder = ColorPainter(Color.LightGray),
   error = ColorPainter(Color.Magenta),

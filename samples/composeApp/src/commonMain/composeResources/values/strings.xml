@@ -1,3 +1,4 @@
 <resources>
+  <string name="liquid_demos_platform">Liquid Demos (%1$s)</string>
   <string name="clock_format">%1$s:%2$s:%3$s</string>
 </resources>

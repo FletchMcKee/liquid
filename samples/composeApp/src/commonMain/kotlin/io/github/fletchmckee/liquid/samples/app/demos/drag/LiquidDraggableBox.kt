@@ -19,12 +19,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
@@ -38,6 +38,7 @@ import androidx.compose.ui.zIndex
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
+import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
@@ -79,10 +80,7 @@ fun BoxScope.LiquidDraggableBox(
           dragOffset = Offset(x, y)
         }
       }
-      .graphicsLayer {
-        shadowElevation = 4.dp.toPx()
-        shape = shapeProvider()
-      }
+      .dropShadow(shapeProvider(), LiquidShadow)
       .thenIf(useLiquid) {
         liquid(liquidState) {
           frost = frostProvider().dp

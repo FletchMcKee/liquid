@@ -75,7 +75,10 @@ internal class LiquefiableNode(
   }
 
   override fun onGloballyPositioned(coordinates: LayoutCoordinates) {
-    liquefiable.boundsOnScreen = Rect(coordinates.liquidPositionOnScreen(), coordinates.size.toSize())
+    liquefiable.boundsOnScreen = Rect(
+      offset = coordinates.liquidPositionOnScreen(),
+      size = coordinates.size.toSize(),
+    )
   }
 
   override fun ContentDrawScope.draw() {
@@ -83,7 +86,7 @@ internal class LiquefiableNode(
       drawContent()
       return
     }
-
+    // Prevents double reads with the mutableState `liquefiable.layer` when `createGraphicsLayer` is called.
     val contentLayer = Snapshot.withoutReadObservation { obtainGraphicsLayer() }
     // Record the content into the layer
     contentLayer.record { this@draw.drawContent() }
