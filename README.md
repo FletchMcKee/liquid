@@ -56,10 +56,7 @@ See [full documentation here](https://fletchmckee.github.io/liquid/).
 ## Acknowledgements
 
 - The [Haze](https://github.com/chrisbanes/haze) library developed by [Chris Banes](https://github.com/chrisbanes) was a large source of
-inspiration, particularly for the use of content and effect `Modifier` nodes and blur techniques. Specifically, the
-`FrostShaders` available for the liquid nodes are
-derived from the [HazeShaders](https://github.com/chrisbanes/haze/blob/main/haze/src/commonMain/kotlin/dev/chrisbanes/haze/HazeShaders.kt)
-class.
+inspiration, particularly for the use of content and effect `Modifier` nodes.
 - The original liquid lens effect was inspired by ShaderToy user [4eckme](https://www.shadertoy.com/user/4eckme) with their
 [Liquid Glass example](https://www.shadertoy.com/view/wcKSRD).
 - The current spherical liquid lens effect was inspired by GitHub user [Kyant0](https://github.com/Kyant0) with their own
