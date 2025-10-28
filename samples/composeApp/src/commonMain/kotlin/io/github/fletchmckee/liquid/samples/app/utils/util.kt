@@ -24,7 +24,10 @@ import kotlin.math.roundToInt
 internal expect fun formatFloat(value: Float, format: String): String
 
 // Used for benchmarks so that we can compare performance with none of the library's effects added.
-internal fun Modifier.thenIf(condition: Boolean, block: Modifier.() -> Modifier): Modifier = if (condition) this.block() else this
+internal fun Modifier.thenIf(
+  condition: Boolean,
+  block: Modifier.() -> Modifier,
+): Modifier = if (condition) this.block() else this
 
 internal fun Modifier.blendMode(blendMode: BlendMode): Modifier = drawWithCache {
   val layer = obtainGraphicsLayer()

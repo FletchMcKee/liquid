@@ -3,6 +3,7 @@
 package io.github.fletchmckee.liquid.samples.app.demos.many
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -19,11 +20,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -56,24 +60,31 @@ fun ManyLiquidNodesScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
-) = SliderScaffold(
-  navController = navController,
-  modifier = modifier,
-) { paddingValues ->
-  DotonboriBackground(liquidState)
-  LiquidNodesList(liquidState)
+) {
+  val initialUseLiquid = LocalUseLiquid.current
+  var useLiquid by rememberSaveable { mutableStateOf(initialUseLiquid) }
+  SliderScaffold(
+    navController = navController,
+    useLiquidProvider = { useLiquid },
+    onUseLiquidChange = { useLiquid = it },
+    modifier = modifier,
+  ) { paddingValues ->
+    DotonboriBackground(liquidState, useLiquid)
+    LiquidNodesList(liquidState, useLiquid)
+  }
 }
 
 @Composable
 private fun DotonboriBackground(
   liquidState: LiquidState,
+  useLiquid: Boolean,
 ) = Image(
   painter = painterResource(Res.drawable.dotonbori),
   contentDescription = null,
   contentScale = ContentScale.Crop,
   modifier = Modifier
     .fillMaxSize()
-    .thenIf(LocalUseLiquid.current) {
+    .thenIf(useLiquid) {
       liquefiable(liquidState)
     },
 )
@@ -81,10 +92,11 @@ private fun DotonboriBackground(
 @Composable
 private fun LiquidNodesList(
   liquidState: LiquidState,
+  useLiquid: Boolean,
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
-    .padding(horizontal = 24.dp)
+    .padding(horizontal = 20.dp)
     .clipToBounds()
     .testTag("liquidNodesList")
     .testTagsAsResourceId(true),
@@ -99,7 +111,7 @@ private fun LiquidNodesList(
     LiquidCard(
       liquidState = liquidState,
       index = index,
-      useLiquid = LocalUseLiquid.current,
+      useLiquid = useLiquid,
       initialFrost = LocalInitialFrost.current,
     )
   }
@@ -117,15 +129,23 @@ private fun LiquidCard(
 ) = Column(
   modifier = Modifier
     .fillMaxWidth()
-    .thenIf(useLiquid) {
-      liquid(liquidState) {
-        frost = initialFrost.dp
-        refraction = 0.1f
-        edge = 0.05f
-        shape = cardShape
-        tint = containerColor
-      }
-    }
+    .padding(horizontal = 4.dp) // For the shadow
+    .then(
+      when {
+        useLiquid ->
+          Modifier
+            // dropShadow causes some lag with wasm/js.
+            .shadow(elevation = 4.dp, cardShape)
+            .liquid(liquidState) {
+              frost = initialFrost.dp
+              refraction = 0.1f
+              edge = 0.05f
+              shape = cardShape
+              tint = containerColor
+            }
+        else -> Modifier.background(containerColor, cardShape)
+      },
+    )
     .padding(24.dp)
     .testTag("liquidNode$index")
     .testTagsAsResourceId(true),

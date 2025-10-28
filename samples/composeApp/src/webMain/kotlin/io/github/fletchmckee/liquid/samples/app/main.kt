@@ -55,7 +55,6 @@ import org.jetbrains.compose.resources.preloadImageBitmap
 fun main() {
   ComposeViewport("ComposeApp") {
     val navController = rememberNavController()
-    LiquidDemos(navController = navController)
     val pragueClock by preloadImageBitmap(Res.drawable.prague_clock)
     val moonAndStars by preloadImageBitmap(Res.drawable.moon_and_stars)
     val northernLights by preloadImageBitmap(Res.drawable.northern_lights)

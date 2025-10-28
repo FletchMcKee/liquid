@@ -47,11 +47,6 @@ internal class LiquidNode(
   private val liquidShader = RuntimeShader(LiquidShader)
   private var cachedBlurEffect: android.graphics.RenderEffect? = null
 
-  override fun onDetach() {
-    super.onDetach()
-    cachedBlurEffect = null
-  }
-
   override fun createRenderEffect(): RenderEffect? {
     // We shouldn't have empty bounds at this point, but set the RenderEffect to null if we do.
     if (reusableScope.size.isUnspecified) return null

@@ -21,8 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.LinearGradientShader
+import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.pointerInput
@@ -41,7 +44,6 @@ import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
-import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.math.roundToInt
 
@@ -57,7 +59,7 @@ fun BoxScope.LiquidDraggableBox(
   dispersionProvider: () -> Float,
   modifier: Modifier = Modifier,
   colors: List<Color> = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent),
-  shaderBrush: ShaderBrush = rememberShaderBrush(colors),
+  shaderBrush: ShaderBrush = rememberDiagonalShaderBrush(colors),
   initialYOffset: Dp = (-150).dp,
 ) {
   val useLiquid = LocalUseLiquid.current
@@ -110,6 +112,19 @@ fun BoxScope.LiquidDraggableBox(
         .padding(12.dp)
         // Helps improve the text legibility on light surfaces.
         .blendMode(BlendMode.Difference),
+    )
+  }
+}
+
+@Composable
+private fun rememberDiagonalShaderBrush(
+  colors: List<Color>,
+): ShaderBrush = remember(colors) {
+  object : ShaderBrush() {
+    override fun createShader(size: Size): Shader = LinearGradientShader(
+      colors = colors,
+      from = Offset.Zero,
+      to = Offset(size.width, size.height),
     )
   }
 }

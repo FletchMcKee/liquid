@@ -44,7 +44,7 @@ private val DarkColorScheme = darkColorScheme(
   surfaceContainer = Stone,
 )
 
-internal val LiquidShadow = Shadow(radius = 4.dp, color = Color.Black.copy(alpha = 0.3f))
+internal val LiquidShadow = Shadow(radius = 4.dp, color = Color.Black.copy(alpha = 0.5f))
 
 internal val LocalUseLiquid = staticCompositionLocalOf { true }
 internal val LocalInitialFrost = staticCompositionLocalOf { 0f }

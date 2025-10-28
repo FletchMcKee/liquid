@@ -38,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextAlign
@@ -50,6 +49,7 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
+import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsBenchmark
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.formatFloat
@@ -79,8 +79,8 @@ fun BoxScope.LiquidControls(
   containerFrost: Dp = 15.dp,
   containerRefraction: Float = 0.08f,
   containerEdge: Float = 0.02f,
+  useLiquid: Boolean = LocalUseLiquid.current,
 ) {
-  val useLiquid = LocalUseLiquid.current
   // TODO: Add configuration change logic
   val isLandscape = false
 
@@ -103,17 +103,22 @@ fun BoxScope.LiquidControls(
       .thenIf(useLiquid) {
         liquefiable(liquidState)
       }
-      .dropShadow(containerShape, Shadow(radius = 8.dp, color = Color.Black.copy(alpha = 0.3f)))
-      .thenIf(useLiquid) {
-        liquid(liquidState) {
-          frost = containerFrost
-          shape = containerShape
-          curve = 0.15f
-          refraction = containerRefraction
-          edge = containerEdge
-          tint = containerColor
-        }
-      },
+      .then(
+        when {
+          useLiquid ->
+            Modifier
+              .dropShadow(containerShape, LiquidShadow)
+              .liquid(liquidState) {
+                frost = containerFrost
+                shape = containerShape
+                curve = 0.15f
+                refraction = containerRefraction
+                edge = containerEdge
+                tint = containerColor
+              }
+          else -> Modifier.background(containerColor, containerShape)
+        },
+      ),
   ) {
     LazyColumn(
       modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),

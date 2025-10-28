@@ -140,7 +140,7 @@ internal fun Demos(
       .fillMaxSize()
       .padding(padding)
       .padding(horizontal = 16.dp),
-    verticalArrangement = Arrangement.spacedBy(8.dp),
+    verticalArrangement = Arrangement.spacedBy(4.dp),
   ) {
     items(
       items = demosList,
@@ -165,6 +165,7 @@ private fun DemoItem(
 ) = Row(
   modifier = Modifier
     .fillMaxWidth()
+    .padding(top = 4.dp)
     .dropShadow(cardShape, LiquidShadow)
     .liquid(liquidState) {
       edge = 0.05f

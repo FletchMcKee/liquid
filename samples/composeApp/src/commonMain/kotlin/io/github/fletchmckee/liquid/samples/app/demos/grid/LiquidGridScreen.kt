@@ -110,8 +110,8 @@ fun LiquidGridScreen(
         Slider(
           value = frostRadius,
           onValueChange = { frostRadius = it },
-          steps = 49,
-          valueRange = 0f..50f,
+          steps = 29,
+          valueRange = 0f..30f,
           thumb = {
             Box(
               Modifier

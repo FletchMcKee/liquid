@@ -22,7 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,19 +65,22 @@ fun LiquidStickyHeaderScreen(
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
 ) {
-  val useLiquid = LocalUseLiquid.current
+  val initialUseLiquid = LocalUseLiquid.current
   val initialFrost = LocalInitialFrost.current
 
-  var frostRadius by remember { mutableFloatStateOf(initialFrost) }
+  var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
+  var useLiquid by rememberSaveable { mutableStateOf(initialUseLiquid) }
 
   SliderScaffold(
     navController = navController,
     frostProvider = { frostRadius },
     onFrostChange = { frostRadius = it },
+    useLiquidProvider = { useLiquid },
+    onUseLiquidChange = { useLiquid = it },
     modifier = modifier,
   ) { padding ->
     // We need a sibling node for displaying the background in order for the liquid nodes to sample from it.
-    ShaderBackground(liquidState)
+    ShaderBackground(liquidState, useLiquid)
     StickyHeaderList(
       liquidState = liquidState,
       useLiquid = useLiquid,
@@ -89,10 +93,13 @@ fun LiquidStickyHeaderScreen(
 @Composable
 private fun ShaderBackground(
   liquidState: LiquidState,
+  useLiquid: Boolean,
 ) = Box(
   Modifier
     .fillMaxSize()
-    .liquefiable(liquidState)
+    .thenIf(useLiquid) {
+      liquefiable(liquidState)
+    }
     .background(rememberShaderBrush()),
 )
 
@@ -124,17 +131,22 @@ private fun StickyHeaderList(
         modifier = Modifier
           .fillMaxWidth()
           .padding(top = 8.dp)
-          .dropShadow(headerShape, LiquidShadow)
-          .thenIf(useLiquid) {
-            liquid(liquidState) {
-              frost = initialFrost.dp
-              refraction = 0.25f
-              curve = 0.5f
-              edge = 0.1f
-              shape = headerShape
-              tint = stickyHeaderContainerColor
-            }
-          },
+          .then(
+            when {
+              useLiquid ->
+                Modifier
+                  .dropShadow(headerShape, LiquidShadow)
+                  .liquid(liquidState) {
+                    frost = initialFrost.dp
+                    refraction = 0.25f
+                    curve = 0.5f
+                    edge = 0.1f
+                    shape = headerShape
+                    tint = stickyHeaderContainerColor
+                  }
+              else -> Modifier.background(stickyHeaderContainerColor, headerShape)
+            },
+          ),
         verticalAlignment = Alignment.CenterVertically,
       ) {
         Text(
@@ -151,7 +163,11 @@ private fun StickyHeaderList(
 
     items(count = 20, key = { 20 * header + it }, contentType = { "imageItem" }) { index ->
       val accumulatedIndex = 20 * header + index
-      CardItem(liquidState, accumulatedIndex)
+      CardItem(
+        liquidState = liquidState,
+        index = accumulatedIndex,
+        useLiquid = useLiquid,
+      )
     }
   }
 }
@@ -160,15 +176,19 @@ private fun StickyHeaderList(
 private fun CardItem(
   liquidState: LiquidState,
   index: Int,
+  useLiquid: Boolean,
   shape: Shape = RoundedCornerShape(5),
+  containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = Column(
   modifier = Modifier
     .fillMaxWidth()
-    // Be sure to place liquefiable nodes before any clip calls
-    .liquefiable(liquidState)
+    .thenIf(useLiquid) {
+      // Be sure to place liquefiable nodes before any clip calls
+      liquefiable(liquidState)
+    }
     .clip(shape)
-    .background(MaterialTheme.colorScheme.background),
+    .background(containerColor),
   horizontalAlignment = Alignment.CenterHorizontally,
 ) {
   when {

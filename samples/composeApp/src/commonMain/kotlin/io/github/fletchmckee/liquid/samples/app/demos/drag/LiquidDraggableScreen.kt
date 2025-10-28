@@ -16,7 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -225,7 +225,7 @@ private fun ControlsButton(
   onClick = onClick,
 ) {
   Icon(
-    imageVector = Icons.Default.Settings,
+    imageVector = Icons.Default.Menu,
     contentDescription = "Sliders visibility button",
     tint = MaterialTheme.colorScheme.onBackground,
   )

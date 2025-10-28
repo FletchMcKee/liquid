@@ -113,15 +113,15 @@ class LiquidScreenshotTest {
   }
 
   @Test fun capture_clock_no_frost() = runScreenshotTest {
-    LiquidClockScreen(disableAnimation = true)
+    LiquidClockScreen()
   }
 
   @Test fun capture_clock_10_dp_frost() = runScreenshotTest(initialFrost = 10f) {
-    LiquidClockScreen(disableAnimation = true)
+    LiquidClockScreen()
   }
 
   @Test fun capture_clock_quarter_dispersion_no_frost() = runScreenshotTest(initialDispersion = 0.25f) {
-    LiquidClockScreen(disableAnimation = true)
+    LiquidClockScreen()
   }
 
   // TODO: Look into better screenshot testing options, this shouldn't be this hard.

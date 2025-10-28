@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTes
 
 plugins {
   alias(libs.plugins.kotlin.multiplatform)
-  alias(libs.plugins.android.application)
+  alias(libs.plugins.liquid.android.application)
   alias(libs.plugins.compose.multiplatform)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
@@ -77,7 +77,7 @@ kotlin {
       implementation(libs.coil.compose)
       implementation(libs.coil.ktor)
       implementation(libs.ktor.core)
-      implementation(libs.androidx.lifecycle.runtimeCompose)
+      implementation(libs.jetbrains.lifecycle.runtimeCompose)
     }
 
     iosMain.dependencies {
@@ -108,22 +108,11 @@ kotlin {
 
 android {
   namespace = "io.github.fletchmckee.liquid.samples.app"
-  compileSdk = 36
 
   defaultConfig {
     applicationId = "io.github.fletchmckee.liquid.samples.app"
-    minSdk = 24
-    targetSdk = 36
     versionCode = 1
     versionName = "1.0"
-
-    testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-  }
-
-  packaging {
-    resources {
-      excludes += "/META-INF/{AL2.0,LGPL2.1}"
-    }
   }
 
   buildTypes {
@@ -141,9 +130,6 @@ android {
 
   testOptions {
     animationsDisabled = true
-    unitTests {
-      isIncludeAndroidResources = true
-    }
   }
 }
 

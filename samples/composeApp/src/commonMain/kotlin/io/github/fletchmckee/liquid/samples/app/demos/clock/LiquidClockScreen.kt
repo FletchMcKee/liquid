@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,6 +54,7 @@ import io.github.fletchmckee.liquid.samples.app.demos.drag.LiquidControls
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
+import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.drag
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
@@ -73,87 +73,95 @@ fun LiquidClockScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
-  disableAnimation: Boolean = false,
-) = SliderScaffold(
-  navController = navController,
-  modifier = modifier,
 ) {
-  Box {
-    val initialFrost = LocalInitialFrost.current
-    val initialDispersion = LocalInitialDispersion.current
+  val initialUseLiquid = LocalUseLiquid.current
+  val initialFrost = LocalInitialFrost.current
+  val initialDispersion = LocalInitialDispersion.current
 
-    var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
-    var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
-    var curve by rememberSaveable { mutableFloatStateOf(0.25f) }
-    var edge by rememberSaveable { mutableFloatStateOf(0.1f) }
-    var saturation by rememberSaveable { mutableFloatStateOf(1f) }
-    var cornerPercent by rememberSaveable { mutableIntStateOf(30) }
-    var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
+  var useLiquid by rememberSaveable { mutableStateOf(initialUseLiquid) }
+  var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
+  var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
+  var curve by rememberSaveable { mutableFloatStateOf(0.25f) }
+  var edge by rememberSaveable { mutableFloatStateOf(0.1f) }
+  var saturation by rememberSaveable { mutableFloatStateOf(1f) }
+  var cornerPercent by rememberSaveable { mutableIntStateOf(30) }
+  var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
 
-    PragueClockBackground(liquidState)
+  SliderScaffold(
+    navController = navController,
+    useLiquidProvider = { useLiquid },
+    onUseLiquidChange = { useLiquid = it },
+    modifier = modifier,
+  ) {
+    Box {
+      PragueClockBackground(liquidState, useLiquid)
 
-    ClockTimer(
-      liquidState = liquidState,
-      modifier = Modifier
-        .systemBarsPadding()
-        .padding(top = 72.dp)
-        .size(width = 200.dp, height = 250.dp)
-        .align(Alignment.TopCenter),
-    )
+      ClockTimer(
+        liquidState = liquidState,
+        useLiquid = useLiquid,
+        modifier = Modifier
+          .systemBarsPadding()
+          .padding(top = 72.dp)
+          .size(width = 200.dp, height = 250.dp)
+          .align(Alignment.TopCenter),
+      )
 
-    LiquidRotatingBox(
-      liquidState = liquidState,
-      disableAnimation = disableAnimation,
-      frostProvider = { frostRadius },
-      refractionProvider = { refraction },
-      curveProvider = { curve },
-      edgeProvider = { edge },
-      saturationProvider = { saturation },
-      shapeProvider = { RoundedCornerShape(cornerPercent) },
-      dispersionProvider = { dispersion },
-      modifier = Modifier
-        .zIndex(2f)
-        .systemBarsPadding()
-        .padding(top = 72.dp)
-        .size(250.dp)
-        .align(Alignment.TopCenter),
-    )
+      LiquidRotatingBox(
+        liquidState = liquidState,
+        useLiquid = useLiquid,
+        frostProvider = { frostRadius },
+        refractionProvider = { refraction },
+        curveProvider = { curve },
+        edgeProvider = { edge },
+        saturationProvider = { saturation },
+        shapeProvider = { RoundedCornerShape(cornerPercent) },
+        dispersionProvider = { dispersion },
+        modifier = Modifier
+          .zIndex(2f)
+          .systemBarsPadding()
+          .padding(top = 72.dp)
+          .size(250.dp)
+          .align(Alignment.TopCenter),
+      )
 
-    LiquidControls(
-      liquidState = liquidState,
-      showSliders = true,
-      frostProvider = { frostRadius },
-      onFrostChange = { frostRadius = it },
-      refractionProvider = { refraction },
-      onRefractionChange = { refraction = it },
-      curveProvider = { curve },
-      onCurveChange = { curve = it },
-      edgeProvider = { edge },
-      onEdgeChange = { edge = it },
-      saturationProvider = { saturation },
-      onSaturationChange = { saturation = it },
-      cornerPercentProvider = { cornerPercent },
-      onCornerPercentChange = { cornerPercent = it },
-      dispersionProvider = { dispersion },
-      onDispersionChange = { dispersion = it },
-      containerShape = RoundedCornerShape(8),
-      containerFrost = 30.dp,
-      containerRefraction = 0.08f,
-      containerEdge = 0.01f,
-    )
+      LiquidControls(
+        liquidState = liquidState,
+        showSliders = true,
+        frostProvider = { frostRadius },
+        onFrostChange = { frostRadius = it },
+        refractionProvider = { refraction },
+        onRefractionChange = { refraction = it },
+        curveProvider = { curve },
+        onCurveChange = { curve = it },
+        edgeProvider = { edge },
+        onEdgeChange = { edge = it },
+        saturationProvider = { saturation },
+        onSaturationChange = { saturation = it },
+        cornerPercentProvider = { cornerPercent },
+        onCornerPercentChange = { cornerPercent = it },
+        dispersionProvider = { dispersion },
+        onDispersionChange = { dispersion = it },
+        containerShape = RoundedCornerShape(8),
+        containerFrost = 30.dp,
+        containerRefraction = 0.08f,
+        containerEdge = 0.01f,
+        useLiquid = useLiquid,
+      )
+    }
   }
 }
 
 @Composable
 private fun PragueClockBackground(
   liquidState: LiquidState,
+  useLiquid: Boolean,
 ) = Image(
   painter = painterResource(Res.drawable.prague_clock),
   contentDescription = null,
   contentScale = ContentScale.Crop,
   modifier = Modifier
     .fillMaxSize()
-    .thenIf(LocalUseLiquid.current) {
+    .thenIf(useLiquid) {
       liquefiable(liquidState)
     },
 )
@@ -161,6 +169,7 @@ private fun PragueClockBackground(
 @Composable
 private fun ClockTimer(
   liquidState: LiquidState,
+  useLiquid: Boolean,
   modifier: Modifier = Modifier,
 ) {
   val startTime = remember { Clock.System.now().toEpochMilliseconds() }
@@ -194,7 +203,9 @@ private fun ClockTimer(
     maxLines = 1,
     modifier = modifier
       .wrapContentHeight(Alignment.CenterVertically)
-      .liquefiable(liquidState)
+      .thenIf(useLiquid) {
+        liquefiable(liquidState)
+      }
       .graphicsLayer {
         // Prevents text jitter during continuous transformations.
         compositingStrategy = CompositingStrategy.Offscreen
@@ -207,7 +218,7 @@ private fun ClockTimer(
 @Composable
 private fun LiquidRotatingBox(
   liquidState: LiquidState,
-  disableAnimation: Boolean,
+  useLiquid: Boolean,
   frostProvider: () -> Float,
   refractionProvider: () -> Float,
   curveProvider: () -> Float,
@@ -216,16 +227,15 @@ private fun LiquidRotatingBox(
   shapeProvider: () -> Shape,
   dispersionProvider: () -> Float,
   modifier: Modifier = Modifier,
-  fallbackColor: Color = MaterialTheme.colorScheme.background,
+  isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) {
-  val useLiquid = LocalUseLiquid.current
   var dragOffset by remember { mutableStateOf(Offset.Zero) }
 
   val infiniteTransition = rememberInfiniteTransition()
-  // We're starting at 45 degrees and 1.2 scale for screenshot testing.
+  // Animations are disabled for screenshot tests.
   val rotation by infiniteTransition.animateFloat(
-    initialValue = if (disableAnimation) 45f else 0f,
-    targetValue = if (disableAnimation) 45f else 720f,
+    initialValue = if (isScreenshotTest) 45f else 0f,
+    targetValue = 720f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Restart,
@@ -235,8 +245,8 @@ private fun LiquidRotatingBox(
   )
 
   val scale by infiniteTransition.animateFloat(
-    initialValue = if (disableAnimation) 1.2f else 0.8f,
-    targetValue = if (disableAnimation) 1.2f else 1.2f,
+    initialValue = if (isScreenshotTest) 1.2f else 0.8f,
+    targetValue = 1.2f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Reverse,
@@ -267,9 +277,6 @@ private fun LiquidRotatingBox(
           edge = edgeProvider()
           dispersion = dispersionProvider()
         }
-      }
-      .thenIf(!useLiquid) {
-        background(fallbackColor, shapeProvider())
       },
   )
 }

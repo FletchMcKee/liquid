@@ -146,7 +146,6 @@ internal abstract class AbstractLiquidNode(
   override fun onDetach() {
     cachedLayer?.let { currentValueOf(LocalGraphicsContext).releaseGraphicsLayer(it) }
     cachedLayer = null
-    cachedRenderEffect = null
     reusableScope.clean()
   }
 
@@ -182,7 +181,7 @@ internal abstract class AbstractLiquidNode(
     val layer = obtainGraphicsLayer()
     recordLiquefiablesIntoLayer(layer, reusableScope)
 
-    layer.renderEffect = cachedRenderEffect ?: createRenderEffect()
+    layer.renderEffect = cachedRenderEffect
     applyAdditionalEffects(layer) {
       drawLayer(layer)
     }

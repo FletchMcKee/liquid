@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -38,6 +40,8 @@ fun SliderScaffold(
   modifier: Modifier = Modifier,
   frostProvider: (() -> Float)? = null,
   onFrostChange: (Float) -> Unit = {},
+  useLiquidProvider: (() -> Boolean)? = null,
+  onUseLiquidChange: (Boolean) -> Unit = {},
   content: @Composable (PaddingValues) -> Unit,
 ) = Scaffold(
   modifier = modifier,
@@ -63,8 +67,8 @@ fun SliderScaffold(
           Slider(
             value = frostProvider(),
             onValueChange = onFrostChange,
-            steps = 49,
-            valueRange = 0f..50f,
+            steps = 29,
+            valueRange = 0f..30f,
             thumb = {
               Box(
                 Modifier
@@ -84,6 +88,20 @@ fun SliderScaffold(
             modifier = Modifier
               .padding(16.dp)
               .fillMaxWidth(),
+          )
+        }
+      },
+      actions = {
+        useLiquidProvider?.let {
+          Switch(
+            checked = useLiquidProvider(),
+            onCheckedChange = { onUseLiquidChange(it) },
+            colors = SwitchDefaults.colors(
+              checkedThumbColor = MaterialTheme.colorScheme.primary,
+              checkedTrackColor = SwitchDefaults.colors().uncheckedTrackColor,
+              checkedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+              uncheckedBorderColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
           )
         }
       },

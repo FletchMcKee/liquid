@@ -40,12 +40,6 @@ internal class LiquidNode(
   private val liquidShader = RuntimeShaderBuilder(RuntimeEffect.makeForShader(LiquidShader))
   private var cachedBlurImageFilter: ImageFilter? = null
 
-  override fun onDetach() {
-    super.onDetach()
-    cachedBlurImageFilter?.close()
-    cachedBlurImageFilter = null
-  }
-
   override fun createRenderEffect(): RenderEffect? {
     // We shouldn't have empty bounds at this point, but set the RenderEffect to null if we do.
     if (reusableScope.size.isUnspecified) return null

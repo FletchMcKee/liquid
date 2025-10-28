@@ -10,8 +10,9 @@ internal fun Project.configureSpotless() {
   with(pluginManager) { apply("com.diffplug.spotless") }
 
   spotless {
-    val ktlintVersion = libs.findVersion("ktlint").get().requiredVersion
+    val ktlintDep = libs.findLibrary("ktlint-core").get()
     val composeRulesDep = libs.findLibrary("ktlint-compose-rules").get()
+    val ktlintVersion = ktlintDep.get().version
     val composeRulesCoordinates = "${composeRulesDep.get().module}:${composeRulesDep.get().version}"
 
     kotlin {
