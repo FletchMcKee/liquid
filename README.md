@@ -51,7 +51,7 @@ fun LiquidScreen(
 }
 ```
 
-See [full documentation here](https://fletchmckee.github.io/liquid/).
+See [full documentation here](https://fletchmckee.github.io/liquid/getting_started/).
 
 ## Acknowledgements
 

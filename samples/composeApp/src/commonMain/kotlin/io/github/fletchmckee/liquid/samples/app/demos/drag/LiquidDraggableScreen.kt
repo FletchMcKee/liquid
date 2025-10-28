@@ -81,7 +81,7 @@ fun LiquidDraggableScreen(
     // Controls layer
     BackButton(
       liquidState = liquidState,
-      onClick = { navController.navigateUp() },
+      onClick = { navController.popBackStack() },
       containerColor = sliderContainerColor,
       modifier = Modifier.align(Alignment.TopStart),
     )

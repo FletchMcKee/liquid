@@ -35,9 +35,25 @@ internal class Liquefiable {
  * This enables the liquid effect by allowing sibling composables to reference and render the
  * content beneath them.
  *
- * NOTE: Make sure to place any draw modifiers (ex. [androidx.compose.ui.draw.shadow] or
+ * **Note:** Make sure to place any draw modifiers (ex. [androidx.compose.ui.draw.shadow] or
  * [androidx.compose.foundation.background]) after this liquefiable node.
- * Otherwise these draw modifiers won't be part of the recording.
+ * Otherwise these draw modifiers won't be part of the recording:
+ * ```kotlin
+ * @Composable
+ * private fun ShaderBackground(
+ *   liquidState: LiquidState,
+ *   shaderBrush: Brush = rememberShaderBrush(),
+ * ) = Box(
+ *   modifier = Modifier
+ *     .fillMaxSize()
+ *     .background(Color.Blue) // This won't be recorded!
+ *     .padding(8.dp) // Outer 8.dp won't be recorded (fine for empty spacing).
+ *     .liquefiable(liquidState)
+ *     .background(shaderBrush) // This will be recorded.
+ * ) {
+ *   // All descendant content will also be recorded.
+ * }
+ * ```
  *
  * @param liquidState The shared [LiquidState] instance that receives this node’s content for sampling.
  */

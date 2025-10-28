@@ -23,6 +23,15 @@ public class LiquidState {
  * Use this to hoist the sampling state and share it between content that should be sampled
  * (ex. background elements) and the consuming [liquid] modifiers that apply the effect.
  *
+ * It's recommended (but not required) to share a single [LiquidState] for each screen:
+ * ```kotlin
+ * @Composable
+ * fun SomeScreen(
+ *   modifier: Modifier = Modifier,
+ *   liquidState: LiquidState = rememberLiquidState(),
+ * ) { ... }
+ * ```
+ *
  * @return a stable [LiquidState] that survives recomposition.
  */
 @Composable
@@ -41,7 +50,25 @@ public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
  * Android 11 and lower - Same as Android 12 except the [LiquidScope.frost] is also ignored as
  * there is no support for `RenderEffects`.
  *
- * NOTE: [block] can be invoked multiple times, which is why it's important for performance to
+ * As always, be mindful of modifier node order:
+ * ```kotlin
+ * @Composable
+ * private fun LiquidRow(
+ *   liquidState: LiquidState,
+ *   rowShape: Shape = RoundedCornerShape(25),
+ *   shaderBrush: Brush = rememberShaderBrush(),
+ * ) = Row(
+ *   modifier = Modifier
+ *     .shadow(4.dp, rowShape) // Draws behind the liquid effect.
+ *     .liquid(liquidState) {
+ *       frost = 10.dp
+ *       shape = rowShape
+ *     }
+ *     .background(shaderBrush, rowShape), // Draws on top of the liquid effect.
+ * ) { ... }
+ * ```
+ *
+ * **Note:** [block] can be invoked multiple times, which is why it's important for performance to
  * minimize work done inside of it.
  *
  * @param liquidState Shared state that tracks the set of [Liquefiable] sources to sample.

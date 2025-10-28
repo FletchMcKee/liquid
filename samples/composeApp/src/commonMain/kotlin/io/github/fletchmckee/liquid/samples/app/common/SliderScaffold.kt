@@ -52,7 +52,7 @@ fun SliderScaffold(
       navigationIcon = {
         if (displayNavIcons()) {
           IconButton(
-            onClick = { navController.navigateUp() },
+            onClick = { navController.popBackStack() },
           ) {
             Icon(
               imageVector = Icons.AutoMirrored.Filled.ArrowBack,

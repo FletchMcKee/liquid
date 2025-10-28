@@ -1,6 +1,3 @@
-
-## LiquidScope
-
 The `LiquidScope` block allows you to customize your liquid effects for each modifier. The default values are applied when no scope
 block is passed, however you can alter any one of the below properties to achieve your desired effect.
 

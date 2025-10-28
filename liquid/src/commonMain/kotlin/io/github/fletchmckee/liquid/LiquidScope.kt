@@ -8,6 +8,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 
+/**
+ * Defines the configuration and visual properties available within a `liquid` effect scope.
+ *
+ * A `LiquidScope` is provided to composables using liquid effects, enabling distortion of
+ * the sampled content.
+ *
+ * All properties update reactively and may be constrained or ignored on lower APIs.
+ */
 public interface LiquidScope {
   /**
    * The blur radius applied behind the liquid effect, giving the appearance of frost.
@@ -15,7 +23,7 @@ public interface LiquidScope {
    * Useful when your [liquid] composable is expected to display text as the liquid effects alone can
    * diminish legibility.
    *
-   * NOTE: This is the most expensive property in this scope as it creates two separate shaders for
+   * **Note:** This is the most expensive property in this scope as it creates two separate shaders for
    * rendering the frost effect.
    *
    * Defaults to 0.dp. No-op on API 30 and lower. Negative values are ignored.
@@ -66,7 +74,7 @@ public interface LiquidScope {
    * This is mainly a convenience property if you want the effect to carry a background color without
    * needing to wrap it in a separate call to [androidx.compose.foundation.background].
    *
-   * NOTE: If the alpha of the provided color is 1.0, the liquid effect will be nullified with only
+   * **Note:** If the alpha of the provided color is 1.0, the liquid effect will be nullified with only
    * the edge lighting being rendered if provided.
    *
    * Defaults to [Color.Unspecified]

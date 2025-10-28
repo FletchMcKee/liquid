@@ -15,6 +15,8 @@ dependencies {
 }
 ```
 
+## Usage
+
 A modifier node can’t see pixels drawn behind it or by its ancestors. Liquid mirrors the approach popularized by [Haze](https://github.com/chrisbanes/haze) via the shared state/source/effect pattern:
 
 - **Shared state** - The `LiquidState` manages tracking all source nodes that should be shared with the effect nodes.
@@ -24,7 +26,6 @@ A modifier node can’t see pixels drawn behind it or by its ancestors. Liquid m
 Below is a simple example of how to coordinate this pattern:
 
 ``` kotlin
-
 @Composable
 fun LiquidScreen(
   modifier: Modifier = Modifier,
