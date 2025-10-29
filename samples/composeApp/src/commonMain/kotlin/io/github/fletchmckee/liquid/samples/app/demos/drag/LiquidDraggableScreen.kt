@@ -41,6 +41,7 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.common.LiquidControls
 import io.github.fletchmckee.liquid.samples.app.displayNavIcons
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow

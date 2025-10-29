@@ -9,12 +9,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 
 /**
- * Defines the configuration and visual properties available within a `liquid` effect scope.
- *
- * A `LiquidScope` is provided to composables using liquid effects, enabling distortion of
- * the sampled content.
- *
- * All properties update reactively and may be constrained or ignored on lower APIs.
+ * Defines the configuration and visual properties available within the `liquid` effect scope,
+ * enabling distortion of the sampled content.
  */
 public interface LiquidScope {
   /**
@@ -22,9 +18,6 @@ public interface LiquidScope {
    *
    * Useful when your [liquid] composable is expected to display text as the liquid effects alone can
    * diminish legibility.
-   *
-   * **Note:** This is the most expensive property in this scope as it creates two separate shaders for
-   * rendering the frost effect.
    *
    * Defaults to 0.dp. No-op on API 30 and lower. Negative values are ignored.
    */

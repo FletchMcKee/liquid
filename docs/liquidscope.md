@@ -7,8 +7,6 @@ Blurs the background contents resulting in a frost-like effect.
 You can also apply this effect while setting `refraction` or `curve` to 0f if you only want a blur effect. Any value below 0.dp is ignored.
 
 This property is no-op on Android 11 and lower.
-!!! note
-    This is the most expensive property in the LiquidScope as it creates extras RuntimeShaders to achieve the blur effect.
 
 <div align="center">
   <img
