@@ -37,7 +37,9 @@ internal class Liquefiable {
  *
  * **Note:** Make sure to place any draw modifiers (ex. [androidx.compose.ui.draw.shadow] or
  * [androidx.compose.foundation.background]) after this liquefiable node.
- * Otherwise these draw modifiers won't be part of the recording:
+ * Otherwise these draw modifiers won't be part of the recording.
+ *
+ * Example:
  * ```kotlin
  * @Composable
  * private fun ShaderBackground(
@@ -46,12 +48,11 @@ internal class Liquefiable {
  * ) = Box(
  *   modifier = Modifier
  *     .fillMaxSize()
- *     .background(Color.Blue) // This won't be recorded!
- *     .padding(8.dp) // Outer 8.dp won't be recorded (fine for empty spacing).
  *     .liquefiable(liquidState)
- *     .background(shaderBrush) // This will be recorded.
+ *     .background(shaderBrush),
  * ) {
  *   // All descendant content will also be recorded.
+ *   ...
  * }
  * ```
  *

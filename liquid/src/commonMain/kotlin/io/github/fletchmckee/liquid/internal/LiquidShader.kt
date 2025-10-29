@@ -89,6 +89,8 @@ internal const val LiquidShader = """
       fragColor = content.eval(baseCoord);
     }
 
+    // Apply the provided tint before saturation or lighting effects.
+    fragColor.rgb = mix(fragColor.rgb, tint.rgb, tint.a);
     fragColor.rgb = applyColorAdjustments(fragColor.rgb);
 
     float edgeSmooth = smoothstep(-edge, 0.0, shapeSdf);
@@ -97,8 +99,6 @@ internal const val LiquidShader = """
     float nDotL = abs(dot(sdfNormal, lightDirection));
     float edgeLighting = edgeSmooth * nDotL;
     fragColor.rgb += edgeLighting;
-    // Apply the provided tint.
-    fragColor.rgb = mix(fragColor.rgb, tint.rgb, tint.a);
 
     return fragColor;
   }

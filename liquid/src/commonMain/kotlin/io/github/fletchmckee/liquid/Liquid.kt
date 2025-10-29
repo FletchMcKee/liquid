@@ -40,7 +40,7 @@ public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
 /**
  * Applies the Liquid effect, sampling pixels recorded in [liquidState].
  *
- * Android 13+ and all other platforms - Has full support.
+ * Android 13+ and all other platforms - Full support.
  *
  * Android 12 - The [LiquidScope.refraction], [LiquidScope.curve] and [LiquidScope.dispersion]
  * values are ignored. We will render the [LiquidScope.frost] effect if provided along with a
@@ -50,21 +50,18 @@ public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
  * Android 11 and lower - Same as Android 12 except the [LiquidScope.frost] is also ignored as
  * there is no support for `RenderEffects`.
  *
- * As always, be mindful of modifier node order:
+ * Example:
  * ```kotlin
  * @Composable
  * private fun LiquidRow(
  *   liquidState: LiquidState,
  *   rowShape: Shape = RoundedCornerShape(25),
- *   shaderBrush: Brush = rememberShaderBrush(),
  * ) = Row(
  *   modifier = Modifier
- *     .shadow(4.dp, rowShape) // Draws behind the liquid effect.
  *     .liquid(liquidState) {
  *       frost = 10.dp
  *       shape = rowShape
  *     }
- *     .background(shaderBrush, rowShape), // Draws on top of the liquid effect.
  * ) { ... }
  * ```
  *
