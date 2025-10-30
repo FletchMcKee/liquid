@@ -243,6 +243,7 @@ fun LiquidSliderRow(
     onValueChange = onValueChange,
     steps = steps,
     valueRange = valueRange,
+    thumbTestTag = thumbTestTag,
     modifier = Modifier
       .weight(0.63f)
       .testTag(sliderTestTag)

@@ -6,8 +6,6 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeHostTest
-import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeSimulatorTest
 
 plugins {
   alias(libs.plugins.kotlin.multiplatform)
@@ -85,23 +83,14 @@ kotlin {
     }
 
     commonTest.dependencies {
-      implementation(libs.kotlin.test)
+      implementation(kotlin("test"))
+      implementation(projects.core.testing)
     }
 
     jvmMain.dependencies {
       implementation(libs.ktor.cio)
       implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
-    }
-
-    androidUnitTest.dependencies {
-      implementation(libs.compose.junit4)
-      implementation(libs.junit)
-      implementation(libs.robolectric)
-      implementation(libs.roborazzi)
-      implementation(libs.roborazzi.compose)
-      implementation(libs.roborazzi.rule)
-      implementation(libs.roborazzi.core)
     }
   }
 }
@@ -161,16 +150,12 @@ compose.desktop {
   }
 }
 
-tasks.withType<KotlinNativeSimulatorTest> {
-  enabled = false
-}
-
-tasks.withType<KotlinNativeHostTest> {
-  enabled = false
-}
-
 tasks.withType<KotlinJsTest> {
   enabled = false
+}
+
+tasks.withType<Test> {
+  failOnNoDiscoveredTests.set(false)
 }
 
 roborazzi {

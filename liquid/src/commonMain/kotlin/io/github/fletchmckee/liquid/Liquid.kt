@@ -29,7 +29,7 @@ public class LiquidState {
  * fun SomeScreen(
  *   modifier: Modifier = Modifier,
  *   liquidState: LiquidState = rememberLiquidState(),
- * ) { ... }
+ * ) { … }
  * ```
  *
  * @return a stable [LiquidState] that survives recomposition.
@@ -62,7 +62,7 @@ public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
  *       frost = 10.dp
  *       shape = rowShape
  *     }
- * ) { ... }
+ * ) { … }
  * ```
  *
  * **Note:** [block] can be invoked multiple times, which is why it's important for performance to
