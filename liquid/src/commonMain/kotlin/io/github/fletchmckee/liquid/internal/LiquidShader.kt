@@ -100,6 +100,8 @@ internal const val LiquidShader = """
     float edgeLighting = edgeSmooth * nDotL;
     fragColor.rgb += edgeLighting;
 
-    return fragColor;
+    // For anti-aliasing
+    float transition = smoothstep(0.0, 1.0, saturate(-shapeSdf * minDimension));
+    return mix(content.eval(fragCoord), fragColor, transition);
   }
 """

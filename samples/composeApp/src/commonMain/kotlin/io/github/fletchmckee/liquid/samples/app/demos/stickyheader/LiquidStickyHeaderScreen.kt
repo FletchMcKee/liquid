@@ -15,6 +15,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -63,6 +65,7 @@ fun LiquidStickyHeaderScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
+  listState: LazyListState = rememberLazyListState(),
 ) {
   val initialUseLiquid = LocalUseLiquid.current
   val initialFrost = LocalInitialFrost.current
@@ -82,6 +85,7 @@ fun LiquidStickyHeaderScreen(
     ShaderBackground(liquidState, useLiquid)
     StickyHeaderList(
       liquidState = liquidState,
+      listState = listState,
       useLiquid = useLiquid,
       initialFrost = frostRadius,
       contentPaddingValues = padding,
@@ -105,12 +109,14 @@ private fun ShaderBackground(
 @Composable
 private fun StickyHeaderList(
   liquidState: LiquidState,
+  listState: LazyListState,
   useLiquid: Boolean,
   initialFrost: Float,
   contentPaddingValues: PaddingValues,
   headerShape: Shape = CircleShape,
   stickyHeaderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) = LazyColumn(
+  state = listState,
   modifier = Modifier
     .fillMaxSize()
     .clipToBounds()
@@ -233,7 +239,7 @@ private fun MoonAndStarsBackup(index: Int) = Image(
   contentScale = ContentScale.Crop,
   contentDescription = null,
   modifier = Modifier
-    .fillMaxWidth()
+    .widthIn(max = 600.dp)
     .aspectRatio(1f)
     .testTag("imageItem$index")
     .testTagsAsResourceId(true),

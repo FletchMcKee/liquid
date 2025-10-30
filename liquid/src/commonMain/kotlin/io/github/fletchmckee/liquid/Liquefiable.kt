@@ -52,7 +52,7 @@ internal class Liquefiable {
  *     .background(shaderBrush),
  * ) {
  *   // All descendant content will also be recorded.
- *   ...
+ *   …
  * }
  * ```
  *

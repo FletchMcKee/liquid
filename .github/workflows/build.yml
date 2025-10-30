@@ -79,8 +79,7 @@ jobs:
           ./gradlew
           kotlinUpgradeYarnLock
           kotlinWasmUpgradeYarnLock
-          allTests
-          -x :samples:composeApp:testDebugUnitTest
+          :liquid:allTests
 
   assemble:
     name: Assemble samples
@@ -182,7 +181,7 @@ jobs:
       - name: Run Roborazzi screenshot tests
         id: screenshotsverify
         continue-on-error: true
-        run: ./gradlew :samples:composeApp:verifyRoborazziDebug
+        run: ./gradlew :samples:composeApp:verifyRoborazzi
 
       - name: Prevent pushing new screenshots if this is a fork
         id: checkfork_screenshots
@@ -197,7 +196,7 @@ jobs:
         id: screenshotsrecord
         if: steps.screenshotsverify.outcome == 'failure' && github.event_name == 'pull_request'
         run: |
-          ./gradlew :samples:composeApp:recordRoborazziDebug
+          ./gradlew :samples:composeApp:recordRoborazzi
 
       - name: Push new screenshots if available
         uses: stefanzweifel/git-auto-commit-action@v7
