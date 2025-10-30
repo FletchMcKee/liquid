@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [1.0.0-rc2] - 2025-10-30
+
+New:
+- Support for Compose Multiplatform 1.9.2 ([#46](https://github.com/FletchMcKee/liquid/pull/46)).
+- Screenshot testing for iOS and jvm ([#56](https://github.com/FletchMcKee/liquid/pull/56)).
+
+Fixed:
+- Tint is applied before edge lighting and saturation ([#54](https://github.com/FletchMcKee/liquid/pull/54)).
+
 ## [1.0.0-rc1] - 2025-10-27
 
 New:
@@ -57,7 +66,8 @@ Changed:
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.0.0-rc1...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.0.0-rc2...HEAD
+[1.0.0-rc2]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0-rc2
 [1.0.0-rc1]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0-rc1
 [0.3.1]: https://github.com/fletchmckee/liquid/releases/tag/0.3.1
 [0.3.0]: https://github.com/fletchmckee/liquid/releases/tag/0.3.0
