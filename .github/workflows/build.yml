@@ -79,7 +79,7 @@ jobs:
           ./gradlew
           kotlinUpgradeYarnLock
           kotlinWasmUpgradeYarnLock
-          allTests
+          :liquid:allTests
 
   assemble:
     name: Assemble samples
