@@ -18,8 +18,8 @@ actual fun runScreenshotTest(
   testName: String,
   content: @Composable (() -> Unit),
 ) = runSkikoComposeUiTest(
-  size = Size(width = 1200f, height = 2600f),
-  density = Density(3f),
+  size = Size(width = 900f, height = 1850f),
+  density = Density(2.25f),
 ) {
   setContent {
     content()

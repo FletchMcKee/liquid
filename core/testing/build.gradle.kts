@@ -3,6 +3,8 @@
 @file:OptIn(ExperimentalComposeLibrary::class)
 
 import org.jetbrains.compose.ExperimentalComposeLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
   alias(libs.plugins.liquid.android.library)
@@ -16,9 +18,27 @@ android {
 }
 
 kotlin {
-  jvm()
-  androidTarget()
+  androidTarget {
+    compilerOptions {
+      jvmTarget.set(JvmTarget.JVM_11)
+    }
+  }
+
+  iosArm64()
   iosSimulatorArm64()
+
+  jvm()
+
+  js {
+    browser()
+    binaries.executable()
+  }
+
+  @OptIn(ExperimentalWasmDsl::class)
+  wasmJs {
+    browser()
+    binaries.executable()
+  }
 
   compilerOptions {
     freeCompilerArgs.addAll(
@@ -57,10 +77,14 @@ kotlin {
       }
     }
 
-    iosSimulatorArm64Main {
+    iosMain {
       dependencies {
         implementation(libs.roborazzi.compose.ios)
       }
     }
   }
+}
+
+tasks.withType<Test> {
+  failOnNoDiscoveredTests.set(false)
 }
