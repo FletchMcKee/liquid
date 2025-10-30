@@ -1,9 +1,15 @@
-#### SDK Level
+#### SDK Level for Android
+
+This only applies for the Android target.
 
 The minimum API level that will display the liquid effects is 33 (Android 13). This is effectively a RuntimeShader library, so this limits what is possible for API 32 and lower.
 
-- **API 31+** - RenderEffects are available, so we will still create a frost effect using Android's [BlurEffect](https://github.com/androidx/androidx/blob/7cca76e55aaa9c2ff1a038bac0fa2b91cd04dcff/compose/ui/ui-graphics/src/androidMain/kotlin/androidx/compose/ui/graphics/AndroidRenderEffect.android.kt#L50). We also draw a lower quality version of the edge effect. To disable, you can set the `edge` property to 0f. The `refraction`, `curve` and `dispersion` properties are ignored. The `tint`, `shape` and `saturation` values produce the same effect as API 33+.
-- **API 30 and lower** - Has all of the above features outside of the `frost` effect.
+- **API 31+:**
+  - The `refraction`, `curve` and `dispersion` properties are ignored.
+  - We draw a lower quality version of the edge effect. To disable, you can set the `edge` property to 0f.
+  - All other values produce the same effect as API 33+.
+- **API 30 and lower:**
+  - Has all of the above features except `frost` is ignored as RenderEffects are unavailable.
 
 #### Node Hierarchy
 

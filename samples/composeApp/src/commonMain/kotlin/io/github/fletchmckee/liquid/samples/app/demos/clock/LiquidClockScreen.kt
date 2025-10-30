@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -31,7 +32,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
@@ -51,7 +51,6 @@ import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.LiquidControls
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
-import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
@@ -228,6 +227,7 @@ private fun LiquidRotatingBox(
   dispersionProvider: () -> Float,
   modifier: Modifier = Modifier,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
+  fallbackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
 ) {
   var dragOffset by remember { mutableStateOf(Offset.Zero) }
 
@@ -266,17 +266,19 @@ private fun LiquidRotatingBox(
         scaleX = scale
         scaleY = scale
       }
-      .dropShadow(shapeProvider(), LiquidShadow)
-      .thenIf(useLiquid) {
-        liquid(liquidState) {
-          frost = frostProvider().dp
-          refraction = refractionProvider()
-          curve = curveProvider()
-          saturation = saturationProvider()
-          shape = shapeProvider()
-          edge = edgeProvider()
-          dispersion = dispersionProvider()
-        }
-      },
+      .then(
+        when {
+          useLiquid -> Modifier.liquid(liquidState) {
+            frost = frostProvider().dp
+            refraction = refractionProvider()
+            curve = curveProvider()
+            saturation = saturationProvider()
+            shape = shapeProvider()
+            edge = edgeProvider()
+            dispersion = dispersionProvider()
+          }
+          else -> Modifier.background(fallbackColor, shapeProvider())
+        },
+      ),
   )
 }

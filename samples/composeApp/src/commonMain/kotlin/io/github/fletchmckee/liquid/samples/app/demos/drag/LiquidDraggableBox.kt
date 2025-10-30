@@ -19,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -41,7 +40,6 @@ import androidx.compose.ui.zIndex
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
-import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
@@ -82,7 +80,6 @@ fun BoxScope.LiquidDraggableBox(
           dragOffset = Offset(x, y)
         }
       }
-      .dropShadow(shapeProvider(), LiquidShadow)
       .thenIf(useLiquid) {
         liquid(liquidState) {
           frost = frostProvider().dp
