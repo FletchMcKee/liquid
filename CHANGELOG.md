@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-10-31
+
+New:
+- Migrated to Compose Multiplatform ([#37](https://github.com/FletchMcKee/liquid/pull/37)).
+
+Changed:
+- Using Android and Skia's blur instead of the custom frost shader ([#51](https://github.com/FletchMcKee/liquid/pull/51)).
+  - Keeps parity between all platforms and also has significant performance improvements.
+
+Fixed:
+- Tint is applied before edge lighting and saturation ([#54](https://github.com/FletchMcKee/liquid/pull/54)).
+
 ## [1.0.0-rc2] - 2025-10-30
 
 New:
@@ -66,7 +78,8 @@ Changed:
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.0.0-rc2...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0
 [1.0.0-rc2]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0-rc2
 [1.0.0-rc1]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0-rc1
 [0.3.1]: https://github.com/fletchmckee/liquid/releases/tag/0.3.1
