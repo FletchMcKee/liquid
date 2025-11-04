@@ -45,15 +45,16 @@ internal class LiquidNode(
     if (reusableScope.size.isUnspecified) return null
 
     liquidShader.updateLiquidUniforms()
-    val blurEffect = if (reusableScope.sigma > 0f) {
-      cachedBlurImageFilter?.takeUnless { reusableScope.mutatedFields has Fields.BlurEffectFields }
-        ?: ImageFilter.makeBlur(
-          sigmaX = reusableScope.sigma,
-          sigmaY = reusableScope.sigma,
-          mode = FilterTileMode.CLAMP,
-        )
-    } else {
-      null
+    val blurEffect = when {
+      reusableScope.sigma > 0f ->
+        cachedBlurImageFilter
+          ?.takeUnless { reusableScope.mutatedFields has Fields.Frost }
+          ?: ImageFilter.makeBlur(
+            sigmaX = reusableScope.sigma,
+            sigmaY = reusableScope.sigma,
+            mode = FilterTileMode.CLAMP,
+          )
+      else -> null
     }.also { cachedBlurImageFilter = it }
 
     // Logic differs from Android slightly as we can set the blurEffect as an input.

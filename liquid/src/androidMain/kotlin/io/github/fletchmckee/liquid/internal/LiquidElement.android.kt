@@ -60,7 +60,7 @@ internal class LiquidNode(
     }
 
     val blurEffect = cachedBlurEffect
-      ?.takeUnless { reusableScope.mutatedFields has Fields.BlurEffectFields }
+      ?.takeUnless { reusableScope.mutatedFields has Fields.Frost }
       ?: createBlurEffect(
         reusableScope.frostRadius,
         reusableScope.frostRadius,

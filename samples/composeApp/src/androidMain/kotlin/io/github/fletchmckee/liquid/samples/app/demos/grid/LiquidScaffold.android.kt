@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalView
 
 @Composable
-internal actual fun rememberTopBarShape(): Shape {
+actual fun rememberTopBarShape(): Shape {
   val view = LocalView.current
   val insets = view.rootWindowInsets
   return remember(insets) {

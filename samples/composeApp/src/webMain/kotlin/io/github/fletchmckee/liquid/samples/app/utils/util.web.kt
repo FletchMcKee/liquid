@@ -4,7 +4,7 @@ package io.github.fletchmckee.liquid.samples.app.utils
 
 import kotlin.math.absoluteValue
 
-internal actual fun formatFloat(value: Float, format: String): String = when (format) {
+actual fun formatFloat(value: Float, format: String): String = when (format) {
   "%,.0f" -> value.toInt().toString()
   "%,.2f" -> {
     val intPart = value.toInt()

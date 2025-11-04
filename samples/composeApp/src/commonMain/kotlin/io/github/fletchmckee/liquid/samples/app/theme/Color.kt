@@ -8,8 +8,6 @@ val LiquidPurple = Color(0xFF594BD3)
 val LiquidLightPurple = Color(0xFFA6A1D1)
 val LiquidGreen = Color(0xFF02C4BC)
 val PurpleGrey80 = Color(0xFFCCC2DC)
-
-val Carbon = Color(0xFF333333)
 val Stone = Color(0xFF555555)
 val Silver = Color(0xFFEEEEEE)
 

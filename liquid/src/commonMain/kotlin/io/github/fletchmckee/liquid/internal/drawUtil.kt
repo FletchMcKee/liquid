@@ -28,7 +28,7 @@ import io.github.fletchmckee.liquid.internal.LiquidScopeImpl.Companion.Float4Zer
 
 internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   layer: GraphicsLayer,
-  reusableScope: LiquidScopeImpl,
+  reusableScope: InternalLiquidScope,
 ) = with(reusableScope) {
   // Only record content inside the effect's bounds.
   val liquefiables = liquefiables.fastFilter { boundsInRoot.overlaps(it.boundsOnScreen) }

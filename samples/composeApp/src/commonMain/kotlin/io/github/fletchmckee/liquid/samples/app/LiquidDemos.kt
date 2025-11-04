@@ -51,6 +51,8 @@ import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
 import io.github.fletchmckee.liquid.samples.app.demos.grid.gridDestination
 import io.github.fletchmckee.liquid.samples.app.demos.many.Many
 import io.github.fletchmckee.liquid.samples.app.demos.many.manyDestination
+import io.github.fletchmckee.liquid.samples.app.demos.pulltorefresh.PullToRefresh
+import io.github.fletchmckee.liquid.samples.app.demos.pulltorefresh.pullToRefreshDestination
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.stickyHeaderDestination
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
@@ -69,6 +71,7 @@ fun LiquidDemos(
   initialDispersion: Float = 0f,
   isBenchmark: Boolean = false,
   navController: NavHostController = rememberNavController(),
+  pullToRefreshEnabled: Boolean = rememberPullToRefreshEnabled(),
 ) = LiquidTheme(
   useLiquid = useLiquid,
   initialFrost = initialFrost,
@@ -107,6 +110,9 @@ fun LiquidDemos(
     gridDestination(navController)
     stickyHeaderDestination(navController)
     manyDestination(navController)
+    if (pullToRefreshEnabled) {
+      pullToRefreshDestination(navController)
+    }
   }
 }
 
@@ -114,7 +120,8 @@ fun LiquidDemos(
 internal fun Demos(
   navController: NavController,
   liquidState: LiquidState = rememberLiquidState(),
-  demosList: List<DemoData> = DemosList,
+  pullToRefreshEnabled: Boolean = rememberPullToRefreshEnabled(),
+  demosList: List<DemoData> = DemosList.filter { it.navType != PullToRefresh || pullToRefreshEnabled },
 ) = Scaffold(
   topBar = {
     TopAppBar(
@@ -202,4 +209,5 @@ private val DemosList = listOf(
   DemoData("Grid", Grid),
   DemoData("Sticky Header", StickyHeader),
   DemoData("500 Liquid Nodes", Many),
+  DemoData("Pull to Refresh", PullToRefresh),
 )

@@ -3,6 +3,7 @@
 package io.github.fletchmckee.liquid.samples.app
 
 import android.os.Build
+import androidx.compose.runtime.Composable
 import coil3.PlatformContext
 import okio.Path
 import okio.Path.Companion.toOkioPath
@@ -15,4 +16,7 @@ actual fun getPlatform(): Platform = AndroidPlatform()
 
 actual fun PlatformContext.cacheDir(): Path? = this.cacheDir.toOkioPath()
 
-internal actual fun displayNavIcons(): Boolean = false
+actual fun displayNavIcons(): Boolean = false
+
+@Composable
+actual fun rememberPullToRefreshEnabled(): Boolean = true

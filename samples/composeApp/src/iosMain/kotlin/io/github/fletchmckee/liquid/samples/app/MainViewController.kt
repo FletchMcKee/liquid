@@ -4,5 +4,5 @@ package io.github.fletchmckee.liquid.samples.app
 
 import androidx.compose.ui.window.ComposeUIViewController
 
-@Suppress("ktlint:standard:function-naming", "Unused")
+@Suppress("ktlint:standard:function-naming", "Unused", "FunctionName")
 fun MainViewController() = ComposeUIViewController { LiquidDemos() }

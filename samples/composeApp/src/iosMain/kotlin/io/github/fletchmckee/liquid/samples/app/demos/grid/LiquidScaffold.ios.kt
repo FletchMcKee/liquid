@@ -7,4 +7,4 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 
 @Composable
-internal actual fun rememberTopBarShape(): Shape = RectangleShape
+actual fun rememberTopBarShape(): Shape = RectangleShape

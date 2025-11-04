@@ -3,6 +3,7 @@
 package io.github.fletchmckee.liquid.internal
 
 import androidx.annotation.VisibleForTesting
+import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.isSpecified
@@ -109,8 +110,11 @@ internal abstract class AbstractLiquidNode(
     reusableScope.density = currentValueOf(LocalDensity)
     block(reusableScope)
 
-    // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
-    val ancestor = (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
+    // Changes to `liquefiables` should be tracked, not ancestors.
+    val ancestor = Snapshot.withoutReadObservation {
+      // Allows nodes to be both a liquefiable and liquid node while preventing recursive draws.
+      (findNearestAncestor(LiquefiableNode.LiquefiableKey) as? LiquefiableNode)?.liquefiable
+    }
     reusableScope.liquefiables = liquidState.liquefiables.fastFilter { it != ancestor }
 
     // This avoids unnecessary invalidateDraw calls as this could be called multiple times before we have
@@ -125,7 +129,8 @@ internal abstract class AbstractLiquidNode(
       if (reusableScope.mutatedFields has Fields.RenderEffectFields) {
         cachedRenderEffect = createRenderEffect()
       }
-
+      // It's important to call `clean()` after `createRenderEffect()` as the `createRenderEffect()`
+      // relies on the `mutatedFields` tracker to know when it has to be reconfigured.
       reusableScope.clean()
       invalidateDraw()
     }

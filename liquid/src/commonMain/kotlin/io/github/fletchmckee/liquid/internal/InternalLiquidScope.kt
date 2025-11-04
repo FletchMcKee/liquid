@@ -27,6 +27,11 @@ internal interface InternalLiquidScope : LiquidScope {
   var inverseRotationZ: Float
   var boundsInRoot: Rect
   var liquefiables: List<Liquefiable>
+
+  /**
+   * Resets the `mutatedFields` dirty tracker.
+   */
+  fun clean()
 }
 
 internal class LiquidScopeImpl : InternalLiquidScope {
@@ -204,7 +209,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   internal var sigma: Float = 0f
     private set
 
-  internal fun clean() {
+  override fun clean() {
     mutatedFields = 0
   }
 
@@ -248,10 +253,6 @@ internal object Fields {
       Tint or
       Saturation or
       Dispersion
-
-  // The blur is agnostic to any changes specific to the liquid effect. This way we only
-  // recreate the blur effect when `Frost` and `Size` change.
-  const val BlurEffectFields: Int = Frost or Size
 
   const val InvalidateFlags: Int =
     RenderEffectFields or

@@ -6,4 +6,4 @@ import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 
 @Stable
-internal actual fun Modifier.testTagsAsResourceId(enable: Boolean): Modifier = this
+actual fun Modifier.testTagsAsResourceId(enable: Boolean): Modifier = this

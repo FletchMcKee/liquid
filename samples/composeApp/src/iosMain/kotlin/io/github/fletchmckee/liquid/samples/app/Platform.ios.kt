@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app
 
+import androidx.compose.runtime.Composable
 import coil3.PlatformContext
 import okio.Path
 import platform.UIKit.UIDevice
@@ -14,4 +15,7 @@ actual fun getPlatform(): Platform = IOSPlatform()
 
 actual fun PlatformContext.cacheDir(): Path? = null
 
-internal actual fun displayNavIcons(): Boolean = true
+actual fun displayNavIcons(): Boolean = true
+
+@Composable
+actual fun rememberPullToRefreshEnabled(): Boolean = true

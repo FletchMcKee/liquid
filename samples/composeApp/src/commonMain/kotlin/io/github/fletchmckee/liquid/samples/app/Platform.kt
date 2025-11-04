@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app
 
+import androidx.compose.runtime.Composable
 import coil3.PlatformContext
 import okio.Path
 
@@ -11,6 +12,9 @@ interface Platform {
 
 expect fun getPlatform(): Platform
 
-internal expect fun PlatformContext.cacheDir(): Path?
+expect fun PlatformContext.cacheDir(): Path?
 
-internal expect fun displayNavIcons(): Boolean
+expect fun displayNavIcons(): Boolean
+
+@Composable
+expect fun rememberPullToRefreshEnabled(): Boolean
