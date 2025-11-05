@@ -5,7 +5,6 @@ package io.github.fletchmckee.liquid.samples.app.demos.stickyheader
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -47,15 +47,15 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.common.ShaderBackground
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.demos.many.LoremIpsum
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
-import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
-import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
+import kotlin.random.Random
 import liquid_root.samples.composeapp.generated.resources.Res
 import liquid_root.samples.composeapp.generated.resources.moon_and_stars
 import org.jetbrains.compose.resources.painterResource
@@ -72,6 +72,7 @@ fun LiquidStickyHeaderScreen(
 
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
   var useLiquid by rememberSaveable { mutableStateOf(initialUseLiquid) }
+  var cacheKey by rememberSaveable { mutableIntStateOf(Random.nextInt()) }
 
   SliderScaffold(
     navController = navController,
@@ -82,8 +83,13 @@ fun LiquidStickyHeaderScreen(
     modifier = modifier,
   ) { padding ->
     // We need a sibling node for displaying the background in order for the liquid nodes to sample from it.
-    ShaderBackground(liquidState, useLiquid)
+    ShaderBackground(
+      liquidState = liquidState,
+      useLiquid = useLiquid,
+    )
+
     StickyHeaderList(
+      cacheKey = cacheKey,
       liquidState = liquidState,
       listState = listState,
       useLiquid = useLiquid,
@@ -94,20 +100,8 @@ fun LiquidStickyHeaderScreen(
 }
 
 @Composable
-private fun ShaderBackground(
-  liquidState: LiquidState,
-  useLiquid: Boolean,
-) = Box(
-  Modifier
-    .fillMaxSize()
-    .thenIf(useLiquid) {
-      liquefiable(liquidState)
-    }
-    .background(rememberShaderBrush()),
-)
-
-@Composable
 private fun StickyHeaderList(
+  cacheKey: Int,
   liquidState: LiquidState,
   listState: LazyListState,
   useLiquid: Boolean,
@@ -170,6 +164,7 @@ private fun StickyHeaderList(
       val accumulatedIndex = 20 * header + index
       CardItem(
         liquidState = liquidState,
+        cacheKey = cacheKey,
         index = accumulatedIndex,
         useLiquid = useLiquid,
       )
@@ -179,6 +174,7 @@ private fun StickyHeaderList(
 
 @Composable
 private fun CardItem(
+  cacheKey: Int,
   liquidState: LiquidState,
   index: Int,
   useLiquid: Boolean,
@@ -198,7 +194,7 @@ private fun CardItem(
 ) {
   when {
     isScreenshotTest -> MoonAndStarsBackup(index)
-    else -> ImageItem(index)
+    else -> ImageItem(index + cacheKey)
   }
 
   Text(
@@ -221,7 +217,7 @@ private fun CardItem(
 private fun ImageItem(
   index: Int,
 ) = AsyncImage(
-  model = "https://picsum.photos/id/${index.toPicsumId()}/600/600",
+  model = "https://picsum.photos/600?random=$index",
   contentScale = ContentScale.Crop,
   placeholder = ColorPainter(Color.LightGray),
   error = ColorPainter(Color.Magenta),

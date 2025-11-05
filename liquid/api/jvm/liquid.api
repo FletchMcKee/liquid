@@ -13,6 +13,7 @@ public abstract interface class io/github/fletchmckee/liquid/LiquidScope {
 	public abstract fun getDispersion ()F
 	public abstract fun getEdge ()F
 	public abstract fun getFrost-D9Ej5fM ()F
+	public abstract fun getFrostTileMode-3opZhB0 ()I
 	public abstract fun getRefraction ()F
 	public abstract fun getSaturation ()F
 	public abstract fun getShape ()Landroidx/compose/ui/graphics/Shape;
@@ -21,6 +22,7 @@ public abstract interface class io/github/fletchmckee/liquid/LiquidScope {
 	public abstract fun setDispersion (F)V
 	public abstract fun setEdge (F)V
 	public abstract fun setFrost-0680j_4 (F)V
+	public abstract fun setFrostTileMode-0vamqd0 (I)V
 	public abstract fun setRefraction (F)V
 	public abstract fun setSaturation (F)V
 	public abstract fun setShape (Landroidx/compose/ui/graphics/Shape;)V

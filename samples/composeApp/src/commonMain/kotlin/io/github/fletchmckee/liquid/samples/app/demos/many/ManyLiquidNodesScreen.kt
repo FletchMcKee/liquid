@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
@@ -93,6 +94,7 @@ private fun DotonboriBackground(
 private fun LiquidNodesList(
   liquidState: LiquidState,
   useLiquid: Boolean,
+  initialFrost: Float = LocalInitialFrost.current + 15f,
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
@@ -112,7 +114,7 @@ private fun LiquidNodesList(
       liquidState = liquidState,
       index = index,
       useLiquid = useLiquid,
-      initialFrost = LocalInitialFrost.current,
+      initialFrost = initialFrost,
     )
   }
 }
@@ -138,7 +140,9 @@ private fun LiquidCard(
             .shadow(elevation = 4.dp, cardShape)
             .liquid(liquidState) {
               frost = initialFrost.dp
+              frostTileMode = TileMode.Decal
               refraction = 0.1f
+              curve = 0.1f
               edge = 0.05f
               shape = cardShape
               tint = containerColor

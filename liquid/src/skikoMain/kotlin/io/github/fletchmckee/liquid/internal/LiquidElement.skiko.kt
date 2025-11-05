@@ -5,6 +5,7 @@ package io.github.fletchmckee.liquid.internal
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInWindow
@@ -40,19 +41,19 @@ internal class LiquidNode(
   private val liquidShader = RuntimeShaderBuilder(RuntimeEffect.makeForShader(LiquidShader))
   private var cachedBlurImageFilter: ImageFilter? = null
 
-  override fun createRenderEffect(): RenderEffect? {
+  override fun createRenderEffect(): RenderEffect? = with(reusableScope) {
     // We shouldn't have empty bounds at this point, but set the RenderEffect to null if we do.
-    if (reusableScope.size.isUnspecified) return null
+    if (size.isUnspecified) return null
 
     liquidShader.updateLiquidUniforms()
     val blurEffect = when {
-      reusableScope.sigma > 0f ->
+      sigma > 0f ->
         cachedBlurImageFilter
-          ?.takeUnless { reusableScope.mutatedFields has Fields.Frost }
+          ?.takeUnless { mutatedFields has Fields.Frost }
           ?: ImageFilter.makeBlur(
-            sigmaX = reusableScope.sigma,
-            sigmaY = reusableScope.sigma,
-            mode = FilterTileMode.CLAMP,
+            sigmaX = sigma,
+            sigmaY = sigma,
+            mode = frostTileMode.toSkiaTileMode(),
           )
       else -> null
     }.also { cachedBlurImageFilter = it }
@@ -66,11 +67,7 @@ internal class LiquidNode(
   }
 
   private fun RuntimeShaderBuilder.updateLiquidUniforms() = with(reusableScope) {
-    uniform(
-      "size",
-      size.width,
-      size.height,
-    )
+    uniform("size", size.width, size.height)
     uniform("cornerRadii", cornerRadii)
     uniform("refraction", refraction)
     uniform("curve", curve)
@@ -78,5 +75,12 @@ internal class LiquidNode(
     uniform("tint", colorComponents)
     uniform("saturation", saturation)
     uniform("dispersion", dispersion)
+  }
+
+  private fun TileMode.toSkiaTileMode(): FilterTileMode = when (this) {
+    TileMode.Decal -> FilterTileMode.DECAL
+    TileMode.Mirror -> FilterTileMode.MIRROR
+    TileMode.Repeated -> FilterTileMode.REPEAT
+    else -> FilterTileMode.CLAMP
   }
 }

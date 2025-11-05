@@ -98,12 +98,14 @@ class LiquidBenchmark {
   )
 
   @Test fun scrollManyLiquidNodesNoFrost() = runBenchmarkTest(
-    setupBlock = { navigateTo(startDestination = "Many") },
+    // Unlike other screens, this one adds 15f so that the default is 15.dp frost rather than 0.dp.
+    setupBlock = { navigateTo(startDestination = "Many", initialFrost = -15f) },
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
 
   @Test fun scrollManyLiquidNodesFrost10dp() = runBenchmarkTest(
-    setupBlock = { navigateTo(startDestination = "Many", initialFrost = 10f) },
+    // Unlike other screens, this one adds 15f so that the default is 15.dp frost rather than 0.dp.
+    setupBlock = { navigateTo(startDestination = "Many", initialFrost = -5f) },
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
 
