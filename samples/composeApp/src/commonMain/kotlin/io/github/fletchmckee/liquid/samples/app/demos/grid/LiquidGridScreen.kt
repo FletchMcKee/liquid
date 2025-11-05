@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -45,7 +46,7 @@ import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
-import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
+import kotlin.random.Random
 import liquid_root.samples.composeapp.generated.resources.Res
 import liquid_root.samples.composeapp.generated.resources.moon_and_stars
 import org.jetbrains.compose.resources.painterResource
@@ -60,6 +61,7 @@ fun LiquidGridScreen(
   val initialFrost = LocalInitialFrost.current
 
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
+  var cacheKey by rememberSaveable { mutableIntStateOf(Random.nextInt()) }
 
   LiquidScaffold(
     modifier = modifier,
@@ -111,6 +113,7 @@ fun LiquidGridScreen(
     },
   ) { padding ->
     LiquidGrid(
+      cacheKey = cacheKey,
       contentPadding = padding,
       modifier = Modifier
         .fillMaxSize()
@@ -124,7 +127,8 @@ fun LiquidGridScreen(
 }
 
 @Composable
-fun LiquidGrid(
+private fun LiquidGrid(
+  cacheKey: Int,
   contentPadding: PaddingValues,
   modifier: Modifier = Modifier,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
@@ -141,14 +145,14 @@ fun LiquidGrid(
   items(count = 100, key = { it }) { index ->
     when {
       isScreenshotTest -> MoonAndStarsBackup(index)
-      else -> ImageGrid(index)
+      else -> ImageGrid(index + cacheKey)
     }
   }
 }
 
 @Composable
 private fun ImageGrid(index: Int) = AsyncImage(
-  model = "https://picsum.photos/id/${index.toPicsumId()}/300/300",
+  model = "https://picsum.photos/300?random=$index",
   contentScale = ContentScale.Crop,
   placeholder = ColorPainter(Color.LightGray),
   error = ColorPainter(Color.Magenta),

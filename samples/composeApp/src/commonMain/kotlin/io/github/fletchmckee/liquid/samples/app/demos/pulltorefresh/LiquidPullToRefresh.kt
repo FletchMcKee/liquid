@@ -60,9 +60,9 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.common.ShaderBackground
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.demos.many.LoremIpsum
-import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
@@ -83,6 +83,7 @@ fun LiquidPullToRefresh(
 
   LaunchedEffect(isRefreshing) {
     if (isRefreshing) {
+      // Give an artificial delay so that we always display one full rotation.
       delay(2.5.seconds)
       cacheKey = abs(Random.nextInt())
     }
@@ -120,16 +121,6 @@ fun LiquidPullToRefresh(
 }
 
 @Composable
-private fun ShaderBackground(
-  liquidState: LiquidState,
-) = Box(
-  Modifier
-    .fillMaxSize()
-    .liquefiable(liquidState)
-    .background(rememberShaderBrush()),
-)
-
-@Composable
 private fun PicsumList(
   liquidState: LiquidState,
   onComplete: () -> Unit,
@@ -149,7 +140,9 @@ private fun PicsumList(
     contentType = { "picsumIpsum" },
   ) { index ->
     PicsumIpsumCard(
-      onComplete = onComplete,
+      // Only signal onComplete for the first card since this is the one the
+      // refresh indicator will animate over.
+      onComplete = if (index == 0) onComplete else { -> },
       cacheKey = index + cacheKey,
     )
   }
@@ -186,15 +179,19 @@ private fun PicsumImage(
   cacheKey: Int,
   onComplete: () -> Unit,
 ) {
+  // Hack so that we don't see loading screens between refreshing images.
+  // Otherwise the LiquidRefreshIndicator animates over a gray screen which defeats the purpose.
   var lastSuccessfulPainter by remember { mutableStateOf<Painter?>(null) }
-
   val painter = rememberAsyncImagePainter(
-    model = "https://picsum.photos/800?random=$cacheKey",
+    model = "https://picsum.photos/600?random=$cacheKey",
     onSuccess = {
       lastSuccessfulPainter = it.painter
       onComplete()
     },
-    onError = { onComplete() },
+    onError = {
+      lastSuccessfulPainter = ColorPainter(Color.Magenta)
+      onComplete()
+    },
     placeholder = lastSuccessfulPainter ?: ColorPainter(Color.LightGray),
   )
 
@@ -215,7 +212,7 @@ private fun LiquidRefreshIndicator(
   isRefreshing: Boolean,
   modifier: Modifier = Modifier,
   indicatorShape: Shape = RoundedCornerShape(30),
-  indicatorColor: Color = MaterialTheme.colorScheme.background.copy(alpha = 0.2f),
+  indicatorColor: Color = MaterialTheme.colorScheme.background.copy(alpha = 0.1f),
   indicatorSize: Dp = DefaultIndicatorSize,
   threshold: Dp = DefaultThreshold,
   content: @Composable () -> Unit,
@@ -253,7 +250,7 @@ private fun LiquidRefreshIndicator(
             y = 0,
             layerBlock = {
               translationY = state.distanceFraction * threshold.roundToPx() - size.height
-              shadowElevation = 4.dp.toPx()
+              shadowElevation = 6.dp.toPx()
               shape = indicatorShape
               rotationZ = rotation
             },
@@ -264,9 +261,9 @@ private fun LiquidRefreshIndicator(
         frost = 2.dp
         shape = indicatorShape
         // Generally the best combos are when refraction * curve <= cornerPercent².
-        curve = 0.36f
-        refraction = 0.25f
-        edge = 0.075f
+        curve = 0.3f
+        refraction = 0.3f
+        edge = 0.05f
         dispersion = 0.02f
         saturation = 1.5f
         tint = indicatorColor

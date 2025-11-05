@@ -6,32 +6,14 @@ import androidx.annotation.FloatRange
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.Dp
 
 /**
- * Defines the configuration and visual properties available within the `liquid` effect scope,
+ * Defines the configuration and visual properties available within the [liquid] effect scope,
  * enabling distortion of the sampled content.
  */
 public interface LiquidScope {
-  /**
-   * The blur radius applied behind the liquid effect, giving the appearance of frost.
-   *
-   * Useful when your [liquid] composable is expected to display text as the liquid effects alone can
-   * diminish legibility.
-   *
-   * Defaults to 0.dp. No-op on API 30 and lower. Negative values are ignored.
-   */
-  public var frost: Dp
-
-  /**
-   * The shape of the effect area, defining the clipping and outline of the effect.
-   *
-   * It's recommended to use [CircleShape] or shapes with rounded corners for best liquid effects.
-   *
-   * Defaults to [CircleShape].
-   */
-  public var shape: Shape
-
   /**
    * Controls how much the background distorts through the lens. Setting this to 0 removes the liquid
    * effect altogether, nullifying any [curve] value.
@@ -96,4 +78,35 @@ public interface LiquidScope {
    */
   @setparam:FloatRange(from = 0.0)
   public var dispersion: Float
+
+  /**
+   * The blur radius applied behind the liquid effect, giving the appearance of frost.
+   *
+   * Useful when your [liquid] composable is expected to display text as the liquid effects alone can
+   * diminish legibility.
+   *
+   * Defaults to 0.dp. No-op on API 30 and lower. Negative values are ignored.
+   */
+  public var frost: Dp
+
+  /**
+   * Defines what happens at the edge of the [frost] effect.
+   *
+   * For example, a [liquid] effect using [frost] in a LazyList should use [TileMode.Decal] to avoid
+   * off-screen pixels being rendered into the effect.
+   *
+   * Defaults to [TileMode.Clamp].
+   *
+   * @see [TileMode] for details.
+   */
+  public var frostTileMode: TileMode
+
+  /**
+   * The shape of the effect area, defining the clipping and outline of the effect.
+   *
+   * It's recommended to use [CircleShape] or shapes with rounded corners for best liquid effects.
+   *
+   * Defaults to [CircleShape].
+   */
+  public var shape: Shape
 }

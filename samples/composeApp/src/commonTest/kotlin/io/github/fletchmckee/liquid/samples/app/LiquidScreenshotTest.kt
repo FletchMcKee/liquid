@@ -74,6 +74,8 @@ class LiquidScreenshotTest : ScreenshotTest() {
   @Test fun capture_many_liquid_nodes_no_frost() = runLiquidScreenshotTest(
     testName = "capture_many_liquid_nodes_no_frost",
     darkMode = false,
+    // Unlike other screens, this one adds 15f so that the default is 15.dp frost rather than 0.dp.
+    initialFrost = -15f,
   ) {
     ManyLiquidNodesScreen()
   }
@@ -81,7 +83,8 @@ class LiquidScreenshotTest : ScreenshotTest() {
   @Test fun capture_many_liquid_nodes_10_dp_frost() = runLiquidScreenshotTest(
     testName = "capture_many_liquid_nodes_10_dp_frost",
     darkMode = false,
-    initialFrost = 10f,
+    // Unlike other screens, this one adds 15f so that the default is 15.dp frost rather than 0.dp.
+    initialFrost = -5f,
   ) {
     ManyLiquidNodesScreen()
   }

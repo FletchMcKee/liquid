@@ -6,8 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.ComposeFoundationFlags
-import androidx.compose.foundation.ExperimentalFoundationApi
 import io.github.fletchmckee.liquid.samples.app.demos.clock.Clock
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
@@ -15,9 +13,7 @@ import io.github.fletchmckee.liquid.samples.app.demos.many.Many
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
 
 class MainActivity : ComponentActivity() {
-  @OptIn(ExperimentalFoundationApi::class)
   override fun onCreate(savedInstanceState: Bundle?) {
-    ComposeFoundationFlags.isPausableCompositionInPrefetchEnabled = true
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     val startDestination = intent.getStringExtra(START_DESTINATION).toStartDestination()

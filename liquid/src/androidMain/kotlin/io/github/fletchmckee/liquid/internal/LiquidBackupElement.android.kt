@@ -9,7 +9,6 @@ import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -71,14 +70,13 @@ internal class LiquidBackupNode(
   }
 
   @RequiresApi(31)
-  override fun createRenderEffect(): RenderEffect? {
-    val frostRadius = reusableScope.frostRadius
-    if (frostRadius <= 0f && reusableScope.size.isSpecified) return null
+  override fun createRenderEffect(): RenderEffect? = with(reusableScope) {
+    if (frostRadius <= 0f && size.isSpecified) return null
 
     return BlurEffect(
       radiusX = frostRadius,
       radiusY = frostRadius,
-      edgeTreatment = TileMode.Clamp,
+      edgeTreatment = frostTileMode,
     )
   }
 }
