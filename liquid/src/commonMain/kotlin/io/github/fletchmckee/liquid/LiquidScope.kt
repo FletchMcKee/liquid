@@ -92,10 +92,10 @@ public interface LiquidScope {
   /**
    * Defines what happens at the edge of the [frost] effect.
    *
-   * For example, a [liquid] effect using [frost] in a LazyList should use [TileMode.Decal] to avoid
-   * off-screen pixels being rendered into the effect.
+   * For example, a [liquid] effect using [frost] with high [refraction] and [curve] values in a LazyList
+   * could use [TileMode.Decal] to avoid off-screen pixels being rendered into the effect.
    *
-   * Defaults to [TileMode.Clamp].
+   * Defaults to [TileMode.Clamp]. This is ignored if no [frost] is provided.
    *
    * @see [TileMode] for details.
    */

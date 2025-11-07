@@ -26,11 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
@@ -87,6 +87,11 @@ private fun DotonboriBackground(
     .fillMaxSize()
     .thenIf(useLiquid) {
       liquefiable(liquidState)
+    }
+    .graphicsLayer {
+      // This is a hack, but it allows the blur to sample pixels outside of the viewport.
+      scaleX = 1.1f
+      scaleY = 1.1f
     },
 )
 
@@ -94,16 +99,15 @@ private fun DotonboriBackground(
 private fun LiquidNodesList(
   liquidState: LiquidState,
   useLiquid: Boolean,
-  initialFrost: Float = LocalInitialFrost.current + 15f,
+  initialFrost: Float = LocalInitialFrost.current + 20f,
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
-    .padding(horizontal = 20.dp)
-    .clipToBounds()
+    .padding(horizontal = 12.dp)
     .testTag("liquidNodesList")
     .testTagsAsResourceId(true),
   contentPadding = WindowInsets.systemBars.asPaddingValues(),
-  verticalArrangement = Arrangement.spacedBy(24.dp),
+  verticalArrangement = Arrangement.spacedBy(16.dp),
 ) {
   items(
     count = 500,
@@ -143,7 +147,7 @@ private fun LiquidCard(
               frostTileMode = TileMode.Decal
               refraction = 0.1f
               curve = 0.1f
-              edge = 0.05f
+              edge = 0.01f
               shape = cardShape
               tint = containerColor
             }

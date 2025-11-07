@@ -98,31 +98,40 @@ class LiquidBenchmark {
   )
 
   @Test fun scrollManyLiquidNodesNoFrost() = runBenchmarkTest(
-    // Unlike other screens, this one adds 15f so that the default is 15.dp frost rather than 0.dp.
-    setupBlock = { navigateTo(startDestination = "Many", initialFrost = -15f) },
+    // Unlike other screens, this one adds 20f so that the default is 20.dp frost rather than 0.dp.
+    setupBlock = { navigateTo(startDestination = "Many", initialFrost = -20f) },
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
 
   @Test fun scrollManyLiquidNodesFrost10dp() = runBenchmarkTest(
-    // Unlike other screens, this one adds 15f so that the default is 15.dp frost rather than 0.dp.
-    setupBlock = { navigateTo(startDestination = "Many", initialFrost = -5f) },
+    // Unlike other screens, this one adds 20f so that the default is 20.dp frost rather than 0.dp.
+    setupBlock = { navigateTo(startDestination = "Many", initialFrost = -10f) },
     measureBlock = { flingElementDownThenUp("liquidNodesList") },
   )
 
   @Test fun rotatingClockBaseline() = runBenchmarkTest(
     iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "Clock", useLiquid = false) },
-    measureBlock = { Thread.sleep(5000) },
+    measureBlock = {
+      Thread.sleep(5000)
+      device.waitForIdle()
+    },
   )
 
   @Test fun rotatingClockNoFrost() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "Clock") },
-    measureBlock = { Thread.sleep(5000) },
+    measureBlock = {
+      Thread.sleep(5000)
+      device.waitForIdle()
+    },
   )
 
   @Test fun rotatingClockFrost10dp() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "Clock", initialFrost = 10f) },
-    measureBlock = { Thread.sleep(5000) },
+    measureBlock = {
+      Thread.sleep(5000)
+      device.waitForIdle()
+    },
   )
 
   private fun runBenchmarkTest(
