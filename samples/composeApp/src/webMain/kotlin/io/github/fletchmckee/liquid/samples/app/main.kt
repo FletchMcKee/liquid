@@ -14,11 +14,12 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -30,17 +31,18 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.ComposeViewport
 import androidx.navigation.ExperimentalBrowserHistoryApi
 import androidx.navigation.bindToBrowserNavigation
-import androidx.navigation.compose.rememberNavController
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.common.ShaderBackground
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
-import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import liquid_root.samples.composeapp.generated.resources.Res
@@ -54,7 +56,6 @@ import org.jetbrains.compose.resources.preloadImageBitmap
 
 fun main() {
   ComposeViewport("ComposeApp") {
-    val navController = rememberNavController()
     val pragueClock by preloadImageBitmap(Res.drawable.prague_clock)
     val moonAndStars by preloadImageBitmap(Res.drawable.moon_and_stars)
     val northernLights by preloadImageBitmap(Res.drawable.northern_lights)
@@ -74,12 +75,8 @@ fun main() {
     }
 
     when {
-      resourcesLoaded && minTimeElapsed -> LiquidDemos(navController = navController)
+      resourcesLoaded && minTimeElapsed -> LiquidDemos(onNavHostReady = { it.bindToBrowserNavigation() })
       else -> WebLoadingScreen()
-    }
-
-    LaunchedEffect(Unit) {
-      navController.bindToBrowserNavigation()
     }
   }
 }
@@ -89,11 +86,18 @@ private fun WebLoadingScreen(
   liquidState: LiquidState = rememberLiquidState(),
 ) = LiquidTheme {
   Box(Modifier.fillMaxSize()) {
-    Box(
-      Modifier
-        .fillMaxSize()
-        .liquefiable(liquidState)
-        .background(rememberShaderBrush()),
+    ShaderBackground(liquidState)
+
+    Text(
+      text = "Liquid",
+      style = MaterialTheme.typography.titleLarge.copy(
+        fontSize = 65.sp,
+        fontWeight = FontWeight.Bold,
+      ),
+      color = MaterialTheme.colorScheme.onBackground,
+      modifier = Modifier
+        .align(Alignment.Center)
+        .liquefiable(liquidState),
     )
 
     LiquidLoadingBox(

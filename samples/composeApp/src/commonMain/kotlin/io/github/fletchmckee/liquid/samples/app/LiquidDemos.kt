@@ -21,8 +21,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
@@ -72,6 +75,7 @@ fun LiquidDemos(
   isBenchmark: Boolean = false,
   navController: NavHostController = rememberNavController(),
   pullToRefreshEnabled: Boolean = rememberPullToRefreshEnabled(),
+  onNavHostReady: suspend (NavController) -> Unit = {},
 ) = LiquidTheme(
   useLiquid = useLiquid,
   initialFrost = initialFrost,
@@ -113,6 +117,11 @@ fun LiquidDemos(
     if (pullToRefreshEnabled) {
       pullToRefreshDestination(navController)
     }
+  }
+
+  val currentOnNavHostReady by rememberUpdatedState(onNavHostReady)
+  LaunchedEffect(navController) {
+    currentOnNavHostReady(navController)
   }
 }
 

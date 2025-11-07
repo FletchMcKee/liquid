@@ -105,7 +105,7 @@ fun LiquidPullToRefresh(
           imageVector = Icons.Default.Refresh,
           contentDescription = null,
           modifier = Modifier.size(80.dp),
-          tint = MaterialTheme.colorScheme.onBackground,
+          tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
         )
       }
     },
