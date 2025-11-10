@@ -6,7 +6,6 @@ import androidx.annotation.FloatRange
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.Dp
 
 /**
@@ -88,18 +87,6 @@ public interface LiquidScope {
    * Defaults to 0.dp. No-op on API 30 and lower. Negative values are ignored.
    */
   public var frost: Dp
-
-  /**
-   * Defines what happens at the edge of the [frost] effect.
-   *
-   * For example, a [liquid] effect using [frost] with high [refraction] and [curve] values in a LazyList
-   * could use [TileMode.Decal] to avoid off-screen pixels being rendered into the effect.
-   *
-   * Defaults to [TileMode.Clamp]. This is ignored if no [frost] is provided.
-   *
-   * @see [TileMode] for details.
-   */
-  public var frostTileMode: TileMode
 
   /**
    * The shape of the effect area, defining the clipping and outline of the effect.

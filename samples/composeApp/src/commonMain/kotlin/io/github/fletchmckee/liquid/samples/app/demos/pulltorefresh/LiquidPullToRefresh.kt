@@ -83,8 +83,9 @@ fun LiquidPullToRefresh(
 
   LaunchedEffect(isRefreshing) {
     if (isRefreshing) {
-      // Give an artificial delay so that we always display one full rotation.
-      delay(2.5.seconds)
+      // Give an artificial delay so that we always display two full rotations since this
+      // is what we're demoing.
+      delay(4.5.seconds)
       cacheKey = abs(Random.nextInt())
     }
   }
@@ -229,6 +230,17 @@ private fun LiquidRefreshIndicator(
     label = "rotation",
   )
 
+  val scale by infiniteTransition.animateFloat(
+    initialValue = 1f,
+    targetValue = if (isRefreshing) 1.25f else 1f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(2000),
+      repeatMode = RepeatMode.Reverse,
+      initialStartOffset = StartOffset(500),
+    ),
+    label = "scale",
+  )
+
   Box(
     modifier = modifier
       .size(indicatorSize)
@@ -253,6 +265,8 @@ private fun LiquidRefreshIndicator(
               shadowElevation = 6.dp.toPx()
               shape = indicatorShape
               rotationZ = rotation
+              scaleX = scale
+              scaleY = scale
             },
           )
         }
@@ -275,4 +289,4 @@ private fun LiquidRefreshIndicator(
 }
 
 private val DefaultIndicatorSize = 160.dp
-private val DefaultThreshold = 250.dp
+private val DefaultThreshold = 270.dp

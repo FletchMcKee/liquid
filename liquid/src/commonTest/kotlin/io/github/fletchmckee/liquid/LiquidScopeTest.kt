@@ -8,7 +8,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import assertk.assertThat
@@ -37,7 +36,6 @@ class LiquidScopeTest {
     assertThat(scope.tint).isEqualTo(Color.Unspecified)
     assertThat(scope.saturation).isEqualTo(1f)
     assertThat(scope.dispersion).isZero()
-    assertThat(scope.frostTileMode).isEqualTo(TileMode.Clamp)
     assertThat(scope.argbColor).isZero()
     assertThat(scope.size).isEqualTo(Size.Unspecified)
     assertThat(scope.positionOnScreen).isEqualTo(Offset.Unspecified)
@@ -59,18 +57,6 @@ class LiquidScopeTest {
   @Test fun frostMutationsObserved() {
     scope.frost = 10.dp
     assertThat(scope.frostRadius).isEqualTo(10f)
-    assertThat(scope.mutatedFields).isEqualTo(Fields.Frost)
-    // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
-  }
-
-  @Test fun frostTileModeMutations_dontInterfereWithFrostMutations() {
-    scope.frost = 10.dp
-    scope.frostTileMode = TileMode.Decal
-    assertThat(scope.frost).isEqualTo(10.dp)
-    assertThat(scope.frostRadius).isEqualTo(10f)
-    assertThat(scope.frostTileMode).isEqualTo(TileMode.Decal)
     assertThat(scope.mutatedFields).isEqualTo(Fields.Frost)
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
@@ -159,14 +145,6 @@ class LiquidScopeTest {
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
   }
 
-  @Test fun frostTileModeMutationsObserved() {
-    scope.frostTileMode = TileMode.Decal
-    assertThat(scope.mutatedFields).isEqualTo(Fields.Frost)
-    // Verify the RenderEffect and InvalidateFlags are not 0.
-    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
-    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
-  }
-
   @Test fun differentTints_withSameArgbValue_doNotInvalidate() {
     scope.tint = Color.Transparent
     assertThat(scope.tint).isEqualTo(Color.Transparent)
@@ -238,7 +216,6 @@ class LiquidScopeTest {
     tint = Color.Red
     saturation = 1.5f
     frost = 10.dp
-    frostTileMode = TileMode.Decal
     shape = CircleShape
   }
 }

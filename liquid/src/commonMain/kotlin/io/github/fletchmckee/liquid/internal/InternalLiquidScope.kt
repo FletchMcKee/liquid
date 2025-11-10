@@ -10,7 +10,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isSpecified
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -107,16 +106,6 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     set(value) {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.Dispersion
-        field = value
-      }
-    }
-
-  override var frostTileMode: TileMode = TileMode.Clamp
-    set(value) {
-      if (field != value) {
-        // Unnecessary to create a separate Fields integer.
-        // A change to this or frostRadius requires updating the same logic.
-        mutatedFields = mutatedFields or Fields.Frost
         field = value
       }
     }

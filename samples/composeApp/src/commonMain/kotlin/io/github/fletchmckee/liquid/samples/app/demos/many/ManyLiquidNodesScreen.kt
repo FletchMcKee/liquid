@@ -29,7 +29,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
@@ -129,7 +128,7 @@ private fun LiquidCard(
   index: Int,
   useLiquid: Boolean,
   initialFrost: Float,
-  cardShape: Shape = RoundedCornerShape(10),
+  cardShape: Shape = RoundedCornerShape(5),
   containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = Column(
@@ -141,12 +140,11 @@ private fun LiquidCard(
         useLiquid ->
           Modifier
             // dropShadow causes some lag with wasm/js.
-            .shadow(elevation = 4.dp, cardShape)
+            .shadow(elevation = 4.dp, shape = cardShape)
             .liquid(liquidState) {
               frost = initialFrost.dp
-              frostTileMode = TileMode.Decal
-              refraction = 0.1f
-              curve = 0.1f
+              refraction = 0.05f
+              curve = 0.05f
               edge = 0.01f
               shape = cardShape
               tint = containerColor

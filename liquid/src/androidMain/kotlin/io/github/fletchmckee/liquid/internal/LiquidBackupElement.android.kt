@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.RenderEffect
+import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
@@ -76,7 +77,7 @@ internal class LiquidBackupNode(
     return BlurEffect(
       radiusX = frostRadius,
       radiusY = frostRadius,
-      edgeTreatment = frostTileMode,
+      edgeTreatment = TileMode.Clamp,
     )
   }
 }

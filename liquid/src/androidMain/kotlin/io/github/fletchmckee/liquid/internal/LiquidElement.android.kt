@@ -6,13 +6,13 @@ import android.graphics.RenderEffect.createBlurEffect
 import android.graphics.RenderEffect.createChainEffect
 import android.graphics.RenderEffect.createRuntimeShaderEffect
 import android.graphics.RuntimeShader
+import android.graphics.Shader
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.asComposeRenderEffect
-import androidx.compose.ui.graphics.toAndroidTileMode
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
 import io.github.fletchmckee.liquid.LiquidScope
@@ -63,7 +63,7 @@ internal class LiquidNode(
       ?: createBlurEffect(
         frostRadius,
         frostRadius,
-        frostTileMode.toAndroidTileMode(),
+        Shader.TileMode.CLAMP,
       ).also { cachedBlurEffect = it }
 
     return createChainEffect(liquidEffect, blurEffect).asComposeRenderEffect()

@@ -21,7 +21,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInRoot
@@ -70,7 +69,6 @@ class LiquidNodeTest {
       assertThat(scope.saturation).isEqualTo(1f)
       assertThat(scope.dispersion).isZero()
       assertThat(scope.frost).isEqualTo(0.dp)
-      assertThat(scope.frostTileMode).isEqualTo(TileMode.Clamp)
       assertThat(scope.shape).isEqualTo(CircleShape)
     }
   }
@@ -489,13 +487,6 @@ class LiquidNodeTest {
     changedValue = 0.5f,
     finalValue = 1f,
     onUpdate = { dispersion = it },
-  )
-
-  @Test fun liquidNode_reactsToFrostTileModeChanges() = runLiquidScopeTest(
-    initialValue = TileMode.Clamp,
-    changedValue = TileMode.Decal,
-    finalValue = TileMode.Mirror,
-    onUpdate = { frostTileMode = it },
   )
 
   private fun <T> runLiquidScopeTest(

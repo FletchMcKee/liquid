@@ -5,7 +5,6 @@ package io.github.fletchmckee.liquid.internal
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.RenderEffect
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInWindow
@@ -53,7 +52,7 @@ internal class LiquidNode(
           ?: ImageFilter.makeBlur(
             sigmaX = sigma,
             sigmaY = sigma,
-            mode = frostTileMode.toSkiaTileMode(),
+            mode = FilterTileMode.CLAMP,
           )
       else -> null
     }.also { cachedBlurImageFilter = it }
@@ -75,12 +74,5 @@ internal class LiquidNode(
     uniform("tint", colorComponents)
     uniform("saturation", saturation)
     uniform("dispersion", dispersion)
-  }
-
-  private fun TileMode.toSkiaTileMode(): FilterTileMode = when (this) {
-    TileMode.Decal -> FilterTileMode.DECAL
-    TileMode.Mirror -> FilterTileMode.MIRROR
-    TileMode.Repeated -> FilterTileMode.REPEAT
-    else -> FilterTileMode.CLAMP
   }
 }

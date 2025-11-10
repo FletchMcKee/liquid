@@ -12,22 +12,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import io.github.fletchmckee.liquid.internal.LiquefiableElement
 
-@Stable
-internal class Liquefiable {
-  internal var layer: GraphicsLayer? by mutableStateOf(null)
-
-  internal var boundsOnScreen: Rect by mutableStateOf(Rect.Zero)
-
-  override fun toString(): String = Snapshot.withoutReadObservation {
-    """
-    Liquefiable(
-      layer=$layer,
-      boundsOnScreen=$boundsOnScreen,
-    )
-    """.trimIndent()
-  }
-}
-
 /**
  * Marks this modifier node as a recording surface whose rendered content can be sampled and
  * displayed through another UI layer using a [LiquidState] effect.
@@ -50,10 +34,7 @@ internal class Liquefiable {
  *     .fillMaxSize()
  *     .liquefiable(liquidState)
  *     .background(shaderBrush),
- * ) {
- *   // All descendant content will also be recorded.
- *   …
- * }
+ * ) { … }
  * ```
  *
  * @param liquidState The shared [LiquidState] instance that receives this node’s content for sampling.
@@ -62,3 +43,19 @@ internal class Liquefiable {
 public fun Modifier.liquefiable(
   liquidState: LiquidState,
 ): Modifier = this then LiquefiableElement(liquidState)
+
+@Stable
+internal class Liquefiable {
+  internal var layer: GraphicsLayer? by mutableStateOf(null)
+  internal var boundsOnScreen: Rect by mutableStateOf(Rect.Zero)
+
+  // Avoids triggering recomposition when logs read this object.
+  override fun toString(): String = Snapshot.withoutReadObservation {
+    """
+    Liquefiable(
+      layer=$layer,
+      boundsOnScreen=$boundsOnScreen,
+    )
+    """.trimIndent()
+  }
+}

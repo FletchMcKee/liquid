@@ -58,3 +58,21 @@ fun LiquefiableWithLiquidDescendant(
 
 The current effects are built to handle alpha, scale, rotationZ and translation changes. However handling rotationX/Y and skew animations is not supported.
 Your liquid effect nodes can do all of those animations, it's just that the liquefiable source nodes that are rendered into the effect nodes will not be drawn accurately.
+
+#### Frost/Lens Effect in LazyList Items
+
+Attempting to apply a `liquid` effect with non-zero `frost/refraction/curve` values presents a challenge when used in LazyLists. When
+offscreen items are being scrolled on screen, the visible edge may attempt to pull pixels from offscreen that don't exist and are instead an
+approximation of the Skia blur effect. This can result in glitchy UI until the pixels that the lens effect pulls towards the edge are on
+screen.
+
+This is not an issue when using `refraction/curve` without a `frost` effect or vice versa. This also shouldn't be an issue if your LazyList
+is behind a Scaffold with a TopAppBar and BottomAppBar as it should have proper pixels to sample by the time it is appearing on screen.
+
+We could provide the viewport as a uniform in the RuntimeShader, but this would hinder performance as it would require recreating the
+RenderEffect every time a `liquid` effect's position on screen changes which is frequent with LazyLists. It would also add additional
+complexity to account for scale and rotation. We may provide TileMode as an additional LiquidScope property to give more control over the
+edge treatment, but this is a confusing API in regards to the blur effect that doesn't fully solve the problem.
+
+For now, it is recommended to either place your `liquid` LazyList behind a Scaffold, or use low `refraction/curve` values (0.1 or less) when
+using a high `frost` (10.dp or more) or vice versa.
