@@ -241,6 +241,8 @@ jobs:
           java-version-file: .github/workflows/.java-version
 
       - uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-disabled: true
 
       - run: ./gradlew publish --no-configuration-cache
         env:
