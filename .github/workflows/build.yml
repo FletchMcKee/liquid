@@ -233,7 +233,7 @@ jobs:
           ./gradlew
           kotlinUpgradeYarnLock
           kotlinWasmUpgradeYarnLock
-          :samples:composeApp:assemble
+          :samples:composeApp:assembleDebug
 
   final-status:
     name: Final status check
