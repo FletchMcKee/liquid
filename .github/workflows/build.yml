@@ -47,8 +47,10 @@ jobs:
           check
           -x test
           -x allTests
-          -x iosTest
-          -x macosTest
+          -x iosSimulatorArm64Test
+          -x iosX64Test
+          -x macosX64Test
+          -x macosArm64Test
           -x jsBrowserTest
           -x wasmJsBrowserTest
           -x jvmTest
