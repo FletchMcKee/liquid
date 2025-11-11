@@ -11,7 +11,10 @@ This enables [Liquid Glass](https://developer.apple.com/documentation/SwiftUI/Ap
 Powered by RuntimeShaders/RuntimeEffects and ModifierNodeElement APIs, it delivers GPU-accelerated visuals to your Compose UI.
 
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/9fa05db0-cbbb-4b63-9871-aab77dbd1be6" width="400" />
+  <img
+    src="docs/gifs/liquid_demo.gif"
+    width="400"
+    alt="Liquid demo"/>
 </div>
 
 ## Quick Start

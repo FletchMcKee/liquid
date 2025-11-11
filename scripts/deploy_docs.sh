@@ -16,7 +16,9 @@ rm -rf docs/api
 cp -R liquid/build/dokka/html docs/api
 
 # Copy outside files into the docs folder.
-sed -e '/full documentation here/ { N; d; }' < README.md > docs/index.md
+sed -e '/full documentation here/ { N; d; }' \
+    -e 's|docs/gifs/|gifs/|g' \
+    < README.md > docs/index.md
 
 # Deploy to Github pages.
 python3 -m mkdocs gh-deploy --force

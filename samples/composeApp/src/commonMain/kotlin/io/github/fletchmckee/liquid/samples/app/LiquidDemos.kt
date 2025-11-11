@@ -109,14 +109,14 @@ fun LiquidDemos(
     modifier = modifier.fillMaxSize(),
   ) {
     demosListDestination(navController)
+    if (pullToRefreshEnabled) {
+      pullToRefreshDestination(navController)
+    }
     clockDestination(navController)
     dragDestination(navController)
     gridDestination(navController)
     stickyHeaderDestination(navController)
     manyDestination(navController)
-    if (pullToRefreshEnabled) {
-      pullToRefreshDestination(navController)
-    }
   }
 
   val currentOnNavHostReady by rememberUpdatedState(onNavHostReady)
@@ -213,10 +213,10 @@ internal data class DemoData(
 
 @Stable
 private val DemosList = listOf(
+  DemoData("Pull to Refresh", PullToRefresh),
   DemoData("Rotating Clock", Clock),
   DemoData("Drag", Drag),
   DemoData("Grid", Grid),
   DemoData("Sticky Header", StickyHeader),
   DemoData("500 Liquid Nodes", Many),
-  DemoData("Pull to Refresh", PullToRefresh),
 )

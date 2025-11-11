@@ -232,7 +232,7 @@ private fun LiquidRefreshIndicator(
 
   val scale by infiniteTransition.animateFloat(
     initialValue = 1f,
-    targetValue = if (isRefreshing) 1.25f else 1f,
+    targetValue = if (isRefreshing) 1.5f else 1f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Reverse,
@@ -288,5 +288,5 @@ private fun LiquidRefreshIndicator(
   }
 }
 
-private val DefaultIndicatorSize = 160.dp
+private val DefaultIndicatorSize = 150.dp
 private val DefaultThreshold = 270.dp

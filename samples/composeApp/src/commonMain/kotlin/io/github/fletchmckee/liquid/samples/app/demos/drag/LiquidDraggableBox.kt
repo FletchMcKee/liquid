@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -56,8 +57,7 @@ fun BoxScope.LiquidDraggableBox(
   shapeProvider: () -> Shape,
   dispersionProvider: () -> Float,
   modifier: Modifier = Modifier,
-  colors: List<Color> = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent),
-  shaderBrush: ShaderBrush = rememberDiagonalShaderBrush(colors),
+  shaderBrush: ShaderBrush = rememberDiagonalShaderBrush(),
   initialYOffset: Dp = (-150).dp,
 ) {
   val useLiquid = LocalUseLiquid.current
@@ -80,6 +80,7 @@ fun BoxScope.LiquidDraggableBox(
           dragOffset = Offset(x, y)
         }
       }
+      .shadow(elevation = 4.dp, shape = shapeProvider())
       .thenIf(useLiquid) {
         liquid(liquidState) {
           frost = frostProvider().dp
@@ -115,7 +116,7 @@ fun BoxScope.LiquidDraggableBox(
 
 @Composable
 private fun rememberDiagonalShaderBrush(
-  colors: List<Color>,
+  colors: List<Color> = listOf(Color.White.copy(alpha = 0.05f), Color.Transparent),
 ): ShaderBrush = remember(colors) {
   object : ShaderBrush() {
     override fun createShader(size: Size): Shader = LinearGradientShader(

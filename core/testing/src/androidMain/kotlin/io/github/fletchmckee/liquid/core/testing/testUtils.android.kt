@@ -23,7 +23,7 @@ actual abstract class ScreenshotTest
 
 actual fun runScreenshotTest(
   testName: String,
-  content: @Composable (() -> Unit),
+  content: @Composable () -> Unit,
 ) {
   @Suppress("UNCHECKED_CAST")
   val clazz = Class.forName("org.jetbrains.compose.resources.AndroidContextProvider") as Class<ContentProvider>

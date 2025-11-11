@@ -13,7 +13,7 @@ actual abstract class ScreenshotTest
 
 actual fun runScreenshotTest(
   testName: String,
-  content: @Composable (() -> Unit),
+  content: @Composable () -> Unit,
 ): TestResult = runSkikoComposeUiTest {
   setContent {
     content()
