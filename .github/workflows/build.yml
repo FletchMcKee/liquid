@@ -48,6 +48,10 @@ jobs:
           -x test
           -x allTests
           -x iosSimulatorArm64Test
+          -x iosX64Test
+          -x iosArm64Test
+          -x macosX64Test
+          -x macosArm64Test
           -x jsBrowserTest
           -x wasmJsBrowserTest
           -x jvmTest
