@@ -48,39 +48,28 @@ kotlin {
   }
 
   sourceSets {
-    commonMain {
-      dependencies {
-        api(compose.components.resources)
-        api(compose.foundation)
-        api(compose.material3)
-        api(compose.uiTest)
-      }
+    commonMain.dependencies {
+      api(compose.uiTest)
     }
 
-    androidMain {
-      dependencies {
-        implementation(libs.compose.test.manifest)
-        implementation(libs.compose.junit4)
-        implementation(libs.robolectric)
-        implementation(libs.roborazzi.core)
-        implementation(libs.roborazzi)
-        implementation(libs.roborazzi.compose)
-      }
+    androidMain.dependencies {
+      implementation(libs.compose.test.manifest)
+      implementation(libs.compose.junit4)
+      implementation(libs.robolectric)
+      implementation(libs.roborazzi.core)
+      implementation(libs.roborazzi)
+      implementation(libs.roborazzi.compose)
     }
 
-    jvmMain {
-      dependencies {
-        implementation(compose.desktop.currentOs)
-        implementation(compose.desktop.uiTestJUnit4)
-        implementation(libs.roborazzi.core)
-        implementation(libs.roborazzi.compose.desktop)
-      }
+    jvmMain.dependencies {
+      implementation(compose.desktop.currentOs)
+      implementation(compose.desktop.uiTestJUnit4)
+      implementation(libs.roborazzi.core)
+      implementation(libs.roborazzi.compose.desktop)
     }
 
-    iosMain {
-      dependencies {
-        implementation(libs.roborazzi.compose.ios)
-      }
+    iosMain.dependencies {
+      implementation(libs.roborazzi.compose.ios)
     }
   }
 }

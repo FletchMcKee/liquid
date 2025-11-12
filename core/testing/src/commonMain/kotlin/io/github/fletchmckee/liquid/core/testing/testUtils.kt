@@ -7,6 +7,5 @@ import androidx.compose.runtime.Composable
 expect abstract class ScreenshotTest()
 
 expect fun runScreenshotTest(
-  testName: String,
   content: @Composable () -> Unit,
 )

@@ -6,13 +6,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.runSkikoComposeUiTest
 import com.github.takahirom.roborazzi.RoborazziOptions
+import com.github.takahirom.roborazzi.roboOutputName
 import io.github.takahirom.roborazzi.captureRoboImage
 import kotlinx.coroutines.test.TestResult
 
 actual abstract class ScreenshotTest
 
 actual fun runScreenshotTest(
-  testName: String,
   content: @Composable () -> Unit,
 ): TestResult = runSkikoComposeUiTest {
   setContent {
@@ -21,7 +21,7 @@ actual fun runScreenshotTest(
 
   waitForIdle()
   onRoot().captureRoboImage(
-    filePath = "jvm/$testName.png",
+    filePath = "jvm/${roboOutputName()}.png",
     roborazziOptions = RoborazziOptions(
       compareOptions = RoborazziOptions.CompareOptions(
         changeThreshold = 0.01f,
