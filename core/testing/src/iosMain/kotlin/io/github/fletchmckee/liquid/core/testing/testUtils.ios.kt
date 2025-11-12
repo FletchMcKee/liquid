@@ -15,7 +15,6 @@ import io.github.takahirom.roborazzi.captureRoboImage
 actual abstract class ScreenshotTest
 
 actual fun runScreenshotTest(
-  testName: String,
   content: @Composable () -> Unit,
 ) = runSkikoComposeUiTest(
   size = Size(width = 900f, height = 1850f),
@@ -28,11 +27,25 @@ actual fun runScreenshotTest(
   waitForIdle()
   onRoot().captureRoboImage(
     composeUiTest = this,
-    filePath = "ios/$testName.png",
+    filePath = "ios/${roboOutputName()}.png",
     roborazziOptions = RoborazziOptions(
       compareOptions = CompareOptions(
         outputDirectoryPath = roborazziSystemPropertyCompareOutputDirectory(),
       ),
     ),
   )
+}
+
+// This is a hack, but preferable to manual specifications.
+private fun roboOutputName(): String = buildString {
+  // Full mangled pattern is $ClassName$test$0$$FUNCTION_REFERENCE_FOR$methodName$
+  val pattern = Regex("\\$([a-zA-Z0-9_]+)\\\$test\\$0\\$\\\$FUNCTION_REFERENCE_FOR\\$([a-zA-Z0-9_]+)\\$")
+  val stackString = Exception().stackTraceToString()
+  val match = requireNotNull(pattern.find(stackString)) {
+    "No matching class/function name was found for Roborazzi test"
+  }
+
+  append(match.groupValues[1]) // Class name
+  append(".")
+  append(match.groupValues[2]) // Method name
 }

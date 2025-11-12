@@ -11,6 +11,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.github.takahirom.roborazzi.roboOutputName
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.annotation.Config
@@ -22,7 +23,6 @@ import org.robolectric.annotation.GraphicsMode
 actual abstract class ScreenshotTest
 
 actual fun runScreenshotTest(
-  testName: String,
   content: @Composable () -> Unit,
 ) {
   @Suppress("UNCHECKED_CAST")
@@ -41,7 +41,7 @@ actual fun runScreenshotTest(
 
       waitForIdle()
       onRoot().captureRoboImage(
-        filePath = "android/$testName[${android.os.Build.VERSION.SDK_INT}].png",
+        filePath = "android/${roboOutputName()}[${android.os.Build.VERSION.SDK_INT}].png",
         roborazziOptions = RoborazziOptions(
           compareOptions = RoborazziOptions.CompareOptions(
             changeThreshold = 0.01f,
