@@ -44,8 +44,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
@@ -171,7 +173,11 @@ private fun PicsumIpsumCard(
     overflow = TextOverflow.Ellipsis,
     modifier = Modifier
       .background(containerColor)
-      .padding(16.dp),
+      .padding(16.dp)
+      .graphicsLayer {
+        // Prevents text jitter on Android.
+        compositingStrategy = CompositingStrategy.Offscreen
+      },
   )
 }
 
@@ -241,6 +247,17 @@ private fun LiquidRefreshIndicator(
     label = "scale",
   )
 
+  val lens by infiniteTransition.animateFloat(
+    initialValue = if (isRefreshing) 0.2f else 0.3f,
+    targetValue = if (isRefreshing) 0.4f else 0.3f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(2000),
+      repeatMode = RepeatMode.Reverse,
+      initialStartOffset = StartOffset(500),
+    ),
+    label = "lens",
+  )
+
   Box(
     modifier = modifier
       .size(indicatorSize)
@@ -272,14 +289,14 @@ private fun LiquidRefreshIndicator(
         }
       }
       .liquid(liquidState) {
-        frost = 2.dp
+        frost = 6.dp - (scale * 4f).dp
         shape = indicatorShape
         // Generally the best combos are when refraction * curve <= cornerPercent².
-        curve = 0.3f
-        refraction = 0.3f
+        refraction = 0.09f / lens
+        curve = lens
         edge = 0.05f
-        dispersion = 0.02f
-        saturation = 1.5f
+        dispersion = 0.02f * scale
+        saturation = scale + 0.5f
         tint = indicatorColor
       },
     contentAlignment = Alignment.Center,
@@ -288,5 +305,5 @@ private fun LiquidRefreshIndicator(
   }
 }
 
-private val DefaultIndicatorSize = 150.dp
+private val DefaultIndicatorSize = 160.dp
 private val DefaultThreshold = 270.dp

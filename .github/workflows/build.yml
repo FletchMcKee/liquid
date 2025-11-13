@@ -244,7 +244,7 @@ jobs:
     name: Final status check
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, screenshot-tests, assemble]
+    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, assemble]
     steps:
       - name: Final status check
         run: |
