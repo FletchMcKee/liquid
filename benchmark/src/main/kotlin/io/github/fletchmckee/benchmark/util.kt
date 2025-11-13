@@ -96,11 +96,12 @@ internal fun MacrobenchmarkScope.dragFrostSlider(
 /**
  * @param gestureMargins Margin order is left, top, right, bottom (LTRB).
  */
-fun MacrobenchmarkScope.flingElementDownThenUp(
+fun MacrobenchmarkScope.flingElement(
   testTag: String,
   timeout: Long = 2_000,
   gestureMargins: FloatArray = floatArrayOf(0.2f, 0.2f, 0.2f, 0.2f),
-  flings: Int = 2,
+  downFlings: Int = 2,
+  upFlings: Int = 2,
 ) {
   val element = waitForObject(testTag, timeout)
   val leftMargin = (device.displayWidth * gestureMargins[0]).toInt()
@@ -116,12 +117,12 @@ fun MacrobenchmarkScope.flingElementDownThenUp(
     bottomMargin,
   )
 
-  repeat(flings) {
+  repeat(downFlings) {
     element.fling(Direction.DOWN)
   }
   device.waitForIdle()
 
-  repeat(flings) {
+  repeat(upFlings) {
     element.fling(Direction.UP)
   }
   device.waitForIdle()

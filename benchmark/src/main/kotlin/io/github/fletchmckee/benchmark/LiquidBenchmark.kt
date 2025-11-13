@@ -45,9 +45,10 @@ class LiquidBenchmark {
     iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "Grid", useLiquid = false) },
     measureBlock = {
-      flingElementDownThenUp(
+      flingElement(
         testTag = "liquidGrid",
-        flings = 1,
+        downFlings = 1,
+        upFlings = 1,
         gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
       )
     },
@@ -56,9 +57,10 @@ class LiquidBenchmark {
   @Test fun scrollLiquidGridNoFrost() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "Grid") },
     measureBlock = {
-      flingElementDownThenUp(
+      flingElement(
         testTag = "liquidGrid",
-        flings = 1,
+        downFlings = 1,
+        upFlings = 1,
         gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
       )
     },
@@ -67,9 +69,10 @@ class LiquidBenchmark {
   @Test fun scrollLiquidGridFrost10dp() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "Grid", initialFrost = 10f) },
     measureBlock = {
-      flingElementDownThenUp(
+      flingElement(
         testTag = "liquidGrid",
-        flings = 1,
+        downFlings = 1,
+        upFlings = 1,
         gestureMargins = floatArrayOf(0.2f, 0.2f, 0.2f, 0.4f),
       )
     },
@@ -78,35 +81,35 @@ class LiquidBenchmark {
   @Test fun scrollLiquidStickyHeaderBaseline() = runBenchmarkTest(
     iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "StickyHeader", useLiquid = false) },
-    measureBlock = { flingElementDownThenUp("stickyHeaderList") },
+    measureBlock = { flingElement("stickyHeaderList") },
   )
 
   @Test fun scrollLiquidStickyHeaderNoFrost() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "StickyHeader") },
-    measureBlock = { flingElementDownThenUp("stickyHeaderList") },
+    measureBlock = { flingElement("stickyHeaderList") },
   )
 
   @Test fun scrollLiquidStickyHeaderFrost10dp() = runBenchmarkTest(
     setupBlock = { navigateTo(startDestination = "StickyHeader", initialFrost = 10f) },
-    measureBlock = { flingElementDownThenUp("stickyHeaderList") },
+    measureBlock = { flingElement("stickyHeaderList") },
   )
 
   @Test fun scrollManyLiquidNodesBaseline() = runBenchmarkTest(
     iterations = 1, // Baselines are only for insight, just run it once.
     setupBlock = { navigateTo(startDestination = "Many", useLiquid = false) },
-    measureBlock = { flingElementDownThenUp("liquidNodesList") },
+    measureBlock = { flingElement("liquidNodesList") },
   )
 
   @Test fun scrollManyLiquidNodesNoFrost() = runBenchmarkTest(
     // Unlike other screens, this one adds 20f so that the default is 20.dp frost rather than 0.dp.
     setupBlock = { navigateTo(startDestination = "Many", initialFrost = -20f) },
-    measureBlock = { flingElementDownThenUp("liquidNodesList") },
+    measureBlock = { flingElement("liquidNodesList") },
   )
 
   @Test fun scrollManyLiquidNodesFrost10dp() = runBenchmarkTest(
     // Unlike other screens, this one adds 20f so that the default is 20.dp frost rather than 0.dp.
     setupBlock = { navigateTo(startDestination = "Many", initialFrost = -10f) },
-    measureBlock = { flingElementDownThenUp("liquidNodesList") },
+    measureBlock = { flingElement("liquidNodesList") },
   )
 
   @Test fun rotatingClockBaseline() = runBenchmarkTest(
@@ -131,6 +134,13 @@ class LiquidBenchmark {
     measureBlock = {
       Thread.sleep(5000)
       device.waitForIdle()
+    },
+  )
+
+  @Test fun pullToRefresh() = runBenchmarkTest(
+    setupBlock = { navigateTo(startDestination = "PullToRefresh") },
+    measureBlock = {
+      flingElement(testTag = "picsumList", downFlings = 0, upFlings = 1)
     },
   )
 

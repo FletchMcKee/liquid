@@ -10,6 +10,7 @@ import io.github.fletchmckee.liquid.samples.app.demos.clock.Clock
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
 import io.github.fletchmckee.liquid.samples.app.demos.many.Many
+import io.github.fletchmckee.liquid.samples.app.demos.pulltorefresh.PullToRefresh
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
 
 class MainActivity : ComponentActivity() {
@@ -42,6 +43,7 @@ class MainActivity : ComponentActivity() {
       StartDestination.StickyHeader -> StickyHeader
       StartDestination.Many -> Many
       StartDestination.Clock -> Clock
+      StartDestination.PullToRefresh -> PullToRefresh
     }
   }
 
@@ -53,6 +55,6 @@ class MainActivity : ComponentActivity() {
     const val INITIAL_DISPERSION = "$PACKAGE_NAME.INITIAL_DISPERSION"
     const val IS_BENCHMARK = "$PACKAGE_NAME.IS_BENCHMARK"
 
-    enum class StartDestination { DemosList, Drag, Grid, StickyHeader, Many, Clock }
+    enum class StartDestination { DemosList, Drag, Grid, StickyHeader, Many, Clock, PullToRefresh }
   }
 }

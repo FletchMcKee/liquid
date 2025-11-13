@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -65,6 +66,8 @@ import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.ShaderBackground
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.demos.many.LoremIpsum
+import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
+import io.github.fletchmckee.liquid.samples.app.theme.LocalIsBenchmark
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
@@ -80,7 +83,10 @@ fun LiquidPullToRefresh(
   navController = navController,
   modifier = modifier,
 ) {
-  var cacheKey by rememberSaveable { mutableIntStateOf(abs(Random.nextInt())) }
+  val isBenchmark = LocalIsBenchmark.current
+  var cacheKey by rememberSaveable {
+    mutableIntStateOf(if (isBenchmark) 1 else abs(Random.nextInt()))
+  }
   var isRefreshing by rememberSaveable { mutableStateOf(false) }
 
   LaunchedEffect(isRefreshing) {
@@ -88,7 +94,7 @@ fun LiquidPullToRefresh(
       // Give an artificial delay so that we always display two full rotations since this
       // is what we're demoing.
       delay(4.5.seconds)
-      cacheKey = abs(Random.nextInt())
+      cacheKey = if (isBenchmark) 2 else abs(Random.nextInt())
     }
   }
 
@@ -132,7 +138,9 @@ private fun PicsumList(
   modifier = Modifier
     .fillMaxSize()
     .clipToBounds()
-    .liquefiable(liquidState),
+    .liquefiable(liquidState)
+    .testTagsAsResourceId(true)
+    .testTag("picsumList"),
   contentPadding = WindowInsets.systemBars.asPaddingValues(),
   overscrollEffect = null,
   horizontalAlignment = Alignment.CenterHorizontally,
