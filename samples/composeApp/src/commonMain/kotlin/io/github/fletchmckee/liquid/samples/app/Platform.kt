@@ -18,3 +18,9 @@ expect fun displayNavIcons(): Boolean
 
 @Composable
 expect fun rememberPullToRefreshEnabled(): Boolean
+
+/**
+ * Essentially nothing can be shared in commonMain when it comes to video,
+ * so instead we'll ask the platforms to provide a full composable or null.
+ */
+expect fun platformVideoPlayer(): (@Composable () -> Unit)?

@@ -26,3 +26,5 @@ actual fun rememberPullToRefreshEnabled(): Boolean = remember {
   window.matchMedia(query = "(pointer: coarse)").matches ||
     window.matchMedia(query = "(hover: none)").matches
 }
+
+actual fun platformVideoPlayer(): @Composable (() -> Unit)? = null

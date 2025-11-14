@@ -18,3 +18,5 @@ actual fun displayNavIcons(): Boolean = true
 
 @Composable
 actual fun rememberPullToRefreshEnabled(): Boolean = false
+
+actual fun platformVideoPlayer(): @Composable (() -> Unit)? = null

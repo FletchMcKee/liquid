@@ -58,6 +58,8 @@ import io.github.fletchmckee.liquid.samples.app.demos.pulltorefresh.PullToRefres
 import io.github.fletchmckee.liquid.samples.app.demos.pulltorefresh.pullToRefreshDestination
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.stickyHeaderDestination
+import io.github.fletchmckee.liquid.samples.app.demos.video.Video
+import io.github.fletchmckee.liquid.samples.app.demos.video.videoDestination
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
@@ -117,6 +119,9 @@ fun LiquidDemos(
     gridDestination(navController)
     stickyHeaderDestination(navController)
     manyDestination(navController)
+    platformVideoPlayer()?.let {
+      videoDestination(it)
+    }
   }
 
   val currentOnNavHostReady by rememberUpdatedState(onNavHostReady)
@@ -130,7 +135,12 @@ internal fun Demos(
   navController: NavController,
   liquidState: LiquidState = rememberLiquidState(),
   pullToRefreshEnabled: Boolean = rememberPullToRefreshEnabled(),
-  demosList: List<DemoData> = DemosList.filter { it.navType != PullToRefresh || pullToRefreshEnabled },
+  videoEnabled: Boolean = platformVideoPlayer() != null,
+  // Eventually I'll clean this up.
+  demosList: List<DemoData> = DemosList.filter { demo ->
+    (demo.navType != PullToRefresh || pullToRefreshEnabled) &&
+      (demo.navType != Video || videoEnabled)
+  },
 ) = Scaffold(
   topBar = {
     TopAppBar(
@@ -219,4 +229,5 @@ private val DemosList = listOf(
   DemoData("Grid", Grid),
   DemoData("Sticky Header", StickyHeader),
   DemoData("500 Liquid Nodes", Many),
+  DemoData("Video", Video),
 )

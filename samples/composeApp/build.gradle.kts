@@ -55,12 +55,6 @@ kotlin {
   }
 
   sourceSets {
-    androidMain.dependencies {
-      implementation(libs.ktor.cio)
-      implementation(compose.preview)
-      implementation(libs.activity.compose)
-    }
-
     commonMain.dependencies {
       implementation(projects.liquid)
       implementation(compose.runtime)
@@ -76,6 +70,14 @@ kotlin {
       implementation(libs.coil.ktor)
       implementation(libs.ktor.core)
       implementation(libs.jetbrains.lifecycle.runtimeCompose)
+    }
+
+    androidMain.dependencies {
+      implementation(libs.ktor.cio)
+      implementation(compose.preview)
+      implementation(libs.activity.compose)
+      implementation(libs.androidx.media3.exoplayer)
+      implementation(libs.androidx.media3.ui.compose)
     }
 
     iosMain.dependencies {
