@@ -162,6 +162,14 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     }
 
   override var boundsInRoot: Rect = Rect.Zero
+    set(value) {
+      if (field != value) {
+        // Some animations result in the `coordinates.boundsInRoot()` being empty even though
+        // `size` and `positionOnScreen` are specified, so this needs its own tracker.
+        mutatedFields = mutatedFields or Fields.BoundsInRoot
+        field = value
+      }
+    }
 
   override var liquefiables: List<Liquefiable> = emptyList()
     set(value) {
@@ -241,6 +249,7 @@ internal object Fields {
   const val ScaleX: Int = 0b1 shl 11
   const val ScaleY: Int = 0b1 shl 12
   const val Liquefiables: Int = 0b1 shl 13
+  const val BoundsInRoot: Int = 0b1 shl 14
 
   // PositionOnScreen isn't a shader uniform as it's only used to translate liquefiables into the correct space.
   const val RenderEffectFields: Int =
@@ -260,7 +269,8 @@ internal object Fields {
       Rotation or
       ScaleX or
       ScaleY or
-      Liquefiables
+      Liquefiables or
+      BoundsInRoot
 
   // //////////////////////////
   // Remove once minSdk is 31.
@@ -275,7 +285,8 @@ internal object Fields {
       Rotation or
       ScaleX or
       ScaleY or
-      Liquefiables
+      Liquefiables or
+      BoundsInRoot
 
   // //////////////////////////
   // Remove once minSdk is 33.

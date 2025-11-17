@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowSizeClass
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
@@ -72,10 +74,12 @@ fun LiquidClockScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
+  windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass,
 ) {
   val initialUseLiquid = LocalUseLiquid.current
   val initialFrost = LocalInitialFrost.current
   val initialDispersion = LocalInitialDispersion.current
+  val isLandscape = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
   var useLiquid by rememberSaveable { mutableStateOf(initialUseLiquid) }
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
@@ -145,6 +149,7 @@ fun LiquidClockScreen(
         containerRefraction = 0.08f,
         containerEdge = 0.01f,
         useLiquid = useLiquid,
+        isLandscape = isLandscape,
       )
     }
   }

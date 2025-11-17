@@ -6,6 +6,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -19,15 +21,17 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalRippleConfiguration
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
@@ -37,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowSizeClass
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
@@ -61,9 +66,11 @@ fun LiquidDraggableScreen(
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
   sliderContainerColor: Color = MaterialTheme.colorScheme.surface,
-) {
+  windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass,
+) = CompositionLocalProvider(LocalRippleConfiguration provides null) {
   val initialFrost = LocalInitialFrost.current
   val initialDispersion = LocalInitialDispersion.current
+  val isLandscape = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
   // Liquid shader properties
   var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
   var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
@@ -80,18 +87,16 @@ fun LiquidDraggableScreen(
     PagerBackground(liquidState)
 
     // Controls layer
-    BackButton(
+    SettingsButtons(
       liquidState = liquidState,
-      onClick = { navController.popBackStack() },
-      containerColor = sliderContainerColor,
-      modifier = Modifier.align(Alignment.TopStart),
-    )
-
-    SettingsColumn(
-      liquidState = liquidState,
+      isLandscape = isLandscape,
+      onBackClick = { navController.popBackStack() },
       onControlsClick = { showSliders = !showSliders },
       containerColor = sliderContainerColor,
-      modifier = Modifier.align(Alignment.TopEnd),
+      modifier = Modifier
+        .systemBarsPadding()
+        .padding(24.dp)
+        .zIndex(3f),
     )
 
     LiquidControls(
@@ -112,6 +117,7 @@ fun LiquidDraggableScreen(
       dispersionProvider = { dispersion },
       onDispersionChange = { dispersion = it },
       containerColor = sliderContainerColor,
+      isLandscape = isLandscape,
     )
 
     LiquidDraggableBox(
@@ -123,6 +129,7 @@ fun LiquidDraggableScreen(
       saturationProvider = { saturation },
       shapeProvider = { RoundedCornerShape(cornerPercent) },
       dispersionProvider = { dispersion },
+      initialYOffset = if (isLandscape) 0.dp else (-150).dp,
     )
   }
 }
@@ -153,23 +160,45 @@ private fun PagerBackground(
 }
 
 @Composable
-private fun SettingsColumn(
+private fun SettingsButtons(
   liquidState: LiquidState,
+  isLandscape: Boolean,
+  onBackClick: () -> Unit,
   onControlsClick: () -> Unit,
   containerColor: Color,
   modifier: Modifier = Modifier,
-) = Column(
-  modifier = modifier
-    .systemBarsPadding()
-    .padding(top = 24.dp, end = 24.dp)
-    .zIndex(3f),
-  verticalArrangement = Arrangement.spacedBy(16.dp),
-) {
-  ControlsButton(
-    liquidState = liquidState,
-    onClick = onControlsClick,
-    containerColor = containerColor,
-  )
+) = when {
+  isLandscape -> Column(
+    modifier = modifier,
+    verticalArrangement = Arrangement.spacedBy(16.dp),
+  ) {
+    BackButton(
+      liquidState = liquidState,
+      onClick = onBackClick,
+      containerColor = containerColor,
+    )
+
+    ControlsButton(
+      liquidState = liquidState,
+      onClick = onControlsClick,
+      containerColor = containerColor,
+    )
+  }
+  else -> Row(modifier) {
+    BackButton(
+      liquidState = liquidState,
+      onClick = onBackClick,
+      containerColor = containerColor,
+    )
+
+    Spacer(Modifier.weight(1f))
+
+    ControlsButton(
+      liquidState = liquidState,
+      onClick = onControlsClick,
+      containerColor = containerColor,
+    )
+  }
 }
 
 @Composable
@@ -182,8 +211,6 @@ private fun BackButton(
   if (displayNavIcons()) {
     IconButton(
       modifier = modifier
-        .systemBarsPadding()
-        .padding(top = 24.dp, start = 24.dp)
         .zIndex(3f)
         .dropShadow(CircleShape, LiquidShadow)
         .thenIf(LocalUseLiquid.current) {
@@ -210,8 +237,9 @@ private fun ControlsButton(
   liquidState: LiquidState,
   onClick: () -> Unit,
   containerColor: Color,
+  modifier: Modifier = Modifier,
 ) = IconButton(
-  modifier = Modifier
+  modifier = modifier
     .dropShadow(CircleShape, LiquidShadow)
     .thenIf(LocalUseLiquid.current) {
       liquid(liquidState) {
