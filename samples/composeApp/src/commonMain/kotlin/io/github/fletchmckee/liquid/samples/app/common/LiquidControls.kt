@@ -4,9 +4,11 @@ package io.github.fletchmckee.liquid.samples.app.common
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -19,7 +21,6 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,48 +74,55 @@ fun BoxScope.LiquidControls(
   containerRefraction: Float = 0.08f,
   containerEdge: Float = 0.02f,
   useLiquid: Boolean = LocalUseLiquid.current,
+  isLandscape: Boolean = false,
 ) {
-  // TODO: Add configuration change logic
-  val isLandscape = false
-
+  val expand = when {
+    isLandscape -> expandHorizontally(tween(1000))
+    else -> expandVertically(tween(1000))
+  }
+  val shrink = when {
+    isLandscape -> shrinkHorizontally(tween(1000))
+    else -> shrinkVertically(tween(1000))
+  }
   AnimatedVisibility(
     visible = showSliders,
-    enter = fadeIn(tween(1000)) + expandVertically(tween(1000)),
-    exit = fadeOut(tween(1000)) + shrinkVertically(tween(1000)),
+    enter = fadeIn(tween(1000)) + expand,
+    exit = fadeOut(tween(1000)) + shrink,
     modifier = modifier
       .align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter)
-      .widthIn(max = 600.dp)
       .wrapContentHeight()
       .padding(if (isLandscape) PaddingValues.Zero else WindowInsets.systemBars.asPaddingValues())
       .padding(16.dp)
-      .pointerInput(Unit) {
-        detectDragGestures { change, dragAmount ->
-          // Prevents swiping the HorizontalPager.
-          change.consume()
-        }
-      }
       .thenIf(useLiquid) {
         liquefiable(liquidState)
-      }
-      .then(
-        when {
-          useLiquid ->
-            Modifier
-              .dropShadow(containerShape, LiquidShadow)
-              .liquid(liquidState) {
-                frost = containerFrost
-                shape = containerShape
-                curve = 0.15f
-                refraction = containerRefraction
-                edge = containerEdge
-                tint = containerColor
-              }
-          else -> Modifier.background(containerColor, containerShape)
-        },
-      ),
+      },
   ) {
     LazyColumn(
-      modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+      modifier = Modifier
+        .fillMaxWidth(if (isLandscape) 0.4f else 1f)
+        .pointerInput(Unit) {
+          detectDragGestures { change, dragAmount ->
+            // Prevents swiping the HorizontalPager.
+            change.consume()
+          }
+        }
+        .then(
+          when {
+            useLiquid ->
+              Modifier
+                .dropShadow(containerShape, LiquidShadow)
+                .liquid(liquidState) {
+                  frost = containerFrost
+                  shape = containerShape
+                  curve = 0.15f
+                  refraction = containerRefraction
+                  edge = containerEdge
+                  tint = containerColor
+                }
+            else -> Modifier.background(containerColor, containerShape)
+          },
+        )
+        .padding(horizontal = 16.dp, vertical = 8.dp),
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {

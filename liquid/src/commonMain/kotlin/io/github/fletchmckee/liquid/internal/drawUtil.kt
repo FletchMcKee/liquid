@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toIntSize
 import androidx.compose.ui.util.fastFilter
@@ -80,12 +79,6 @@ internal fun Shape.cornerRadiiPx(size: Size, density: Density): FloatArray = whe
     }
   }
   else -> Float4Zero
-}
-
-internal inline val IntSize?.isEmpty: Boolean get() = when {
-  this == null -> true
-  width <= 0 || height <= 0 -> true
-  else -> false
 }
 
 internal inline val Offset.orZero: Offset get() = takeOrElse { Offset.Zero }

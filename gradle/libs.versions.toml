@@ -10,11 +10,11 @@ composeHotReload = "1.0.0-rc03"
 composeMultiplatform = "1.9.3"
 dokka = "2.1.0"
 espressoCore = "3.7.0"
-junit = "4.13.2"
 junitVersion = "1.3.0"
 kotlin = "2.2.21"
 kotlinxCoroutines = "1.10.2"
 ktor = "3.3.2"
+material3Adaptive = "1.2.0"
 mavenPublish = "0.35.0"
 jetbrainsLifecycle = "2.9.6"
 jetbrainsNavigation = "2.9.1"
@@ -42,6 +42,7 @@ jetbrains-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycl
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutines" }
 compose-material-icons = "org.jetbrains.compose.material:material-icons-core:1.7.3"
 jetbrains-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "jetbrainsNavigation" }
+jetbrains-material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "material3Adaptive" }
 coil-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
 
 ktor-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -57,6 +58,8 @@ android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref 
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 spotless-gradlePlugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
+
+# Benchmark testing
 androidx-uiautomator = { group = "androidx.test.uiautomator", name = "uiautomator", version.ref = "uiautomator" }
 androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "benchmark" }
 
