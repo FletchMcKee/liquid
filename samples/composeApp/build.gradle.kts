@@ -70,6 +70,7 @@ kotlin {
       implementation(libs.coil.ktor)
       implementation(libs.ktor.core)
       implementation(libs.jetbrains.lifecycle.runtimeCompose)
+      implementation(libs.jetbrains.material3.adaptive)
     }
 
     androidMain.dependencies {
