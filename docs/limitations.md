@@ -1,4 +1,56 @@
-#### SDK Level for Android
+### Platform Support for Native Views
+
+Liquid effects work by capturing content rendered through Compose's graphics pipeline.
+This means the effects apply to all standard Compose UI elements across all platforms.
+
+However, native platform views render outside Compose's pipeline and currently only have support for Android.
+
+#### Android
+
+The Android target can wrap native elements like a WebView in an AndroidView or ExoPlayer in a TextureView, and this allows the
+`liquefiable` nodes to access their content.
+
+WebView example:
+```kotlin
+@Composable
+fun WebViewExample(
+  url: String,
+  modifier: Modifier = Modifier,
+  liquidState: LiquidState = rememberLiquidState(),
+) = Box(modifier) {
+  AndroidView(
+    factory = { context ->
+      WebView(context).apply {
+        layoutParams = ViewGroup.LayoutParams(
+          ViewGroup.LayoutParams.MATCH_PARENT,
+          ViewGroup.LayoutParams.MATCH_PARENT
+        )
+        setLayerType(View.LAYER_TYPE_HARDWARE, null)
+        webViewClient = WebViewClient()
+        settings.javaScriptEnabled = true
+        loadUrl(url)
+      }
+    },
+    modifier = Modifier
+      .fillMaxSize()
+      .liquefiable(liquidState),
+  )
+
+  Box(
+    Modifier
+      .size(200.dp)
+      .align(Alignment.Center)
+      .liquid(liquidState),
+  )
+}
+```
+
+#### All other platforms
+
+Their native views render in separate graphics contexts that are isolated from Compose's Skia rendering. We will explore options for
+possible workarounds, but currently only the `edge` effect will display as it is agnostic to the sampled pixels.
+
+### SDK Level for Android
 
 This only applies for the Android target.
 
@@ -11,7 +63,7 @@ The minimum API level that will display the liquid effects is 33 (Android 13). T
 - **API 30 and lower:**
   - Has all of the above features except `frost` is ignored as RenderEffects are unavailable.
 
-#### Node Hierarchy
+### Node Hierarchy
 
 The `liquid` modifier cannot be used on nodes that are descendants of `liquefiable` nodes due to how the rendering pipeline works.
 
@@ -54,12 +106,12 @@ fun LiquefiableWithLiquidDescendant(
 }
 ```
 
-#### RotationX/Y and Skew Animations
+### RotationX/Y Animations
 
-The current effects are built to handle alpha, scale, rotationZ and translation changes. However handling rotationX/Y and skew animations is not supported.
-Your liquid effect nodes can do all of those animations, it's just that the liquefiable source nodes that are rendered into the effect nodes will not be drawn accurately.
+The current effects are built to handle alpha, scale, rotationZ and translation changes. However, rotationX and rotationY animations are not supported.
+Your liquid effect nodes can perform those animations, but the liquefiable source nodes that are rendered into the effect nodes will not be drawn accurately.
 
-#### Frost/Lens Effect in LazyList Items
+### Frost/Lens Effect in LazyList Items
 
 Attempting to apply a `liquid` effect with non-zero `frost/refraction/curve` values presents a challenge when used in LazyLists. When
 offscreen items are being scrolled on screen, the visible edge may attempt to pull pixels from offscreen that don't exist and are instead an
