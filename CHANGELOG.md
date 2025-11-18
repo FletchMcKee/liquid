@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [1.0.1] - 2025-11-18
+
+New:
+- Support for Compose Multiplatform 1.9.3 ([#63](https://github.com/FletchMcKee/liquid/pull/63)).
+
+Fixed:
+- Enter/exit animations bug where liquid effect would not return ([#71](https://github.com/FletchMcKee/liquid/pull/71)).
+- Tint is applied after saturation, otherwise tint is saturated and masks saturation of the recorded content.
+
 ## [1.0.0] - 2025-10-31
 
 New:
@@ -78,7 +87,8 @@ Changed:
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.0.0...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.0.1...HEAD
+[1.0.1]: https://github.com/fletchmckee/liquid/releases/tag/1.0.1
 [1.0.0]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0
 [1.0.0-rc2]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0-rc2
 [1.0.0-rc1]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0-rc1
