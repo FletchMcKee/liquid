@@ -22,7 +22,7 @@ media3 = "1.8.0"
 robolectric = "4.16"
 roborazzi = "1.51.0"
 serialization = "1.9.0"
-spotless = "8.0.0"
+spotless = "8.1.0"
 uiautomator = "2.3.0"
 
 [libraries]
