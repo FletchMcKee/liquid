@@ -55,7 +55,7 @@ internal fun Modifier.drag(
 
 @Composable
 fun rememberShaderBrush(
-  colors: List<Color> = listOf(MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.surfaceTint),
+  colors: List<Color> = listOf(MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.primary),
 ): ShaderBrush = remember(colors) {
   object : ShaderBrush() {
     override fun createShader(size: Size): Shader = LinearGradientShader(

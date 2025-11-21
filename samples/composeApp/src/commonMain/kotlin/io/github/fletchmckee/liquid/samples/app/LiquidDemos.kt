@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -47,25 +48,21 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.demos.clock.Clock
-import io.github.fletchmckee.liquid.samples.app.demos.clock.clockDestination
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
-import io.github.fletchmckee.liquid.samples.app.demos.drag.dragDestination
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
-import io.github.fletchmckee.liquid.samples.app.demos.grid.gridDestination
 import io.github.fletchmckee.liquid.samples.app.demos.many.Many
-import io.github.fletchmckee.liquid.samples.app.demos.many.manyDestination
-import io.github.fletchmckee.liquid.samples.app.demos.pulltorefresh.PullToRefresh
-import io.github.fletchmckee.liquid.samples.app.demos.pulltorefresh.pullToRefreshDestination
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
-import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.stickyHeaderDestination
-import io.github.fletchmckee.liquid.samples.app.demos.video.Video
-import io.github.fletchmckee.liquid.samples.app.demos.video.videoDestination
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
 import liquid_root.samples.composeapp.generated.resources.Res
 import liquid_root.samples.composeapp.generated.resources.liquid_demos_platform
 import org.jetbrains.compose.resources.stringResource
+
+@Stable
+expect val DemosList: List<DemoData>
+
+expect fun NavGraphBuilder.platformDemoDestinations(navController: NavHostController)
 
 @Composable
 fun LiquidDemos(
@@ -76,7 +73,6 @@ fun LiquidDemos(
   initialDispersion: Float = 0f,
   isBenchmark: Boolean = false,
   navController: NavHostController = rememberNavController(),
-  pullToRefreshEnabled: Boolean = rememberPullToRefreshEnabled(),
   onNavHostReady: suspend (NavController) -> Unit = {},
 ) = LiquidTheme(
   useLiquid = useLiquid,
@@ -111,17 +107,7 @@ fun LiquidDemos(
     modifier = modifier.fillMaxSize(),
   ) {
     demosListDestination(navController)
-    if (pullToRefreshEnabled) {
-      pullToRefreshDestination(navController)
-    }
-    clockDestination(navController)
-    dragDestination(navController)
-    gridDestination(navController)
-    stickyHeaderDestination(navController)
-    manyDestination(navController)
-    platformVideoPlayer()?.let {
-      videoDestination(it)
-    }
+    platformDemoDestinations(navController)
   }
 
   val currentOnNavHostReady by rememberUpdatedState(onNavHostReady)
@@ -134,13 +120,7 @@ fun LiquidDemos(
 internal fun Demos(
   navController: NavController,
   liquidState: LiquidState = rememberLiquidState(),
-  pullToRefreshEnabled: Boolean = rememberPullToRefreshEnabled(),
-  videoEnabled: Boolean = platformVideoPlayer() != null,
-  // Eventually I'll clean this up.
-  demosList: List<DemoData> = DemosList.filter { demo ->
-    (demo.navType != PullToRefresh || pullToRefreshEnabled) &&
-      (demo.navType != Video || videoEnabled)
-  },
+  demosList: List<DemoData> = DemosList,
 ) = Scaffold(
   topBar = {
     TopAppBar(
@@ -216,18 +196,16 @@ private fun DemoItem(
 }
 
 @Immutable
-internal data class DemoData(
+data class DemoData(
   val name: String,
   val navType: Any,
 )
 
 @Stable
-private val DemosList = listOf(
-  DemoData("Pull to Refresh", PullToRefresh),
+val FullySupportedDemos = listOf(
   DemoData("Rotating Clock", Clock),
   DemoData("Drag", Drag),
   DemoData("Grid", Grid),
   DemoData("Sticky Header", StickyHeader),
   DemoData("500 Liquid Nodes", Many),
-  DemoData("Video", Video),
 )

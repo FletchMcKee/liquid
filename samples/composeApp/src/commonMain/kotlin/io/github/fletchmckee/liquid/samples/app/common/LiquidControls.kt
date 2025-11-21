@@ -89,7 +89,7 @@ fun BoxScope.LiquidControls(
     enter = fadeIn(tween(1000)) + expand,
     exit = fadeOut(tween(1000)) + shrink,
     modifier = modifier
-      .align(if (isLandscape) Alignment.CenterEnd else Alignment.BottomCenter)
+      .align(if (isLandscape) Alignment.BottomEnd else Alignment.BottomCenter)
       .wrapContentHeight()
       .padding(if (isLandscape) PaddingValues.Zero else WindowInsets.systemBars.asPaddingValues())
       .padding(16.dp)

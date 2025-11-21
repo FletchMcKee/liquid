@@ -3,9 +3,7 @@
 package io.github.fletchmckee.liquid.samples.app
 
 import android.os.Build
-import androidx.compose.runtime.Composable
 import coil3.PlatformContext
-import io.github.fletchmckee.liquid.samples.app.demos.video.VideoPlayer
 import okio.Path
 import okio.Path.Companion.toOkioPath
 
@@ -18,10 +16,3 @@ actual fun getPlatform(): Platform = AndroidPlatform()
 actual fun PlatformContext.cacheDir(): Path? = this.cacheDir.toOkioPath()
 
 actual fun displayNavIcons(): Boolean = false
-
-@Composable
-actual fun rememberPullToRefreshEnabled(): Boolean = true
-
-actual fun platformVideoPlayer(): @Composable (() -> Unit)? = {
-  VideoPlayer()
-}

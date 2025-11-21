@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 data object PullToRefresh
 
 fun NavGraphBuilder.pullToRefreshDestination(navController: NavController) = composable<PullToRefresh> {
-  LiquidPullToRefresh(
+  LiquidPullToRefreshScreen(
     navController = navController,
     modifier = Modifier.fillMaxSize(),
   )
