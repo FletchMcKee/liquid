@@ -1,0 +1,3 @@
+language = Objective-C
+headers = SwiftGlassWebViewProvider.h
+package = io.github.fletchmckee.liquid.samples.app

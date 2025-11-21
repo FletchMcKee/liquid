@@ -39,6 +39,20 @@ kotlin {
       baseName = "ComposeApp"
       isStatic = true
     }
+
+    // Enables calling Swift code from Kotlin for the WebVIew.
+    iosTarget.compilations.named("main") {
+      cinterops.register("SwiftGlassWebViewProvider") {
+        definitionFile.set(
+          project.layout.projectDirectory.file("../iosApp/iosApp/Interops/SwiftGlassWebViewProvider.def"),
+        )
+        includeDirs(
+          project.layout.projectDirectory
+            .dir("../iosApp/iosApp/Interops/")
+            .asFile,
+        )
+      }
+    }
   }
 
   jvm()

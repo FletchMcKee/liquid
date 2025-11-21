@@ -10,7 +10,7 @@ val LiquidGreen = Color(0xFF02C4BC)
 val PurpleGrey80 = Color(0xFFCCC2DC)
 val Stone = Color(0xFF555555)
 val Silver = Color(0xFFEEEEEE)
-
+val Carbon = Color(0xFF333333)
 val Ink = Color(0xFF111111)
 val Ink30 = Color(0x4D111111)
 val Ink50 = Color(0x80111111)

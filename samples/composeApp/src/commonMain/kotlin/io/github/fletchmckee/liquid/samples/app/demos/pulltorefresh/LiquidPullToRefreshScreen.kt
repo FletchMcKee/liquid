@@ -74,7 +74,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 
 @Composable
-fun LiquidPullToRefresh(
+fun LiquidPullToRefreshScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
   refreshState: PullToRefreshState = rememberPullToRefreshState(),
@@ -163,7 +163,7 @@ private fun PicsumList(
 private fun PicsumIpsumCard(
   onComplete: () -> Unit,
   cacheKey: Int,
-  containerColor: Color = MaterialTheme.colorScheme.surfaceContainer,
+  containerColor: Color = MaterialTheme.colorScheme.surfaceTint,
 ) = Column(
   modifier = Modifier.fillMaxWidth(),
   horizontalAlignment = Alignment.CenterHorizontally,
