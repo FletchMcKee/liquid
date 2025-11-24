@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+Fixed:
+- Corner radii are clamped to 50% of the minimum dimension ([#82](https://github.com/FletchMcKee/liquid/pull/81)).
+
 ## [1.0.1] - 2025-11-18
 
 New:

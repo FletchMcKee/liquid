@@ -26,6 +26,7 @@ import androidx.compose.ui.node.observeReads
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalGraphicsContext
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.util.fastFilter
 import io.github.fletchmckee.liquid.LiquidScope
@@ -108,6 +109,8 @@ internal abstract class AbstractLiquidNode(
     // Our frostRadius calculations rely on density. Setting it here prevents unnecessary RenderEffect
     // invalidations in the draw pass.
     reusableScope.density = currentValueOf(LocalDensity)
+    // The cornerRadii ordering depends on layoutDirection.
+    reusableScope.layoutDirection = currentValueOf(LocalLayoutDirection)
     block(reusableScope)
 
     // Changes to `liquefiables` should be tracked, not ancestors.
