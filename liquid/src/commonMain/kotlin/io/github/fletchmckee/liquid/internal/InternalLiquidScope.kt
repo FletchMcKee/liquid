@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import io.github.fletchmckee.liquid.Liquefiable
 import io.github.fletchmckee.liquid.LiquidScope
@@ -20,6 +21,7 @@ import io.github.fletchmckee.liquid.LiquidScope
 // These fields are configured internally so we don't expose them as public API, but they have to be set externally.
 internal interface InternalLiquidScope : LiquidScope {
   var density: Density
+  var layoutDirection: LayoutDirection
   var size: Size
   var positionOnScreen: Offset
   var inverseScaleX: Float
@@ -54,7 +56,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
         // Similar to tint, we don't really care about the shape interface, we just need the corner radii,
         // so the mutatedFields tracker is set there.
         if (size.isSpecified) {
-          cornerRadii = value.cornerRadiiPx(size, density)
+          cornerRadii = value.normalizedCornerRadii(size, density, layoutDirection)
         }
       }
     }
@@ -118,13 +120,25 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       }
     }
 
+  override var layoutDirection: LayoutDirection = LayoutDirection.Ltr
+    set(value) {
+      if (field != value) {
+        // Doesn't need its own mutatedFields tracker as we only care about changes to cornerRadii.
+        // Also even if this did change frequently, most use cases will have uniform cornerRadii.
+        field = value
+        if (size.isSpecified) {
+          cornerRadii = shape.normalizedCornerRadii(size, density, value)
+        }
+      }
+    }
+
   override var size: Size = Size.Unspecified
     set(value) {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.Size
         field = value
         if (value.isSpecified) {
-          cornerRadii = shape.cornerRadiiPx(value, density)
+          cornerRadii = shape.normalizedCornerRadii(value, density, layoutDirection)
         }
       }
     }

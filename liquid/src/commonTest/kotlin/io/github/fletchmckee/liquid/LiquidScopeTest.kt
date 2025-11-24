@@ -9,6 +9,7 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import assertk.assertThat
 import assertk.assertions.isEmpty
@@ -37,6 +38,8 @@ class LiquidScopeTest {
     assertThat(scope.saturation).isEqualTo(1f)
     assertThat(scope.dispersion).isZero()
     assertThat(scope.argbColor).isZero()
+    assertThat(scope.density).isEqualTo(Density(1f))
+    assertThat(scope.layoutDirection).isEqualTo(LayoutDirection.Ltr)
     assertThat(scope.size).isEqualTo(Size.Unspecified)
     assertThat(scope.positionOnScreen).isEqualTo(Offset.Unspecified)
     assertThat(scope.inverseScaleX).isEqualTo(1f)
@@ -207,6 +210,38 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+  }
+
+  @Test fun layoutDirectionMutationsUpdateCornerRadii() {
+    scope.size = Size(width = 100f, height = 100f)
+    scope.clean() // We just want to verify layoutDirection changes.
+    scope.layoutDirection = LayoutDirection.Ltr
+    scope.shape = RoundedCornerShape(
+      bottomEndPercent = 10,
+      topEndPercent = 20,
+      bottomStartPercent = 30,
+      topStartPercent = 40,
+    )
+    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(0.1f, 0.2f, 0.3f, 0.4f))
+    assertThat(scope.mutatedFields).isEqualTo(Fields.Shape)
+    // Verify the RenderEffect and InvalidateFlags are not 0.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    scope.clean() // Clean the tracker.
+
+    scope.layoutDirection = LayoutDirection.Rtl
+    // Verify the ends and starts flipped.
+    assertThat(scope.cornerRadii).isEqualTo(floatArrayOf(0.3f, 0.4f, 0.1f, 0.2f))
+    assertThat(scope.mutatedFields).isEqualTo(Fields.Shape)
+    // Verify the RenderEffect and InvalidateFlags are not 0.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    scope.clean()
+
+    // Verify resetting the same layoutDirection does not invalidate any flags.
+    scope.layoutDirection = LayoutDirection.Rtl
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isZero()
   }
 
   private fun LiquidScope.setNonDefaultValues() {
