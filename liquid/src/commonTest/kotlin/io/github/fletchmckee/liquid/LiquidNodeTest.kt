@@ -43,6 +43,7 @@ class LiquidNodeTest {
   private lateinit var liquidState: LiquidState
 
   @BeforeTest fun setUp() {
+    @Suppress("Deprecation") // Can remove once the constructor is internal.
     liquidState = LiquidState()
   }
 
@@ -77,7 +78,9 @@ class LiquidNodeTest {
     var offset by mutableStateOf(IntOffset(0))
     var drawCount = 0
     var liquidBlockCount = 0
+
     // Own unique LiquidState
+    @Suppress("Deprecation") // Can remove once the constructor is internal.
     val liquidNode = LiquidNode(LiquidState()) { liquidBlockCount++ }
     setContent {
       Parent {

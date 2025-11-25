@@ -6,7 +6,6 @@ import com.vanniktech.maven.publish.KotlinMultiplatform
 import kotlinx.validation.ExperimentalBCVApi
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 
@@ -27,11 +26,11 @@ kotlin {
   explicitApi()
   addDefaultLiquidTargets()
 
-  androidTarget {
-    compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_11)
-    }
+  compilerOptions {
+    allWarningsAsErrors = true
+  }
 
+  androidTarget {
     @OptIn(ExperimentalKotlinGradlePluginApi::class)
     instrumentedTestVariant.sourceSetTree.set(KotlinSourceSetTree.test)
   }

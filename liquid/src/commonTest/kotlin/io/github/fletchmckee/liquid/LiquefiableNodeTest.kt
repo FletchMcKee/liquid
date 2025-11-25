@@ -37,6 +37,7 @@ class LiquefiableNodeTest {
   private lateinit var liquidState: LiquidState
 
   @BeforeTest fun setUp() {
+    @Suppress("Deprecation")
     liquidState = LiquidState()
   }
 

@@ -3,13 +3,7 @@
 package io.github.fletchmckee.liquid
 
 import androidx.compose.runtime.Stable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.layer.GraphicsLayer
 import io.github.fletchmckee.liquid.internal.LiquefiableElement
 
 /**
@@ -43,19 +37,3 @@ import io.github.fletchmckee.liquid.internal.LiquefiableElement
 public fun Modifier.liquefiable(
   liquidState: LiquidState,
 ): Modifier = this then LiquefiableElement(liquidState)
-
-@Stable
-internal class Liquefiable {
-  internal var layer: GraphicsLayer? by mutableStateOf(null)
-  internal var boundsOnScreen: Rect by mutableStateOf(Rect.Zero)
-
-  // Avoids triggering recomposition when logs read this object.
-  override fun toString(): String = Snapshot.withoutReadObservation {
-    """
-    Liquefiable(
-      layer=$layer,
-      boundsOnScreen=$boundsOnScreen,
-    )
-    """.trimIndent()
-  }
-}

@@ -15,7 +15,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import io.github.fletchmckee.liquid.Liquefiable
 import io.github.fletchmckee.liquid.LiquidScope
 
 // These fields are configured internally so we don't expose them as public API, but they have to be set externally.
