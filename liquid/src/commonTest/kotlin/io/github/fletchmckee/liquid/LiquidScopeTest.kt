@@ -17,6 +17,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotZero
 import assertk.assertions.isZero
 import io.github.fletchmckee.liquid.internal.Fields
+import io.github.fletchmckee.liquid.internal.Liquefiable
 import io.github.fletchmckee.liquid.internal.LiquidScopeImpl
 import kotlin.test.BeforeTest
 import kotlin.test.Test

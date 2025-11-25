@@ -1,6 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-package io.github.fletchmckee.liquid
+package io.github.fletchmckee.liquid.internal
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,7 +15,6 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isCloseTo
 import assertk.assertions.isEqualTo
-import io.github.fletchmckee.liquid.internal.normalizedCornerRadii
 import kotlin.test.Test
 
 class DrawUtilTest {

@@ -2,10 +2,15 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.internal
 
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.node.CompositionLocalConsumerModifierNode
@@ -17,8 +22,23 @@ import androidx.compose.ui.node.currentValueOf
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalGraphicsContext
 import androidx.compose.ui.unit.toSize
-import io.github.fletchmckee.liquid.Liquefiable
 import io.github.fletchmckee.liquid.LiquidState
+
+@Stable
+internal class Liquefiable {
+  internal var layer: GraphicsLayer? by mutableStateOf(null)
+  internal var boundsOnScreen: Rect by mutableStateOf(Rect.Zero)
+
+  // Avoids state tracking when used for logs.
+  override fun toString(): String = Snapshot.withoutReadObservation {
+    """
+    Liquefiable(
+      layer=$layer,
+      boundsOnScreen=$boundsOnScreen,
+    )
+    """.trimIndent()
+  }
+}
 
 internal class LiquefiableElement(
   private val liquidState: LiquidState,

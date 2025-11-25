@@ -7,13 +7,20 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import io.github.fletchmckee.liquid.internal.Liquefiable
 import io.github.fletchmckee.liquid.internal.liquidElement
 
 /**
  * State manager of recorded [Liquefiable] nodes to be rendered into [liquid] effect nodes.
  */
 @Stable
-public class LiquidState {
+public class LiquidState
+@Deprecated(
+  message = "Use rememberLiquidState instead.",
+  replaceWith = ReplaceWith("rememberLiquidState()"),
+  level = DeprecationLevel.WARNING,
+)
+public constructor() {
   internal val liquefiables = mutableStateListOf<Liquefiable>()
 }
 
@@ -34,6 +41,7 @@ public class LiquidState {
  *
  * @return a stable [LiquidState] that survives recomposition.
  */
+@Suppress("Deprecation") // Can remove once the LiquidState constructor is internal.
 @Composable
 public fun rememberLiquidState(): LiquidState = remember { LiquidState() }
 
