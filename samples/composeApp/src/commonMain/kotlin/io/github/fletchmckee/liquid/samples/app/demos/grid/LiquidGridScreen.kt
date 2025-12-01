@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -56,6 +58,7 @@ fun LiquidGridScreen(
   modifier: Modifier = Modifier,
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
+  gridState: LazyGridState = rememberLazyGridState(),
 ) {
   val useLiquid = LocalUseLiquid.current
   val initialFrost = LocalInitialFrost.current
@@ -115,6 +118,7 @@ fun LiquidGridScreen(
     LiquidGrid(
       cacheKey = cacheKey,
       contentPadding = padding,
+      gridState = gridState,
       modifier = Modifier
         .fillMaxSize()
         .testTag("liquidGrid")
@@ -130,17 +134,17 @@ fun LiquidGridScreen(
 private fun LiquidGrid(
   cacheKey: Int,
   contentPadding: PaddingValues,
+  gridState: LazyGridState,
   modifier: Modifier = Modifier,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = LazyVerticalGrid(
+  state = gridState,
   columns = GridCells.Adaptive(120.dp),
   verticalArrangement = Arrangement.spacedBy(8.dp),
   horizontalArrangement = Arrangement.spacedBy(8.dp),
   contentPadding = contentPadding,
   // Need to add a background of some kind, otherwise the gaps between the grids aren't sampled in the liquid effect.
-  modifier = modifier
-    .background(rememberShaderBrush())
-    .padding(horizontal = 8.dp),
+  modifier = modifier.background(rememberShaderBrush()),
 ) {
   items(count = 100, key = { it }) { index ->
     when {

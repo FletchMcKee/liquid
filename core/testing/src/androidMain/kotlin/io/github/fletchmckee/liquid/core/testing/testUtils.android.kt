@@ -44,7 +44,7 @@ actual fun runScreenshotTest(
         filePath = "android/${roboOutputName()}[${android.os.Build.VERSION.SDK_INT}].png",
         roborazziOptions = RoborazziOptions(
           compareOptions = RoborazziOptions.CompareOptions(
-            changeThreshold = 0.01f,
+            changeThreshold = 0.005f,
           ),
         ),
       )

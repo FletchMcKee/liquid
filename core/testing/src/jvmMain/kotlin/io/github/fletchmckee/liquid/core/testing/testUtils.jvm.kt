@@ -24,7 +24,7 @@ actual fun runScreenshotTest(
     filePath = "jvm/${roboOutputName()}.png",
     roborazziOptions = RoborazziOptions(
       compareOptions = RoborazziOptions.CompareOptions(
-        changeThreshold = 0.01f,
+        changeThreshold = 0.005f,
       ),
     ),
   )
