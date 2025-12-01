@@ -14,6 +14,7 @@ internal const val LiquidShader = """
   uniform float dispersion;
 
   const float EPSILON = 0.001;
+  const float AA_WIDTH_PX = 1.5;
 
   float computeSdf(in float2 p, in float2 b, in half4 r) {
     r.xy = (p.x > 0.0) ? r.xy : r.zw; // xy is right quadrant, zw is left
@@ -46,8 +47,8 @@ internal const val LiquidShader = """
     half4 shapeVr = half4(cornerRadii);
     float shapeSdf = computeSdf(shapeCoord, halfShapeSize, shapeVr);
 
-    // Using 2.0 softens jagged pixels around corners without softening the edge too much.
-    float aaWidth = 2.0 / minDimension;
+    // Using 1.5 softens jagged pixels around corners without softening the edge too much.
+    float aaWidth = AA_WIDTH_PX / minDimension;
     if (shapeSdf > aaWidth) {
       return half4(0.0);
     }
