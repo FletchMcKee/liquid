@@ -63,7 +63,6 @@ fun LiquidTopAppBar(
           refraction = 0.25f
           curve = 0.5f
           shape = topBarShape
-          edge = 0.05f
           tint = containerColor
         }
       },

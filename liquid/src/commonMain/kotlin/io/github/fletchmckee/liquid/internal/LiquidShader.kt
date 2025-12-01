@@ -46,7 +46,9 @@ internal const val LiquidShader = """
     half4 shapeVr = half4(cornerRadii);
     float shapeSdf = computeSdf(shapeCoord, halfShapeSize, shapeVr);
 
-    if (shapeSdf > 0.0) {
+    // Using 2.0 softens jagged pixels around corners without softening the edge too much.
+    float aaWidth = 2.0 / minDimension;
+    if (shapeSdf > aaWidth) {
       return half4(0.0);
     }
 
@@ -101,8 +103,8 @@ internal const val LiquidShader = """
     float edgeLighting = edgeSmooth * nDotL;
     fragColor.rgb += edgeLighting;
 
-    // For anti-aliasing
-    float transition = smoothstep(0.0, 1.0, saturate(-shapeSdf * minDimension));
-    return mix(content.eval(fragCoord), fragColor, transition);
+    // Centers the AA gradient to the edge of our shape.
+    float aaAlpha = 1.0 - smoothstep(-aaWidth * 0.5, aaWidth * 0.5, shapeSdf);
+    return fragColor * aaAlpha;
   }
 """

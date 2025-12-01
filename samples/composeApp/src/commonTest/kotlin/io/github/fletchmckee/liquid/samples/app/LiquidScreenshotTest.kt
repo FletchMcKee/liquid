@@ -5,6 +5,7 @@
 package io.github.fletchmckee.liquid.samples.app
 
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.ExperimentalTestApi
 import io.github.fletchmckee.liquid.core.testing.ScreenshotTest
@@ -38,14 +39,14 @@ class LiquidScreenshotTest : ScreenshotTest() {
   @Test fun capture_grid_no_frost() = runLiquidScreenshotTest(
     darkMode = false,
   ) {
-    LiquidGridScreen()
+    LiquidGridScreen(gridState = scrolledLazyGridState)
   }
 
   @Test fun capture_grid_10_dp_frost() = runLiquidScreenshotTest(
     darkMode = false,
     initialFrost = 10f,
   ) {
-    LiquidGridScreen()
+    LiquidGridScreen(gridState = scrolledLazyGridState)
   }
 
   @Test fun capture_sticky_header_no_frost_scrolled() = runLiquidScreenshotTest {
@@ -114,5 +115,7 @@ class LiquidScreenshotTest : ScreenshotTest() {
       // Lets the sticky header hover over text.
       firstVisibleItemScrollOffset = 1000,
     )
+
+    val scrolledLazyGridState = LazyGridState(firstVisibleItemIndex = 49)
   }
 }

@@ -13,8 +13,10 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toIntSize
 import io.github.fletchmckee.liquid.LiquidScope
 
 // These fields are configured internally so we don't expose them as public API, but they have to be set externally.
@@ -22,6 +24,14 @@ internal interface InternalLiquidScope : LiquidScope {
   var density: Density
   var layoutDirection: LayoutDirection
   var size: Size
+
+  /**
+   * The GraphicsLayer `record` method requires IntSize.
+   *
+   * This exists just so that we don't have to call `toIntSize` for every draw operation,
+   * but instead only when the size changes.
+   */
+  var intSize: IntSize
   var positionOnScreen: Offset
   var inverseScaleX: Float
   var inverseScaleY: Float
@@ -29,9 +39,7 @@ internal interface InternalLiquidScope : LiquidScope {
   var boundsInRoot: Rect
   var liquefiables: List<Liquefiable>
 
-  /**
-   * Resets the `mutatedFields` dirty tracker.
-   */
+  /** Resets the `mutatedFields` dirty tracker. */
   fun clean()
 }
 
@@ -136,11 +144,14 @@ internal class LiquidScopeImpl : InternalLiquidScope {
       if (field != value) {
         mutatedFields = mutatedFields or Fields.Size
         field = value
+        intSize = value.toIntSize()
         if (value.isSpecified) {
           cornerRadii = shape.normalizedCornerRadii(value, density, layoutDirection)
         }
       }
     }
+
+  override var intSize: IntSize = IntSize.Zero
 
   override var positionOnScreen: Offset = Offset.Unspecified
     set(value) {

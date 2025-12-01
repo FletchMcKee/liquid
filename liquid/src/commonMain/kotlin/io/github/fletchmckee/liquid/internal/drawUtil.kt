@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toIntSize
 import androidx.compose.ui.util.fastCoerceAtMost
 import androidx.compose.ui.util.fastFilter
 import androidx.compose.ui.util.fastForEach
@@ -37,7 +36,7 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   if (liquefiables.isEmpty()) return@with
   // We avoid unnecessary liquidScope invalidations by observing the mutableState boundsOnScreen
   // and layers here. Changes to these properties will recompose the full draw pass.
-  layer.record(size.toIntSize()) {
+  layer.record(intSize) {
     liquefiables.fastForEach { liquefiable ->
       liquefiable.layer
         ?.takeUnless { it.isReleased }
