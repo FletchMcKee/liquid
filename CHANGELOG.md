@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 Changed:
+- Deprecated the LiquidState public constructor ([#84](https://github.com/FletchMcKee/liquid/pull/84)).
+  - Use `rememberLiquidState()` instead as this will eventually be converted into an internal constructor.
 - Improved anti-aliasing ([#88](https://github.com/FletchMcKee/liquid/pull/88)).
 
 Fixed:
