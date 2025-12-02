@@ -74,5 +74,6 @@ internal class LiquidNode(
     uniform("tint", colorComponents)
     uniform("saturation", saturation)
     uniform("dispersion", dispersion)
+    uniform("contrast", contrast)
   }
 }

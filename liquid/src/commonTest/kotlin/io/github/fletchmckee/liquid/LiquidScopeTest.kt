@@ -38,6 +38,7 @@ class LiquidScopeTest {
     assertThat(scope.tint).isEqualTo(Color.Unspecified)
     assertThat(scope.saturation).isEqualTo(1f)
     assertThat(scope.dispersion).isZero()
+    assertThat(scope.contrast).isEqualTo(1f)
     assertThat(scope.argbColor).isZero()
     assertThat(scope.density).isEqualTo(Density(1f))
     assertThat(scope.layoutDirection).isEqualTo(LayoutDirection.Ltr)
@@ -65,6 +66,9 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is dirty, but pre-snowCone is not dirty.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isNotZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isZero()
   }
 
   @Test fun shapeMutationsObserved_whenSizeIsSpecified() {
@@ -79,6 +83,8 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isNotZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isNotZero()
   }
 
   @Test fun shapeMutationsNotObserved_whenSizeIsUnspecified() {
@@ -92,6 +98,8 @@ class LiquidScopeTest {
     // RenderEffect and InvalidateFlags should not be set as size is unspecified.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isZero()
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isZero()
   }
 
   @Test fun refractionMutationsObserved() {
@@ -101,6 +109,9 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is not dirty since this has no effect.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isZero()
   }
 
   @Test fun curveMutationsObserved() {
@@ -110,6 +121,9 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is not dirty since this has no effect.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isZero()
   }
 
   @Test fun edgeMutationsObserved() {
@@ -119,6 +133,9 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is also dirty.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isNotZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isNotZero()
   }
 
   @Test fun tintMutationsObserved() {
@@ -129,6 +146,9 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is also dirty.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isNotZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isNotZero()
   }
 
   @Test fun saturationMutationsObserved() {
@@ -138,6 +158,9 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is also dirty.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isNotZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isNotZero()
   }
 
   @Test fun dispersionMutationsObserved() {
@@ -147,6 +170,21 @@ class LiquidScopeTest {
     // Verify the RenderEffect and InvalidateFlags are not 0.
     assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
     assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is not dirty since this has no effect.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isZero()
+  }
+
+  @Test fun contrastMutationsObserved() {
+    scope.contrast = 1.5f
+    assertThat(scope.contrast).isEqualTo(1.5f)
+    assertThat(scope.mutatedFields).isEqualTo(Fields.Contrast)
+    // Verify the RenderEffect and InvalidateFlags are not 0.
+    assertThat(scope.mutatedFields and Fields.RenderEffectFields).isNotZero()
+    assertThat(scope.mutatedFields and Fields.InvalidateFlags).isNotZero()
+    // Verify that pre-tiramisu is also dirty.
+    assertThat(scope.mutatedFields and Fields.PreTiramisuInvalidateFlags).isNotZero()
+    assertThat(scope.mutatedFields and Fields.PreSnowConeInvalidateFlags).isNotZero()
   }
 
   @Test fun differentTints_withSameArgbValue_doNotInvalidate() {
@@ -251,6 +289,8 @@ class LiquidScopeTest {
     edge = 0.1f
     tint = Color.Red
     saturation = 1.5f
+    dispersion = 0.1f
+    contrast = 1.5f
     frost = 10.dp
     shape = CircleShape
   }

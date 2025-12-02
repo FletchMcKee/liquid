@@ -12,6 +12,7 @@ internal const val LiquidShader = """
   layout(color) uniform half4 tint;
   uniform float saturation;
   uniform float dispersion;
+  uniform float contrast;
 
   const float EPSILON = 0.001;
   const float AA_WIDTH_PX = 1.5;
@@ -35,7 +36,8 @@ internal const val LiquidShader = """
 
   half3 applyColorAdjustments(half3 color) {
     float lum = dot(color, half3(0.2126, 0.7152, 0.0722));
-    return saturate(mix(half3(lum), color, saturation));
+    color = saturate(mix(half3(lum), color, saturation));
+    return saturate((color - 0.5) * contrast + 0.5);
   }
 
   half4 main(float2 fragCoord) {
@@ -93,8 +95,8 @@ internal const val LiquidShader = """
     }
 
     fragColor.rgb = applyColorAdjustments(fragColor.rgb);
-    // Apply the provided tint before the lighting effects but after saturation.
-    // Otherwise we saturate the user's provided tint.
+    // Apply the provided tint before the lighting effects but after color adjustments.
+    // Otherwise we saturate/contrast the user's provided tint instead of the source content.
     fragColor.rgb = mix(fragColor.rgb, tint.rgb, tint.a);
 
     float edgeSmooth = smoothstep(-edge, 0.0, shapeSdf);

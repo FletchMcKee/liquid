@@ -79,6 +79,7 @@ fun LiquidDraggableScreen(
   var saturation by rememberSaveable { mutableFloatStateOf(1f) }
   var cornerPercent by rememberSaveable { mutableIntStateOf(25) }
   var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
+  var contrast by rememberSaveable { mutableFloatStateOf(1f) }
 
   var showSliders by rememberSaveable { mutableStateOf(true) }
 
@@ -116,6 +117,8 @@ fun LiquidDraggableScreen(
       onCornerPercentChange = { cornerPercent = it },
       dispersionProvider = { dispersion },
       onDispersionChange = { dispersion = it },
+      contrastProvider = { contrast },
+      onContrastChange = { contrast = it },
       containerColor = sliderContainerColor,
       isLandscape = isLandscape,
     )
@@ -129,6 +132,7 @@ fun LiquidDraggableScreen(
       saturationProvider = { saturation },
       shapeProvider = { RoundedCornerShape(cornerPercent) },
       dispersionProvider = { dispersion },
+      contrastProvider = { contrast },
       initialYOffset = if (isLandscape) 0.dp else (-150).dp,
     )
   }

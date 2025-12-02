@@ -4,7 +4,7 @@ package io.github.fletchmckee.liquid.internal
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.ui.geometry.isSpecified
+import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -31,6 +31,7 @@ internal class LiquidBackupNode(
   block: LiquidScope.() -> Unit,
 ) : AbstractLiquidNode(liquidState, block) {
   private val canUseRenderEffect = Build.VERSION.SDK_INT >= 31
+  private var cachedColorFilter: ColorFilter? = null
 
   override val invalidateFlags: Int = when {
     canUseRenderEffect -> Fields.PreTiramisuInvalidateFlags
@@ -42,18 +43,23 @@ internal class LiquidBackupNode(
     else -> 0 // No render effect
   }
 
+  override fun inspectDirtyFields() = with(reusableScope) {
+    // The mutatedFields dirty tracker gets cleaned in super, so we need to invalidate here.
+    if (mutatedFields has (Fields.Saturation or Fields.Contrast)) {
+      cachedColorFilter = createColorFilter(
+        saturation = saturation,
+        contrast = contrast,
+      )
+    }
+  }
+
   override fun ContentDrawScope.applyAdditionalEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) {
     val shapeOutline = reusableScope.shape.createOutline(size, layoutDirection, this)
     val shapePath = shapeOutline.asPath()
-
-    layer.colorFilter = (reusableScope.saturation != 1f)
-      .takeIf { it }
-      ?.let {
-        ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(reusableScope.saturation) })
-      }
+    layer.colorFilter = cachedColorFilter
 
     clipPath(shapePath) { drawBlock() }
 
@@ -72,12 +78,24 @@ internal class LiquidBackupNode(
 
   @RequiresApi(31)
   override fun createRenderEffect(): RenderEffect? = with(reusableScope) {
-    if (frostRadius <= 0f && size.isSpecified) return null
+    if (frostRadius <= 0f || size.isUnspecified) return null
 
     return BlurEffect(
       radiusX = frostRadius,
       radiusY = frostRadius,
       edgeTreatment = TileMode.Clamp,
     )
+  }
+
+  private fun createColorFilter(
+    saturation: Float,
+    contrast: Float,
+  ): ColorFilter? = when {
+    saturation == 1f && contrast == 1f -> null
+    else -> {
+      val compositeMatrix = ColorMatrix().apply { setToSaturation(saturation) }
+      compositeMatrix.timesAssign(ColorMatrix().apply { setContrast(contrast) })
+      ColorFilter.colorMatrix(compositeMatrix)
+    }
   }
 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.isUnspecified
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
@@ -160,4 +161,17 @@ internal fun ContentDrawScope.drawBackupEdgeEffect(shapePath: Path) = clipPath(s
     ),
     style = Stroke(width = strokeWidth),
   )
+}
+
+internal fun ColorMatrix.setContrast(contrast: Float) {
+  val translate = 0.5f * (1f - contrast) * 255f
+  setToScale(
+    redScale = contrast,
+    greenScale = contrast,
+    blueScale = contrast,
+    alphaScale = 1f,
+  )
+  this[0, 4] = translate // red offset
+  this[1, 4] = translate // green offset
+  this[2, 4] = translate // blue offset
 }

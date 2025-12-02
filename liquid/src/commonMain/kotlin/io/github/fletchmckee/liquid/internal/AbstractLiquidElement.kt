@@ -92,16 +92,38 @@ internal abstract class AbstractLiquidNode(
   private var cachedLayer: GraphicsLayer? = null
   private var cachedRenderEffect: RenderEffect? = null
 
+  /**
+   * Called when [renderEffectFlags] is mutated, signaling it needs to be created, recreated
+   * or set to null.
+   */
   protected abstract fun createRenderEffect(): RenderEffect?
 
-  // This method along with the open flags can be removed once our minSdk is 33+.
+  /**
+   * Called when [invalidateFlags] is mutated which means we're going to call [invalidateDraw],
+   * but before we clean the dirty tracker.
+   *
+   * The purpose of this method is to give consumers the chance to check the tracker for specific
+   * fields as they may contain cached effects unrelated to the RenderEffect.
+   */
+  protected open fun inspectDirtyFields() = Unit
+
+  /**
+   * Apply any additional effects to the [layer] unrelated to the RenderEffect. Any changes to the
+   * layer's renderEffect property are ignored as this is controlled by [createRenderEffect].
+   *
+   * @param layer The composite layer with the appropriate liquefiables recorded into place.
+   * @param drawBlock The block for drawing any additional effects. The default implementation invokes
+   * this block immediately with no additional effects.
+   */
   protected open fun ContentDrawScope.applyAdditionalEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) = drawBlock()
 
+  /** Triggers draw invalidation when mutated. */
   protected open val invalidateFlags: Int = Fields.InvalidateFlags
 
+  /** Resets the RenderEffect when mutated */
   protected open val renderEffectFlags: Int = Fields.RenderEffectFields
 
   internal fun invalidateLiquidBlock() {
@@ -128,8 +150,10 @@ internal abstract class AbstractLiquidNode(
   }
 
   private fun invalidateDrawIfNeeded() {
-    if (reusableScope.mutatedFields has Fields.InvalidateFlags) {
-      if (reusableScope.mutatedFields has Fields.RenderEffectFields) {
+    if (reusableScope.mutatedFields has invalidateFlags) {
+      inspectDirtyFields()
+
+      if (reusableScope.mutatedFields has renderEffectFlags) {
         cachedRenderEffect = createRenderEffect()
       }
       // It's important to call `clean()` after `createRenderEffect()` as the `createRenderEffect()`
@@ -189,8 +213,8 @@ internal abstract class AbstractLiquidNode(
     val layer = obtainGraphicsLayer()
     recordLiquefiablesIntoLayer(layer, reusableScope)
 
-    layer.renderEffect = cachedRenderEffect
     applyAdditionalEffects(layer) {
+      layer.renderEffect = cachedRenderEffect
       drawLayer(layer)
     }
 

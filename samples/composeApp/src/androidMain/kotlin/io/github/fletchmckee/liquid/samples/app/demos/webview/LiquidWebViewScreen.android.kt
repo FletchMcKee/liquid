@@ -150,6 +150,7 @@ private fun LiquidTextField(
       refraction = 0.4f
       curve = 0.9f
       edge = 0.05f
+      contrast = 1.5f
       tint = Color.White.copy(alpha = 0.4f)
     },
 )

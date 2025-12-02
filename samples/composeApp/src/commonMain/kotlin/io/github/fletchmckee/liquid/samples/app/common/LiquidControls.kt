@@ -68,6 +68,8 @@ fun BoxScope.LiquidControls(
   onCornerPercentChange: (Int) -> Unit = {},
   dispersionProvider: (() -> Float)? = null,
   onDispersionChange: (Float) -> Unit = {},
+  contrastProvider: (() -> Float)? = null,
+  onContrastChange: (Float) -> Unit = {},
   containerShape: Shape = RoundedCornerShape(8),
   containerColor: Color = MaterialTheme.colorScheme.surface,
   containerFrost: Dp = 15.dp,
@@ -183,6 +185,7 @@ fun BoxScope.LiquidControls(
             text = "Saturation",
             value = saturationProvider(),
             onValueChange = onSaturationChange,
+            steps = 99,
             valueRange = 0f..2f,
           )
         }
@@ -209,6 +212,18 @@ fun BoxScope.LiquidControls(
             onValueChange = onDispersionChange,
             steps = 99,
             valueRange = 0f..1f,
+          )
+        }
+      }
+
+      contrastProvider?.let {
+        item(key = "Contrast") {
+          LiquidSliderRow(
+            text = "Contrast",
+            value = contrastProvider(),
+            onValueChange = onContrastChange,
+            steps = 99,
+            valueRange = 0f..2f,
           )
         }
       }

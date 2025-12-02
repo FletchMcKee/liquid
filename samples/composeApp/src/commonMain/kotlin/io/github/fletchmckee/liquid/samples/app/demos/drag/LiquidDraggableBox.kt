@@ -56,6 +56,7 @@ fun BoxScope.LiquidDraggableBox(
   saturationProvider: () -> Float,
   shapeProvider: () -> Shape,
   dispersionProvider: () -> Float,
+  contrastProvider: () -> Float,
   modifier: Modifier = Modifier,
   shaderBrush: ShaderBrush = rememberDiagonalShaderBrush(),
   initialYOffset: Dp = (-150).dp,
@@ -90,6 +91,7 @@ fun BoxScope.LiquidDraggableBox(
           edge = edgeProvider()
           saturation = saturationProvider()
           dispersion = dispersionProvider()
+          contrast = contrastProvider()
         }
       } // Brushes aren't supported in liquid at the moment but may be added later.
       .background(brush = shaderBrush, shape = shapeProvider())
