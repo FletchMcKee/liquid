@@ -7,6 +7,9 @@
 
 // Library unique name: <liquid-root:liquid>
 abstract interface io.github.fletchmckee.liquid/LiquidScope { // io.github.fletchmckee.liquid/LiquidScope|null[0]
+    abstract var contrast // io.github.fletchmckee.liquid/LiquidScope.contrast|{}contrast[0]
+        abstract fun <get-contrast>(): kotlin/Float // io.github.fletchmckee.liquid/LiquidScope.contrast.<get-contrast>|<get-contrast>(){}[0]
+        abstract fun <set-contrast>(kotlin/Float) // io.github.fletchmckee.liquid/LiquidScope.contrast.<set-contrast>|<set-contrast>(kotlin.Float){}[0]
     abstract var curve // io.github.fletchmckee.liquid/LiquidScope.curve|{}curve[0]
         abstract fun <get-curve>(): kotlin/Float // io.github.fletchmckee.liquid/LiquidScope.curve.<get-curve>|<get-curve>(){}[0]
         abstract fun <set-curve>(kotlin/Float) // io.github.fletchmckee.liquid/LiquidScope.curve.<set-curve>|<set-curve>(kotlin.Float){}[0]
