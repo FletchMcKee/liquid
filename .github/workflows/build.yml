@@ -148,8 +148,6 @@ jobs:
           script: ./gradlew connectedDebugAndroidTest --daemon
 
   screenshot-tests:
-    # Temporarily skipping until I figure out a better lfs solution.
-    if: contains(github.event.head_commit.message, 'test screenshots')
     name: Screenshot tests
     runs-on: macos-latest
     timeout-minutes: 60
@@ -244,7 +242,7 @@ jobs:
     name: Final status check
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, assemble]
+    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, screenshot-tests, assemble]
     steps:
       - name: Final status check
         run: |

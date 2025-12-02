@@ -96,7 +96,8 @@ fun LiquidBottomAppBar(
         edge = 0.1f
         tint = containerColor
         saturation = 1.5f
-        dispersion = 0.2f
+        contrast = 1.5f
+        dispersion = 0.05f
       }
     },
 ) {

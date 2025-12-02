@@ -78,5 +78,6 @@ internal class LiquidNode(
     setColorUniform("tint", argbColor)
     setFloatUniform("saturation", saturation)
     setFloatUniform("dispersion", dispersion)
+    setFloatUniform("contrast", contrast)
   }
 }

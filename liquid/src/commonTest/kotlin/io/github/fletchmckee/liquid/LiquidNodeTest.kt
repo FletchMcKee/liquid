@@ -69,6 +69,7 @@ class LiquidNodeTest {
       assertThat(scope.tint).isEqualTo(Color.Unspecified)
       assertThat(scope.saturation).isEqualTo(1f)
       assertThat(scope.dispersion).isZero()
+      assertThat(scope.contrast).isEqualTo(1f)
       assertThat(scope.frost).isEqualTo(0.dp)
       assertThat(scope.shape).isEqualTo(CircleShape)
     }
@@ -490,6 +491,13 @@ class LiquidNodeTest {
     changedValue = 0.5f,
     finalValue = 1f,
     onUpdate = { dispersion = it },
+  )
+
+  @Test fun liquidNode_reactsToContrastChanges() = runLiquidScopeTest(
+    initialValue = 1.0f,
+    changedValue = 1.5f,
+    finalValue = 0.5f,
+    onUpdate = { contrast = it },
   )
 
   private fun <T> runLiquidScopeTest(

@@ -304,7 +304,8 @@ private fun LiquidRefreshIndicator(
         curve = lens
         edge = 0.05f
         dispersion = 0.02f * scale
-        saturation = scale + 0.5f
+        saturation = 0.25f + scale
+        contrast = 1f * scale
         tint = indicatorColor
       },
     contentAlignment = Alignment.Center,

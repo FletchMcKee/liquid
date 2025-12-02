@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.painter.ColorPainter
@@ -54,6 +55,7 @@ import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
+import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.random.Random
 import liquid_root.samples.composeapp.generated.resources.Res
@@ -93,7 +95,7 @@ fun LiquidStickyHeaderScreen(
       liquidState = liquidState,
       listState = listState,
       useLiquid = useLiquid,
-      initialFrost = frostRadius,
+      frostProvider = { frostRadius },
       contentPaddingValues = padding,
     )
   }
@@ -105,7 +107,7 @@ private fun StickyHeaderList(
   liquidState: LiquidState,
   listState: LazyListState,
   useLiquid: Boolean,
-  initialFrost: Float,
+  frostProvider: () -> Float,
   contentPaddingValues: PaddingValues,
   headerShape: Shape = CircleShape,
   stickyHeaderContainerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
@@ -136,12 +138,13 @@ private fun StickyHeaderList(
                 Modifier
                   .shadow(8.dp, headerShape)
                   .liquid(liquidState) {
-                    frost = initialFrost.dp
+                    frost = frostProvider().dp
                     refraction = 0.25f
                     curve = 0.5f
                     edge = 0.1f
                     shape = headerShape
-                    tint = stickyHeaderContainerColor
+                    saturation = 1.5f
+                    contrast = 1.5f
                   }
               else -> Modifier.background(stickyHeaderContainerColor, headerShape)
             },
@@ -151,11 +154,12 @@ private fun StickyHeaderList(
         Text(
           text = header.toString(),
           style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-          color = MaterialTheme.colorScheme.onBackground,
+          color = Color.White,
           textAlign = TextAlign.Center,
           modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 32.dp),
+            .padding(horizontal = 16.dp, vertical = 32.dp)
+            .blendMode(BlendMode.Difference),
         )
       }
     }

@@ -79,6 +79,17 @@ public interface LiquidScope {
   public var dispersion: Float
 
   /**
+   * Adjusts the contrast of the content behind the liquid effect.
+   *
+   * Values greater than 1f increase the difference between light and dark areas,
+   * while values less than 1f reduce this difference.
+   *
+   * Defaults to 1f (no contrast change).
+   */
+  @setparam:FloatRange(from = 0.0)
+  public var contrast: Float
+
+  /**
    * The blur radius applied behind the liquid effect, giving the appearance of frost.
    *
    * Useful when your [liquid] composable is expected to display text as the liquid effects alone can

@@ -68,14 +68,9 @@ On Android 12 and lower, this becomes a boolean where a value > 0f draws a fixed
     width="400" />
 </div>
 
-### Tint
-
-This is an optional value that is mainly provided for convenience. Most use cases will require some tint, so you can avoid applying an
-additional `background` modifier by setting everything in your `liquid` modifier.
-
 ### Saturation
 
-Adjusts the vibrancy of the sampled pixels. A value greater than 1f create more vibrant and vivid colors, while a value less than 1f
+Adjusts the vibrancy of the sampled pixels. A value greater than `1f` create more vibrant and vivid colors, while a value less than `1f`
 creates duller and more muted colors.
 
 <div align="center">
@@ -97,3 +92,13 @@ This property is no-op on Android 12 and lower.
     alt="Demo of the dispersion effect"
     width="400" />
 </div>
+
+### Contrast
+
+Adjusts the difference between light and dark areas of the sampled pixels. Values greater than `1f` increase contrast, making light
+colors lighter and dark colors darker. Values less than `1f` decrease contrast, resulting in a flatter, more washed-out appearance.
+
+### Tint
+
+This is an optional value that is mainly provided for convenience. Most use cases will require some tint, so you can avoid applying an
+additional `background` modifier by setting everything in your `liquid` modifier.
