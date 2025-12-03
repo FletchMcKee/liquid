@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-12-03
+
+New:
+- Added `contrast` as a new LiquidScope property ([#89](https://github.com/FletchMcKee/liquid/pull/89)).
+
 Changed:
 - Deprecated the LiquidState public constructor ([#84](https://github.com/FletchMcKee/liquid/pull/84)).
   - Use `rememberLiquidState()` instead as this will eventually be converted into an internal constructor.
@@ -95,7 +100,8 @@ Changed:
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.0.1...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.1.0...HEAD
+[1.1.0]: https://github.com/fletchmckee/liquid/releases/tag/1.1.0
 [1.0.1]: https://github.com/fletchmckee/liquid/releases/tag/1.0.1
 [1.0.0]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0
 [1.0.0-rc2]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0-rc2
