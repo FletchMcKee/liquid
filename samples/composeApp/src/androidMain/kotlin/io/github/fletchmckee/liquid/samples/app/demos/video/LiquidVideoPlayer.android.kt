@@ -162,6 +162,7 @@ private fun LiquidPlayPauseButton(
               player.pause()
               isPlaying = false
             }
+
             else -> {
               player.play()
               isPlaying = true

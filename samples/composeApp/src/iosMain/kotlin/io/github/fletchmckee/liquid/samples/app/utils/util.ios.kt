@@ -13,6 +13,7 @@ actual fun formatFloat(value: Float, format: String): String {
       formatter.numberStyle = NSNumberFormatterDecimalStyle
       formatter.maximumFractionDigits = 0u
     }
+
     "%,.2f" -> {
       formatter.numberStyle = NSNumberFormatterDecimalStyle
       formatter.minimumFractionDigits = 2u

@@ -146,6 +146,7 @@ private fun StickyHeaderList(
                     saturation = 1.5f
                     contrast = 1.5f
                   }
+
               else -> Modifier.background(stickyHeaderContainerColor, headerShape)
             },
           ),

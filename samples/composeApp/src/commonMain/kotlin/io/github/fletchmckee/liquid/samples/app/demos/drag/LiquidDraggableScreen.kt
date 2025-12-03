@@ -188,6 +188,7 @@ private fun SettingsButtons(
       containerColor = containerColor,
     )
   }
+
   else -> Row(modifier) {
     BackButton(
       liquidState = liquidState,

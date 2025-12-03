@@ -25,6 +25,7 @@ actual fun rememberTopBarShape(): Shape {
           bottomEnd = 0f,
         )
       }
+
       else -> RectangleShape
     }
   }

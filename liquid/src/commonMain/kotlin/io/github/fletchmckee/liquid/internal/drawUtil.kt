@@ -71,9 +71,11 @@ internal fun Shape.normalizedCornerRadii(
   CircleShape -> {
     floatArrayOf(0.5f, 0.5f, 0.5f, 0.5f)
   }
+
   is RoundedCornerShape -> {
     when {
       size.minDimension <= 0 -> Float4Zero
+
       else -> {
         // Similar to the logic in CornerBasedShape, but normalized by the minDimension.
         var topStart = topStart.toPx(size, density)
@@ -109,6 +111,7 @@ internal fun Shape.normalizedCornerRadii(
             bottomStart.fastCoerceAtMost(0.5f),
             topStart.fastCoerceAtMost(0.5f),
           )
+
           LayoutDirection.Rtl -> floatArrayOf(
             bottomStart.fastCoerceAtMost(0.5f),
             topStart.fastCoerceAtMost(0.5f),
@@ -119,6 +122,7 @@ internal fun Shape.normalizedCornerRadii(
       }
     }
   }
+
   else -> Float4Zero
 }
 

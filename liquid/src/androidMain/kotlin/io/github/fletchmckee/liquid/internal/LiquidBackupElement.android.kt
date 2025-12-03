@@ -92,6 +92,7 @@ internal class LiquidBackupNode(
     contrast: Float,
   ): ColorFilter? = when {
     saturation == 1f && contrast == 1f -> null
+
     else -> {
       val compositeMatrix = ColorMatrix().apply { setToSaturation(saturation) }
       compositeMatrix.timesAssign(ColorMatrix().apply { setContrast(contrast) })

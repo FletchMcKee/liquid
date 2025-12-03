@@ -282,6 +282,7 @@ private fun LiquidRotatingBox(
             edge = edgeProvider()
             dispersion = dispersionProvider()
           }
+
           else -> Modifier.background(fallbackColor, shapeProvider())
         },
       ),
