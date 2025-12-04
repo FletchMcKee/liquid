@@ -71,12 +71,11 @@ kotlin {
   sourceSets {
     commonMain.dependencies {
       implementation(projects.liquid)
-      implementation(compose.runtime)
-      implementation(compose.foundation)
-      implementation(compose.material3)
-      implementation(compose.ui)
-      implementation(compose.components.resources)
-      implementation(compose.components.uiToolingPreview)
+      implementation(libs.jetbrains.compose.runtime)
+      implementation(libs.jetbrains.compose.foundation)
+      implementation(libs.jetbrains.material3)
+      implementation(libs.jetbrains.compose.ui)
+      implementation(libs.jetbrains.components.resources)
       implementation(libs.compose.material.icons)
       implementation(libs.jetbrains.navigation.compose)
       implementation(libs.kotlinx.serialization)
@@ -89,7 +88,6 @@ kotlin {
 
     androidMain.dependencies {
       implementation(libs.ktor.cio)
-      implementation(compose.preview)
       implementation(libs.activity.compose)
       implementation(libs.androidx.media3.exoplayer)
       implementation(libs.androidx.media3.ui.compose)
@@ -149,10 +147,6 @@ androidComponents {
       enableUnitTest = false
     }
   }
-}
-
-dependencies {
-  debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {

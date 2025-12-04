@@ -59,7 +59,7 @@ import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.random.Random
 import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.moon_and_stars
+import liquid_root.samples.composeapp.generated.resources.ny_city
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
@@ -198,7 +198,7 @@ private fun CardItem(
   horizontalAlignment = Alignment.CenterHorizontally,
 ) {
   when {
-    isScreenshotTest -> MoonAndStarsBackup(index)
+    isScreenshotTest -> NyCityBackup(index)
     else -> ImageItem(index + cacheKey)
   }
 
@@ -235,8 +235,8 @@ private fun ImageItem(
 )
 
 @Composable
-private fun MoonAndStarsBackup(index: Int) = Image(
-  painter = painterResource(Res.drawable.moon_and_stars),
+private fun NyCityBackup(index: Int) = Image(
+  painter = painterResource(Res.drawable.ny_city),
   contentScale = ContentScale.Crop,
   contentDescription = null,
   modifier = Modifier

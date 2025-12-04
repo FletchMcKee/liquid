@@ -53,12 +53,12 @@ gradlePlugin {
       implementationClass = "ComposeMultiplatformConventionPlugin"
     }
 
-    register("androidLibrary") {
+    register("androidKmpLibrary") {
       id =
-        libs.plugins.liquid.android.library
+        libs.plugins.liquid.android.kotlin.multiplatform.library
           .get()
           .pluginId
-      implementationClass = "AndroidLibraryConventionPlugin"
+      implementationClass = "AndroidKmpLibraryConventionPlugin"
     }
 
     register("androidApplication") {

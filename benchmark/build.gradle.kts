@@ -1,7 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
 import com.android.build.api.dsl.ManagedVirtualDevice
-import org.gradle.kotlin.dsl.create
 
 plugins {
   alias(libs.plugins.liquid.android.test)

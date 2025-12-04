@@ -17,8 +17,8 @@ actual abstract class ScreenshotTest
 actual fun runScreenshotTest(
   content: @Composable () -> Unit,
 ) = runSkikoComposeUiTest(
-  size = Size(width = 900f, height = 1850f),
-  density = Density(2.25f),
+  size = Size(width = 800f, height = 1600f),
+  density = Density(2f),
 ) {
   setContent {
     content()
