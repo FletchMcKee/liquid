@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
@@ -45,10 +46,8 @@ import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
-import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
-import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 import liquid_root.samples.composeapp.generated.resources.Res
 import liquid_root.samples.composeapp.generated.resources.dotonbori
@@ -69,36 +68,49 @@ fun ManyLiquidNodesScreen(
     onUseLiquidChange = { useLiquid = it },
     modifier = modifier,
   ) { paddingValues ->
-    DotonboriBackground(liquidState, useLiquid)
+    // Draw the BlurHack first with the `liquefiable` node. The `liquid` nodes will see this
+    // instead of the unblurred image background.
+    if (useLiquid) {
+      BlurHack(liquidState)
+    }
+    // Then draw the real image on top. This way the blur is only visible through the `liquid` nodes.
+    DotonboriBackground()
     LiquidNodesList(liquidState, useLiquid)
   }
 }
 
+// Applying a blur to the nodes itself with a large lens effect results in glitchy UI when the
+// `liquid` node is mostly offscreen as the blur approximates what the pixel would be.
+//
+// Instead we blur a replica that is covered by the real image, but the `liquid` node only sees this composable.
 @Composable
-private fun DotonboriBackground(
+private fun BlurHack(
   liquidState: LiquidState,
-  useLiquid: Boolean,
+  frost: Float = 20f,
 ) = Image(
   painter = painterResource(Res.drawable.dotonbori),
   contentDescription = null,
   contentScale = ContentScale.Crop,
   modifier = Modifier
     .fillMaxSize()
-    .thenIf(useLiquid) {
-      liquefiable(liquidState)
-    }
+    .liquefiable(liquidState)
     .graphicsLayer {
-      // This is a hack, but it allows the blur to sample pixels outside of the viewport.
-      scaleX = 1.1f
-      scaleY = 1.1f
+      renderEffect = BlurEffect(radiusX = frost.dp.toPx(), radiusY = frost.dp.toPx())
     },
+)
+
+@Composable
+private fun DotonboriBackground() = Image(
+  painter = painterResource(Res.drawable.dotonbori),
+  contentDescription = null,
+  contentScale = ContentScale.Crop,
+  modifier = Modifier.fillMaxSize(),
 )
 
 @Composable
 private fun LiquidNodesList(
   liquidState: LiquidState,
   useLiquid: Boolean,
-  initialFrost: Float = LocalInitialFrost.current + 20f,
 ) = LazyColumn(
   modifier = Modifier
     .fillMaxSize()
@@ -117,7 +129,6 @@ private fun LiquidNodesList(
       liquidState = liquidState,
       index = index,
       useLiquid = useLiquid,
-      initialFrost = initialFrost,
     )
   }
 }
@@ -127,8 +138,7 @@ private fun LiquidCard(
   liquidState: LiquidState,
   index: Int,
   useLiquid: Boolean,
-  initialFrost: Float,
-  cardShape: Shape = RoundedCornerShape(5),
+  cardShape: Shape = RoundedCornerShape(7),
   containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = Column(
@@ -142,12 +152,13 @@ private fun LiquidCard(
             // dropShadow causes some lag with wasm/js.
             .shadow(elevation = 4.dp, shape = cardShape)
             .liquid(liquidState) {
-              frost = initialFrost.dp
-              refraction = 0.05f
-              curve = 0.05f
+              refraction = 0.1f
+              curve = 0.25f
               edge = 0.01f
               shape = cardShape
               tint = containerColor
+              contrast = 1.5f
+              saturation = 1.5f
             }
 
         else -> Modifier.background(containerColor, cardShape)
@@ -169,7 +180,7 @@ private fun LiquidCard(
     Column(verticalArrangement = Arrangement.SpaceEvenly) {
       Text(
         text = "Card $index",
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = MaterialTheme.typography.headlineLarge.merge(
           fontSize = 20.sp,
           fontWeight = FontWeight.Bold,
@@ -179,7 +190,7 @@ private fun LiquidCard(
 
       Text(
         text = "Description $index",
-        color = MaterialTheme.colorScheme.onSurface,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
         style = MaterialTheme.typography.headlineLarge.merge(
           fontSize = 20.sp,
           fontWeight = FontWeight.SemiBold,
@@ -191,7 +202,7 @@ private fun LiquidCard(
 
   Text(
     text = LoremIpsum,
-    color = MaterialTheme.colorScheme.onSurface,
+    color = MaterialTheme.colorScheme.onSurfaceVariant,
     style = MaterialTheme.typography.labelLarge,
   )
 }

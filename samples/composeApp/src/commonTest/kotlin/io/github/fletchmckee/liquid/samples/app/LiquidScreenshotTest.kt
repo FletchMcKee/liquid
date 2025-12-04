@@ -59,18 +59,8 @@ class LiquidScreenshotTest : ScreenshotTest() {
     LiquidStickyHeaderScreen(listState = scrolledLazyListState)
   }
 
-  @Test fun capture_many_liquid_nodes_no_frost() = runLiquidScreenshotTest(
+  @Test fun capture_many_liquid_nodes_20_dp_frost() = runLiquidScreenshotTest(
     darkMode = false,
-    // Unlike other screens, this one adds 20f so that the default is 20.dp frost rather than 0.dp.
-    initialFrost = -20f,
-  ) {
-    ManyLiquidNodesScreen()
-  }
-
-  @Test fun capture_many_liquid_nodes_10_dp_frost() = runLiquidScreenshotTest(
-    darkMode = false,
-    // Unlike other screens, this one adds 20f so that the default is 20.dp frost rather than 0.dp.
-    initialFrost = -10f,
   ) {
     ManyLiquidNodesScreen()
   }
@@ -113,9 +103,12 @@ class LiquidScreenshotTest : ScreenshotTest() {
     val scrolledLazyListState = LazyListState(
       firstVisibleItemIndex = 99,
       // Lets the sticky header hover over text.
-      firstVisibleItemScrollOffset = 1000,
+      firstVisibleItemScrollOffset = 900,
     )
 
-    val scrolledLazyGridState = LazyGridState(firstVisibleItemIndex = 49)
+    val scrolledLazyGridState = LazyGridState(
+      firstVisibleItemIndex = 19,
+      firstVisibleItemScrollOffset = 400,
+    )
   }
 }

@@ -51,9 +51,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
 fun KotlinMultiplatformExtension.addDefaultLiquidTargets() {
   jvm()
-  androidTarget {
-    publishLibraryVariants("release")
-  }
 
   iosX64()
   iosArm64()

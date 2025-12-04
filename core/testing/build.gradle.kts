@@ -1,26 +1,22 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-@file:OptIn(ExperimentalComposeLibrary::class)
-
-import org.jetbrains.compose.ExperimentalComposeLibrary
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-  alias(libs.plugins.liquid.android.library)
+  alias(libs.plugins.liquid.android.kotlin.multiplatform.library)
   alias(libs.plugins.liquid.kotlin.multiplatform)
   alias(libs.plugins.liquid.compose.multiplatform)
   alias(libs.plugins.roborazzi)
 }
 
-android {
-  namespace = "io.github.fletchmckee.liquid.core.testing"
-}
-
 kotlin {
-  androidTarget {
-    compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_11)
+  @Suppress("UnstableApiUsage")
+  androidLibrary {
+    namespace = "io.github.fletchmckee.liquid.core.testing"
+
+    withHostTest {
+      isIncludeAndroidResources = true
     }
   }
 
@@ -49,7 +45,7 @@ kotlin {
 
   sourceSets {
     commonMain.dependencies {
-      api(compose.uiTest)
+      api(libs.jetbrains.compose.uiTest)
     }
 
     androidMain.dependencies {
@@ -63,7 +59,7 @@ kotlin {
 
     jvmMain.dependencies {
       implementation(compose.desktop.currentOs)
-      implementation(compose.desktop.uiTestJUnit4)
+      implementation(libs.jetbrains.compose.uiTestJunit4)
       implementation(libs.roborazzi.core)
       implementation(libs.roborazzi.compose.desktop)
     }
