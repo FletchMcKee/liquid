@@ -6,7 +6,6 @@ assertk = "0.28.1"
 benchmark = "1.4.1"
 binaryCompatibility = "0.18.1"
 coilCompose = "3.3.0"
-componentsResources = "1.10.0-rc01"
 composeHotReload = "1.0.0"
 composeMultiplatform = "1.10.0-rc01"
 dokka = "2.1.0"
@@ -40,7 +39,7 @@ kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-
 jetbrains-compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
 jetbrains-compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
 jetbrains-compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
-jetbrains-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "componentsResources" }
+jetbrains-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 compose-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "androidXTestManifest" }
 compose-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
