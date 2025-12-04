@@ -13,7 +13,7 @@ Changed:
 - Improved anti-aliasing ([#88](https://github.com/FletchMcKee/liquid/pull/88)).
 
 Fixed:
-- Corner radii are clamped to 50% of the minimum dimension ([#82](https://github.com/FletchMcKee/liquid/pull/81)).
+- Corner radii are clamped to 50% of the minimum dimension ([#82](https://github.com/FletchMcKee/liquid/pull/82)).
 
 ## [1.0.1] - 2025-11-18
 
