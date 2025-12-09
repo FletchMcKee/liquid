@@ -24,8 +24,6 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
@@ -52,7 +49,9 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.LiquidControls
+import io.github.fletchmckee.liquid.samples.app.common.LiquidScopeManager
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
+import io.github.fletchmckee.liquid.samples.app.common.retainLiquidScopeManager
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
@@ -81,14 +80,14 @@ fun LiquidClockScreen(
   val initialDispersion = LocalInitialDispersion.current
   val isLandscape = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
 
+  val liquidScopeManager = retainLiquidScopeManager(
+    initialFrost = initialFrost,
+    initialDispersion = initialDispersion,
+    initialEdge = 0.1f,
+    initialCornerPercent = 30,
+  )
+
   var useLiquid by rememberSaveable { mutableStateOf(initialUseLiquid) }
-  var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
-  var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
-  var curve by rememberSaveable { mutableFloatStateOf(0.25f) }
-  var edge by rememberSaveable { mutableFloatStateOf(0.1f) }
-  var saturation by rememberSaveable { mutableFloatStateOf(1f) }
-  var cornerPercent by rememberSaveable { mutableIntStateOf(30) }
-  var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
 
   SliderScaffold(
     navController = navController,
@@ -112,13 +111,7 @@ fun LiquidClockScreen(
       LiquidRotatingBox(
         liquidState = liquidState,
         useLiquid = useLiquid,
-        frostProvider = { frostRadius },
-        refractionProvider = { refraction },
-        curveProvider = { curve },
-        edgeProvider = { edge },
-        saturationProvider = { saturation },
-        shapeProvider = { RoundedCornerShape(cornerPercent) },
-        dispersionProvider = { dispersion },
+        liquidScopeManager = liquidScopeManager,
         modifier = Modifier
           .zIndex(2f)
           .systemBarsPadding()
@@ -130,20 +123,7 @@ fun LiquidClockScreen(
       LiquidControls(
         liquidState = liquidState,
         showSliders = true,
-        frostProvider = { frostRadius },
-        onFrostChange = { frostRadius = it },
-        refractionProvider = { refraction },
-        onRefractionChange = { refraction = it },
-        curveProvider = { curve },
-        onCurveChange = { curve = it },
-        edgeProvider = { edge },
-        onEdgeChange = { edge = it },
-        saturationProvider = { saturation },
-        onSaturationChange = { saturation = it },
-        cornerPercentProvider = { cornerPercent },
-        onCornerPercentChange = { cornerPercent = it },
-        dispersionProvider = { dispersion },
-        onDispersionChange = { dispersion = it },
+        liquidScopeManager = liquidScopeManager,
         containerShape = RoundedCornerShape(8),
         containerFrost = 30.dp,
         containerRefraction = 0.08f,
@@ -223,13 +203,7 @@ private fun ClockTimer(
 private fun LiquidRotatingBox(
   liquidState: LiquidState,
   useLiquid: Boolean,
-  frostProvider: () -> Float,
-  refractionProvider: () -> Float,
-  curveProvider: () -> Float,
-  edgeProvider: () -> Float,
-  saturationProvider: () -> Float,
-  shapeProvider: () -> Shape,
-  dispersionProvider: () -> Float,
+  liquidScopeManager: LiquidScopeManager,
   modifier: Modifier = Modifier,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
   fallbackColor: Color = MaterialTheme.colorScheme.surfaceVariant,
@@ -274,16 +248,17 @@ private fun LiquidRotatingBox(
       .then(
         when {
           useLiquid -> Modifier.liquid(liquidState) {
-            frost = frostProvider().dp
-            refraction = refractionProvider()
-            curve = curveProvider()
-            saturation = saturationProvider()
-            shape = shapeProvider()
-            edge = edgeProvider()
-            dispersion = dispersionProvider()
+            frost = liquidScopeManager.frost.dp
+            refraction = liquidScopeManager.refraction
+            curve = liquidScopeManager.curve
+            saturation = liquidScopeManager.saturation
+            shape = RoundedCornerShape(liquidScopeManager.cornerPercent)
+            edge = liquidScopeManager.edge
+            dispersion = liquidScopeManager.dispersion
+            contrast = liquidScopeManager.contrast
           }
 
-          else -> Modifier.background(fallbackColor, shapeProvider())
+          else -> Modifier.background(fallbackColor, RoundedCornerShape(liquidScopeManager.cornerPercent))
         },
       ),
   )

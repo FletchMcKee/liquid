@@ -14,7 +14,6 @@ internal const val LiquidShader = """
   uniform float dispersion;
   uniform float contrast;
 
-  const float EPSILON = 0.001;
   const float AA_WIDTH_PX = 1.5;
 
   float computeSdf(in float2 p, in float2 b, in half4 r) {
@@ -24,14 +23,20 @@ internal const val LiquidShader = """
     return min(max(q.x, q.y), 0.0) + length(max(q, 0.0)) - r.x;
   }
 
+  // See `sdgBox` for reference:
+  // https://iquilezles.org/articles/distgradfunctions2d/
   float2 computeSdfNormal(float2 pos, float2 shapeSize, half4 vr) {
-    float sdfX1 = computeSdf(pos + float2(EPSILON, 0.0), shapeSize, vr);
-    float sdfX2 = computeSdf(pos - float2(EPSILON, 0.0), shapeSize, vr);
-    float sdfY1 = computeSdf(pos + float2(0.0, EPSILON), shapeSize, vr);
-    float sdfY2 = computeSdf(pos - float2(0.0, EPSILON), shapeSize, vr);
-    float2 grad = float2(sdfX1 - sdfX2, sdfY1 - sdfY2);
-    float len = length(grad);
-    return len > 0.0001 ? grad / len : float2(0.0, 1.0);
+    vr.xy = (pos.x > 0.0) ? vr.xy : vr.zw;
+    vr.x = (pos.y > 0.0) ? vr.x : vr.y;
+    float r = vr.x;
+    float2 w = abs(pos) - (shapeSize - r);
+    float2 s = float2(pos.x < 0.0 ? -1.0 : 1.0, pos.y < 0.0 ? -1.0 : 1.0);
+    float g = max(w.x, w.y);
+    float2 q = max(w, 0.0);
+    float l = length(q);
+
+    // Multiply by s to restore quadrant signs.
+    return s * ((g > 0.0) ? q / l : ((w.x > w.y) ? float2(1.0, 0.0) : float2(0.0, 1.0)));
   }
 
   half3 applyColorAdjustments(half3 color) {
@@ -92,6 +97,10 @@ internal const val LiquidShader = """
       fragColor = half4(colorR.r, colorG.g, colorB.b, colorG.a);
     } else {
       fragColor = content.eval(baseCoord);
+    }
+
+    if (fragColor.a <= 0.0) {
+      fragColor = content.eval(fragCoord);
     }
 
     fragColor.rgb = applyColorAdjustments(fragColor.rgb);

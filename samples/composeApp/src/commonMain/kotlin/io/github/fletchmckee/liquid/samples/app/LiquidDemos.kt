@@ -82,7 +82,6 @@ fun LiquidDemos(
 ) {
   // Eventually I will look into a better setup, but I don't want the benchmarks performing a bunch of network requests.
   setSingletonImageLoaderFactory { context ->
-    context
     ImageLoader.Builder(context)
       .memoryCache {
         MemoryCache.Builder()

@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.fastRoundToInt
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
@@ -50,26 +51,11 @@ import io.github.fletchmckee.liquid.samples.app.utils.formatFloat
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 
 @Composable
-fun BoxScope.LiquidControls(
+internal fun BoxScope.LiquidControls(
   liquidState: LiquidState,
   showSliders: Boolean,
+  liquidScopeManager: LiquidScopeManager,
   modifier: Modifier = Modifier,
-  frostProvider: (() -> Float)? = null,
-  onFrostChange: (Float) -> Unit = {},
-  refractionProvider: (() -> Float)? = null,
-  onRefractionChange: (Float) -> Unit = {},
-  curveProvider: (() -> Float)? = null,
-  onCurveChange: (Float) -> Unit = {},
-  edgeProvider: (() -> Float)? = null,
-  onEdgeChange: (Float) -> Unit = {},
-  saturationProvider: (() -> Float)? = null,
-  onSaturationChange: (Float) -> Unit = {},
-  cornerPercentProvider: (() -> Int)? = null,
-  onCornerPercentChange: (Int) -> Unit = {},
-  dispersionProvider: (() -> Float)? = null,
-  onDispersionChange: (Float) -> Unit = {},
-  contrastProvider: (() -> Float)? = null,
-  onContrastChange: (Float) -> Unit = {},
   containerShape: Shape = RoundedCornerShape(8),
   containerColor: Color = MaterialTheme.colorScheme.surface,
   containerFrost: Dp = 15.dp,
@@ -129,12 +115,12 @@ fun BoxScope.LiquidControls(
       verticalArrangement = Arrangement.Center,
       horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-      frostProvider?.let {
+      if (!liquidScopeManager.frost.isNaN()) {
         item(key = "Frost") {
           LiquidSliderRow(
             text = "Frost",
-            value = frostProvider(),
-            onValueChange = onFrostChange,
+            value = liquidScopeManager.frost,
+            onValueChange = { liquidScopeManager.frost = it },
             steps = 29,
             valueRange = 0f..30f,
             formatter = "%,.0f",
@@ -144,60 +130,60 @@ fun BoxScope.LiquidControls(
         }
       }
 
-      refractionProvider?.let {
+      if (!liquidScopeManager.refraction.isNaN()) {
         item(key = "Refraction") {
           LiquidSliderRow(
             text = "Refraction",
-            value = refractionProvider(),
-            onValueChange = onRefractionChange,
+            value = liquidScopeManager.refraction,
+            onValueChange = { liquidScopeManager.refraction = it },
             steps = 49,
             valueRange = 0f..0.5f,
           )
         }
       }
 
-      curveProvider?.let {
+      if (!liquidScopeManager.curve.isNaN()) {
         item(key = "Curve") {
           LiquidSliderRow(
             text = "Curve",
-            value = curveProvider(),
-            onValueChange = onCurveChange,
+            value = liquidScopeManager.curve,
+            onValueChange = { liquidScopeManager.curve = it },
             steps = 99,
             valueRange = 0f..1f,
           )
         }
       }
 
-      edgeProvider?.let {
+      if (!liquidScopeManager.edge.isNaN()) {
         item(key = "Edge") {
           LiquidSliderRow(
             text = "Edge",
-            value = edgeProvider(),
-            onValueChange = onEdgeChange,
+            value = liquidScopeManager.edge,
+            onValueChange = { liquidScopeManager.edge = it },
             steps = 24,
             valueRange = 0.0f..0.25f,
           )
         }
       }
 
-      saturationProvider?.let {
+      if (!liquidScopeManager.saturation.isNaN()) {
         item(key = "Saturation") {
           LiquidSliderRow(
             text = "Saturation",
-            value = saturationProvider(),
-            onValueChange = onSaturationChange,
+            value = liquidScopeManager.saturation,
+            onValueChange = { liquidScopeManager.saturation = it },
             steps = 99,
             valueRange = 0f..2f,
           )
         }
       }
 
-      cornerPercentProvider?.let {
+      if (liquidScopeManager.cornerPercent >= 0) {
         item(key = "Corner") {
           LiquidSliderRow(
             text = "Corner",
-            value = cornerPercentProvider().toFloat(),
-            onValueChange = { onCornerPercentChange(it.toInt()) },
+            value = liquidScopeManager.cornerPercent.toFloat(),
+            onValueChange = { liquidScopeManager.cornerPercent = it.fastRoundToInt() },
             formatter = "%,.0f",
             steps = 49,
             valueRange = 0.0f..50f,
@@ -205,24 +191,24 @@ fun BoxScope.LiquidControls(
         }
       }
 
-      dispersionProvider?.let {
+      if (!liquidScopeManager.dispersion.isNaN()) {
         item(key = "Dispersion") {
           LiquidSliderRow(
             text = "Dispersion",
-            value = dispersionProvider(),
-            onValueChange = onDispersionChange,
+            value = liquidScopeManager.dispersion,
+            onValueChange = { liquidScopeManager.dispersion = it },
             steps = 99,
             valueRange = 0f..1f,
           )
         }
       }
 
-      contrastProvider?.let {
+      if (!liquidScopeManager.contrast.isNaN()) {
         item(key = "Contrast") {
           LiquidSliderRow(
             text = "Contrast",
-            value = contrastProvider(),
-            onValueChange = onContrastChange,
+            value = liquidScopeManager.contrast,
+            onValueChange = { liquidScopeManager.contrast = it },
             steps = 99,
             valueRange = 0f..2f,
           )

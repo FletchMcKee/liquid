@@ -141,7 +141,7 @@ private fun StickyHeaderList(
                     frost = frostProvider().dp
                     refraction = 0.25f
                     curve = 0.5f
-                    edge = 0.1f
+                    edge = 0.05f
                     shape = headerShape
                     saturation = 1.5f
                     contrast = 1.5f

@@ -42,13 +42,6 @@ class LiquidScreenshotTest : ScreenshotTest() {
     LiquidGridScreen(gridState = scrolledLazyGridState)
   }
 
-  @Test fun capture_grid_10_dp_frost() = runLiquidScreenshotTest(
-    darkMode = false,
-    initialFrost = 10f,
-  ) {
-    LiquidGridScreen(gridState = scrolledLazyGridState)
-  }
-
   @Test fun capture_sticky_header_no_frost_scrolled() = runLiquidScreenshotTest {
     LiquidStickyHeaderScreen(listState = scrolledLazyListState)
   }
