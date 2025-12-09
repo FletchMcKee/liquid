@@ -15,7 +15,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
@@ -27,8 +26,6 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -47,6 +44,7 @@ import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.LiquidControls
+import io.github.fletchmckee.liquid.samples.app.common.retainLiquidScopeManager
 import io.github.fletchmckee.liquid.samples.app.displayNavIcons
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
@@ -71,15 +69,12 @@ fun LiquidDraggableScreen(
   val initialFrost = LocalInitialFrost.current
   val initialDispersion = LocalInitialDispersion.current
   val isLandscape = windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
-  // Liquid shader properties
-  var frostRadius by rememberSaveable { mutableFloatStateOf(initialFrost) }
-  var refraction by rememberSaveable { mutableFloatStateOf(0.25f) }
-  var curve by rememberSaveable { mutableFloatStateOf(0.25f) }
-  var edge by rememberSaveable { mutableFloatStateOf(0.05f) }
-  var saturation by rememberSaveable { mutableFloatStateOf(1f) }
-  var cornerPercent by rememberSaveable { mutableIntStateOf(25) }
-  var dispersion by rememberSaveable { mutableFloatStateOf(initialDispersion) }
-  var contrast by rememberSaveable { mutableFloatStateOf(1f) }
+
+  val liquidScopeManager = retainLiquidScopeManager(
+    initialFrost = initialFrost,
+    initialDispersion = initialDispersion,
+    initialEdge = 0.05f,
+  )
 
   var showSliders by rememberSaveable { mutableStateOf(true) }
 
@@ -103,36 +98,14 @@ fun LiquidDraggableScreen(
     LiquidControls(
       liquidState = liquidState,
       showSliders = showSliders,
-      frostProvider = { frostRadius },
-      onFrostChange = { frostRadius = it },
-      refractionProvider = { refraction },
-      onRefractionChange = { refraction = it },
-      curveProvider = { curve },
-      onCurveChange = { curve = it },
-      edgeProvider = { edge },
-      onEdgeChange = { edge = it },
-      saturationProvider = { saturation },
-      onSaturationChange = { saturation = it },
-      cornerPercentProvider = { cornerPercent },
-      onCornerPercentChange = { cornerPercent = it },
-      dispersionProvider = { dispersion },
-      onDispersionChange = { dispersion = it },
-      contrastProvider = { contrast },
-      onContrastChange = { contrast = it },
+      liquidScopeManager = liquidScopeManager,
       containerColor = sliderContainerColor,
       isLandscape = isLandscape,
     )
 
     LiquidDraggableBox(
       liquidState = liquidState,
-      frostProvider = { frostRadius },
-      refractionProvider = { refraction },
-      curveProvider = { curve },
-      edgeProvider = { edge },
-      saturationProvider = { saturation },
-      shapeProvider = { RoundedCornerShape(cornerPercent) },
-      dispersionProvider = { dispersion },
-      contrastProvider = { contrast },
+      liquidScopeManager = liquidScopeManager,
       initialYOffset = if (isLandscape) 0.dp else (-150).dp,
     )
   }

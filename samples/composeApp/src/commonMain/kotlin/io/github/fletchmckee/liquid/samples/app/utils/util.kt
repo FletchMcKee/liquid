@@ -17,9 +17,18 @@ import androidx.compose.ui.graphics.LinearGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
+import coil3.compose.rememberAsyncImagePainter
+import io.github.fletchmckee.liquid.samples.app.theme.LocalIsBenchmark
+import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import kotlin.math.roundToInt
+import liquid_root.samples.composeapp.generated.resources.Res
+import liquid_root.samples.composeapp.generated.resources.moon_and_stars
+import org.jetbrains.compose.resources.painterResource
 
 internal expect fun formatFloat(value: Float, format: String): String
 
@@ -72,3 +81,22 @@ internal fun Int.toPicsumId() = when (this) {
   95 -> 112
   else -> this
 }.plus(10)
+
+@Composable
+internal fun rememberPicsumPainter(
+  cacheKey: Int,
+  size: Int = 1000,
+  defaultPainter: Painter? = null,
+  placeHolder: Painter = ColorPainter(Color.LightGray),
+  error: Painter = ColorPainter(Color.Magenta),
+  contentScale: ContentScale = ContentScale.Crop,
+): Painter = when {
+  LocalIsScreenshotTest.current || LocalIsBenchmark.current -> defaultPainter ?: painterResource(Res.drawable.moon_and_stars)
+
+  else -> rememberAsyncImagePainter(
+    model = "https://picsum.photos/$size?random=$cacheKey",
+    placeholder = placeHolder,
+    error = error,
+    contentScale = contentScale,
+  )
+}

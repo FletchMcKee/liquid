@@ -46,7 +46,6 @@ import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.dotonbori
 import liquid_root.samples.composeapp.generated.resources.moon_and_stars
 import liquid_root.samples.composeapp.generated.resources.northern_lights
 import liquid_root.samples.composeapp.generated.resources.ny_city
@@ -60,14 +59,12 @@ fun main() {
     val moonAndStars by preloadImageBitmap(Res.drawable.moon_and_stars)
     val northernLights by preloadImageBitmap(Res.drawable.northern_lights)
     val nyCity by preloadImageBitmap(Res.drawable.ny_city)
-    val dotonbori by preloadImageBitmap(Res.drawable.dotonbori)
 
     var minTimeElapsed by rememberSaveable { mutableStateOf(false) }
     val resourcesLoaded = pragueClock != null &&
       moonAndStars != null &&
       northernLights != null &&
-      nyCity != null &&
-      dotonbori != null
+      nyCity != null
 
     LaunchedEffect(Unit) {
       delay(2.5.seconds)
@@ -135,6 +132,8 @@ private fun LiquidLoadingBox(
       .liquid(liquidState) {
         edge = 0.05f
         shape = loadingShape
+        contrast = 1.25f
+        saturation = 1.25f
       },
   )
 }

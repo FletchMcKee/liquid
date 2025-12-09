@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -48,7 +50,9 @@ import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
+import io.github.fletchmckee.liquid.samples.app.utils.rememberPicsumPainter
 import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
+import kotlin.random.Random
 import liquid_root.samples.composeapp.generated.resources.Res
 import liquid_root.samples.composeapp.generated.resources.dotonbori
 import liquid_root.samples.composeapp.generated.resources.moon_and_stars
@@ -62,19 +66,28 @@ fun ManyLiquidNodesScreen(
 ) {
   val initialUseLiquid = LocalUseLiquid.current
   var useLiquid by rememberSaveable { mutableStateOf(initialUseLiquid) }
+  var cacheKey by rememberSaveable { mutableIntStateOf(Random.nextInt(until = 2000)) }
+
   SliderScaffold(
     navController = navController,
     useLiquidProvider = { useLiquid },
     onUseLiquidChange = { useLiquid = it },
     modifier = modifier,
   ) { paddingValues ->
+    val defaultPainter = painterResource(Res.drawable.dotonbori)
+    val painter = rememberPicsumPainter(
+      cacheKey = cacheKey,
+      defaultPainter = defaultPainter,
+      error = defaultPainter,
+    )
+
     // Draw the BlurHack first with the `liquefiable` node. The `liquid` nodes will see this
     // instead of the unblurred image background.
     if (useLiquid) {
-      BlurHack(liquidState)
+      BlurHack(liquidState, painter)
     }
     // Then draw the real image on top. This way the blur is only visible through the `liquid` nodes.
-    DotonboriBackground()
+    DisplayBackground(painter)
     LiquidNodesList(liquidState, useLiquid)
   }
 }
@@ -86,9 +99,10 @@ fun ManyLiquidNodesScreen(
 @Composable
 private fun BlurHack(
   liquidState: LiquidState,
+  painter: Painter,
   frost: Float = 20f,
 ) = Image(
-  painter = painterResource(Res.drawable.dotonbori),
+  painter = painter,
   contentDescription = null,
   contentScale = ContentScale.Crop,
   modifier = Modifier
@@ -100,8 +114,10 @@ private fun BlurHack(
 )
 
 @Composable
-private fun DotonboriBackground() = Image(
-  painter = painterResource(Res.drawable.dotonbori),
+private fun DisplayBackground(
+  painter: Painter,
+) = Image(
+  painter = painter,
   contentDescription = null,
   contentScale = ContentScale.Crop,
   modifier = Modifier.fillMaxSize(),
@@ -138,7 +154,7 @@ private fun LiquidCard(
   liquidState: LiquidState,
   index: Int,
   useLiquid: Boolean,
-  cardShape: Shape = RoundedCornerShape(7),
+  cardShape: Shape = RoundedCornerShape(10),
   containerColor: Color = MaterialTheme.colorScheme.surfaceVariant,
   isScreenshotTest: Boolean = LocalIsScreenshotTest.current,
 ) = Column(

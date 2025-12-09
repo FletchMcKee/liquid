@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquid
+import io.github.fletchmckee.liquid.samples.app.common.LiquidScopeManager
 import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
@@ -47,17 +49,11 @@ import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.math.roundToInt
 
 @Composable
-fun BoxScope.LiquidDraggableBox(
+internal fun BoxScope.LiquidDraggableBox(
   liquidState: LiquidState,
-  frostProvider: () -> Float,
-  refractionProvider: () -> Float,
-  curveProvider: () -> Float,
-  edgeProvider: () -> Float,
-  saturationProvider: () -> Float,
-  shapeProvider: () -> Shape,
-  dispersionProvider: () -> Float,
-  contrastProvider: () -> Float,
+  liquidScopeManager: LiquidScopeManager,
   modifier: Modifier = Modifier,
+  boxShape: Shape = RoundedCornerShape(liquidScopeManager.cornerPercent),
   shaderBrush: ShaderBrush = rememberDiagonalShaderBrush(),
   initialYOffset: Dp = (-150).dp,
 ) {
@@ -81,20 +77,20 @@ fun BoxScope.LiquidDraggableBox(
           dragOffset = Offset(x, y)
         }
       }
-      .shadow(elevation = 4.dp, shape = shapeProvider())
+      .shadow(elevation = 4.dp, shape = boxShape)
       .thenIf(useLiquid) {
         liquid(liquidState) {
-          frost = frostProvider().dp
-          shape = shapeProvider()
-          refraction = refractionProvider()
-          curve = curveProvider()
-          edge = edgeProvider()
-          saturation = saturationProvider()
-          dispersion = dispersionProvider()
-          contrast = contrastProvider()
+          frost = liquidScopeManager.frost.dp
+          shape = boxShape
+          refraction = liquidScopeManager.refraction
+          curve = liquidScopeManager.curve
+          edge = liquidScopeManager.edge
+          saturation = liquidScopeManager.saturation
+          dispersion = liquidScopeManager.dispersion
+          contrast = liquidScopeManager.contrast
         }
       } // Brushes aren't supported in liquid at the moment but may be added later.
-      .background(brush = shaderBrush, shape = shapeProvider())
+      .background(brush = shaderBrush, shape = boxShape)
       .testTag("liquidDraggableBox")
       .testTagsAsResourceId(true),
   ) {

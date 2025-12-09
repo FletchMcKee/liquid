@@ -5,6 +5,7 @@ package io.github.fletchmckee.liquid.samples.app
 import coil3.PlatformContext
 import okio.Path
 
-actual fun displayNavIcons(): Boolean = false
+// `bindToBrowserNavigation` still has issues.
+actual fun displayNavIcons(): Boolean = true
 
 actual fun PlatformContext.cacheDir(): Path? = null

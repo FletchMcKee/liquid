@@ -304,7 +304,7 @@ private fun LiquidRefreshIndicator(
         curve = lens
         edge = 0.05f
         dispersion = 0.02f * scale
-        saturation = 0.25f + scale
+        saturation = 1f * scale
         contrast = 1f * scale
         tint = indicatorColor
       },
