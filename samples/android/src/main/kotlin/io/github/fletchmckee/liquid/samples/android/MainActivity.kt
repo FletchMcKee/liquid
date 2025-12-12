@@ -1,11 +1,13 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-package io.github.fletchmckee.liquid.samples.app
+package io.github.fletchmckee.liquid.samples.android
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import io.github.fletchmckee.liquid.samples.app.Demos
+import io.github.fletchmckee.liquid.samples.app.LiquidDemos
 import io.github.fletchmckee.liquid.samples.app.demos.clock.Clock
 import io.github.fletchmckee.liquid.samples.app.demos.drag.Drag
 import io.github.fletchmckee.liquid.samples.app.demos.grid.Grid
@@ -48,7 +50,7 @@ class MainActivity : ComponentActivity() {
   }
 
   private companion object {
-    const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.app"
+    const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.android"
     const val START_DESTINATION = "$PACKAGE_NAME.START_DESTINATION"
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"

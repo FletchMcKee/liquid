@@ -156,7 +156,7 @@ class LiquidBenchmark {
 
   companion object {
     const val ITERATIONS = 5
-    const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.app"
+    const val PACKAGE_NAME = "io.github.fletchmckee.liquid.samples.android"
     const val START_DESTINATION = "$PACKAGE_NAME.START_DESTINATION"
     const val USE_LIQUID = "$PACKAGE_NAME.USE_LIQUID"
     const val INITIAL_FROST = "$PACKAGE_NAME.INITIAL_FROST"

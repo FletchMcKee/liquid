@@ -101,6 +101,7 @@ liquid-root = { id = "io.github.fletchmckee.liquid.root" }
 liquid-android-kotlin-multiplatform-library = { id = "io.github.fletchmckee.liquid.android.kotlin.multiplatform.library" }
 liquid-android-application = { id = "io.github.fletchmckee.liquid.android.application" }
 liquid-android-test = { id = "io.github.fletchmckee.liquid.android.test" }
+liquid-kotlin-android = { id = "io.github.fletchmckee.liquid.kotlin.android" }
 liquid-kotlin-multiplatform = { id = "io.github.fletchmckee.liquid.kotlin.multiplatform" }
 liquid-compose-multiplatform = { id = "io.github.fletchmckee.liquid.compose.multiplatform" }
 

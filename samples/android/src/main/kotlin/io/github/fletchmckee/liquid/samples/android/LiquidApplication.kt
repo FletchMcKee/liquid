@@ -1,6 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-package io.github.fletchmckee.liquid.samples.app
+package io.github.fletchmckee.liquid.samples.android
 
 import android.app.Application
 import androidx.compose.foundation.ComposeFoundationFlags
