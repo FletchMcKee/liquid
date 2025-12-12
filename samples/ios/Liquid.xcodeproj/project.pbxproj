@@ -11,12 +11,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1A5AC21CD1CCDDDC144310A7 /* Exceptions for "iosApp" folder in "iosApp" target */ = {
+		1A5AC21CD1CCDDDC144310A7 /* Exceptions for "App" folder in "ios" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = A4534A9EA182825D0811816A /* iosApp */;
+			target = A4534A9EA182825D0811816A /* App */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -26,12 +26,12 @@
 			path = Configuration;
 			sourceTree = "<group>";
 		};
-		D902710FDDC91147FA1ADE8A /* iosApp */ = {
+		D902710FDDC91147FA1ADE8A /* App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				1A5AC21CD1CCDDDC144310A7 /* Exceptions for "iosApp" folder in "iosApp" target */,
+				1A5AC21CD1CCDDDC144310A7 /* Exceptions for "App" folder in "ios" target */,
 			);
-			path = iosApp;
+			path = App;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -51,7 +51,7 @@
 			isa = PBXGroup;
 			children = (
 				359A761E7B75E152406472CF /* Configuration */,
-				D902710FDDC91147FA1ADE8A /* iosApp */,
+				D902710FDDC91147FA1ADE8A /* App */,
 				F6AB0C3D4814CE85CDF8683F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -67,9 +67,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A4534A9EA182825D0811816A /* iosApp */ = {
+		A4534A9EA182825D0811816A /* App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 28B60EA43FE2F912DCA9A9F0 /* Build configuration list for PBXNativeTarget "iosApp" */;
+			buildConfigurationList = 28B60EA43FE2F912DCA9A9F0 /* Build configuration list for PBXNativeTarget "App" */;
 			buildPhases = (
 				963D1F6247875FEAAC078B31 /* Compile Kotlin */,
 				6A4EEEE2885AF4BEFBA55212 /* Compile Kotlin Framework */,
@@ -82,12 +82,12 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				D902710FDDC91147FA1ADE8A /* iosApp */,
+				D902710FDDC91147FA1ADE8A /* App */,
 			);
-			name = iosApp;
+			name = App;
 			packageProductDependencies = (
 			);
-			productName = iosApp;
+			productName = App;
 			productReference = B88DA80184487003E78D5A7D /* Liquid.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -106,7 +106,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 428C488085C60E74A7F43E9D /* Build configuration list for PBXProject "iosApp" */;
+			buildConfigurationList = 428C488085C60E74A7F43E9D /* Build configuration list for PBXProject "Liquid" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -120,7 +120,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A4534A9EA182825D0811816A /* iosApp */,
+				A4534A9EA182825D0811816A /* App */,
 			);
 		};
 /* End PBXProject section */
@@ -313,12 +313,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = 499MUFL5H3;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../samples/composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -342,12 +342,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
 				DEVELOPMENT_TEAM = 499MUFL5H3;
 				ENABLE_PREVIEWS = YES;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SRCROOT)/../../samples/composeApp/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)\"";
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -366,7 +366,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		28B60EA43FE2F912DCA9A9F0 /* Build configuration list for PBXNativeTarget "iosApp" */ = {
+		28B60EA43FE2F912DCA9A9F0 /* Build configuration list for PBXNativeTarget "App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F2DCFDAD64BC471FFDBDB95F /* Debug */,
@@ -375,7 +375,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		428C488085C60E74A7F43E9D /* Build configuration list for PBXProject "iosApp" */ = {
+		428C488085C60E74A7F43E9D /* Build configuration list for PBXProject "Liquid" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3FFBBE2BA95564D284FE49E5 /* Debug */,

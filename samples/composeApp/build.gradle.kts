@@ -44,11 +44,11 @@ kotlin {
     iosTarget.compilations.named("main") {
       cinterops.register("SwiftGlassWebViewProvider") {
         definitionFile.set(
-          project.layout.projectDirectory.file("../iosApp/iosApp/Interops/SwiftGlassWebViewProvider.def"),
+          project.layout.projectDirectory.file("../ios/App/Interops/SwiftGlassWebViewProvider.def"),
         )
         includeDirs(
           project.layout.projectDirectory
-            .dir("../iosApp/iosApp/Interops/")
+            .dir("../ios/App/Interops/")
             .asFile,
         )
       }
