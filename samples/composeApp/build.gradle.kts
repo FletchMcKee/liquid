@@ -1,7 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
 import com.android.build.api.dsl.androidLibrary
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
@@ -11,7 +10,6 @@ plugins {
   alias(libs.plugins.liquid.compose.multiplatform)
   alias(libs.plugins.liquid.android.kotlin.multiplatform.library)
   alias(libs.plugins.kotlin.serialization)
-  alias(libs.plugins.compose.hotReload)
   alias(libs.plugins.roborazzi)
 }
 
@@ -102,20 +100,7 @@ kotlin {
 
     jvmMain.dependencies {
       implementation(libs.ktor.cio)
-      implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
-    }
-  }
-}
-
-compose.desktop {
-  application {
-    mainClass = "io.github.fletchmckee.liquid.samples.app.MainKt"
-
-    nativeDistributions {
-      targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-      packageName = "io.github.fletchmckee.liquid.samples.app"
-      packageVersion = "1.0.0"
     }
   }
 }
