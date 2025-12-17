@@ -21,7 +21,7 @@ spotless {
 }
 
 dependencies {
-  compileOnly(libs.android.gradlePlugin)
+  compileOnly(libs.android.api.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
   compileOnly(libs.spotless.gradlePlugin)
@@ -51,14 +51,6 @@ gradlePlugin {
           .get()
           .pluginId
       implementationClass = "ComposeMultiplatformConventionPlugin"
-    }
-
-    register("kotlinAndroid") {
-      id =
-        libs.plugins.liquid.kotlin.android
-          .get()
-          .pluginId
-      implementationClass = "KotlinAndroidConventionPlugin"
     }
 
     register("androidKmpLibrary") {

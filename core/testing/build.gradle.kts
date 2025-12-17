@@ -1,17 +1,15 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-  alias(libs.plugins.liquid.android.kotlin.multiplatform.library)
   alias(libs.plugins.liquid.kotlin.multiplatform)
   alias(libs.plugins.liquid.compose.multiplatform)
+  alias(libs.plugins.liquid.android.kotlin.multiplatform.library)
   alias(libs.plugins.roborazzi)
 }
 
 kotlin {
-  @Suppress("UnstableApiUsage")
   androidLibrary {
     namespace = "io.github.fletchmckee.liquid.core.testing"
 

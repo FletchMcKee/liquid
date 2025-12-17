@@ -1,6 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-import io.github.fletchmckee.buildlogic.configureAndroid
+import io.github.fletchmckee.buildlogic.configureAndroidTest
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -9,8 +9,7 @@ import org.gradle.kotlin.dsl.apply
 class AndroidTestConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) = with(target) {
     apply(plugin = "com.android.test")
-    apply(plugin = "org.jetbrains.kotlin.android")
 
-    configureAndroid()
+    configureAndroidTest()
   }
 }

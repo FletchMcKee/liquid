@@ -1,6 +1,5 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
@@ -21,7 +20,6 @@ kotlin {
     )
   }
 
-  @Suppress("UnstableApiUsage")
   androidLibrary {
     namespace = "io.github.fletchmckee.liquid.samples.shared"
 

@@ -114,7 +114,7 @@ fun LiquidPullToRefreshScreen(
           imageVector = Icons.Default.Refresh,
           contentDescription = null,
           modifier = Modifier.size(80.dp),
-          tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
+          tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
         )
       }
     },
@@ -227,7 +227,6 @@ private fun LiquidRefreshIndicator(
   isRefreshing: Boolean,
   modifier: Modifier = Modifier,
   indicatorShape: Shape = RoundedCornerShape(30),
-  indicatorColor: Color = MaterialTheme.colorScheme.background.copy(alpha = 0.1f),
   indicatorSize: Dp = DefaultIndicatorSize,
   threshold: Dp = DefaultThreshold,
   content: @Composable () -> Unit,
@@ -306,7 +305,6 @@ private fun LiquidRefreshIndicator(
         dispersion = 0.02f * scale
         saturation = 1f * scale
         contrast = 1f * scale
-        tint = indicatorColor
       },
     contentAlignment = Alignment.Center,
   ) {

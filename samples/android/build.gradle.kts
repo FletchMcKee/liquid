@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 plugins {
   alias(libs.plugins.liquid.android.application)
-  alias(libs.plugins.liquid.kotlin.android)
   alias(libs.plugins.liquid.compose.multiplatform)
 }
 
