@@ -57,7 +57,7 @@ ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
 # Formatting
 ktlint-core = "com.pinterest.ktlint:ktlint-core:1.8.0"
-ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.5.2"
+ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.5.3"
 
 # build-logic dependencies
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
