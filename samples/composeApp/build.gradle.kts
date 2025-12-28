@@ -103,11 +103,11 @@ kotlin {
   }
 }
 
-tasks.withType<KotlinJsTest> {
+tasks.withType<KotlinJsTest>().configureEach {
   enabled = false
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
   failOnNoDiscoveredTests.set(false)
 }
 

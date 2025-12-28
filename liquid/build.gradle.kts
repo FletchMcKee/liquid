@@ -71,9 +71,7 @@ tasks.withType<KotlinJsTest>().configureEach {
 
 apiValidation {
   @OptIn(ExperimentalBCVApi::class)
-  klib {
-    enabled = true
-  }
+  klib { enabled = true }
 }
 
 mavenPublishing {
