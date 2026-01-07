@@ -3,12 +3,12 @@ set -e
 
 mkdir -p docs/sample
 # Build the Compose WASM and JS samples.
-./gradlew samples:composeApp:wasmJsBrowserDistribution
-./gradlew samples:composeApp:jsBrowserDistribution
+./gradlew samples:web:wasmJsBrowserDistribution
+./gradlew samples:web:jsBrowserDistribution
 
 # Copy outside files into the docs folder.
-cp -R samples/composeApp/build/dist/wasmJs/productionExecutable docs/sample/wasm
-cp -R samples/composeApp/build/dist/js/productionExecutable docs/sample/js
+cp -R samples/web/build/dist/wasmJs/productionExecutable docs/sample/wasm
+cp -R samples/web/build/dist/js/productionExecutable docs/sample/js
 
 # Clean and generate new Dokka docs.
 rm -rf docs/api

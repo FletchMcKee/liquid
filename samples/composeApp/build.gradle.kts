@@ -103,6 +103,10 @@ kotlin {
   }
 }
 
+compose.resources {
+  publicResClass = true
+}
+
 tasks.withType<KotlinJsTest>().configureEach {
   enabled = false
 }

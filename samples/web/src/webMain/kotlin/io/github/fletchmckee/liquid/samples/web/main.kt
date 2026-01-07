@@ -6,7 +6,7 @@
   ExperimentalResourceApi::class,
 )
 
-package io.github.fletchmckee.liquid.samples.app
+package io.github.fletchmckee.liquid.samples.web
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.StartOffset
@@ -41,6 +41,7 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
+import io.github.fletchmckee.liquid.samples.app.LiquidDemos
 import io.github.fletchmckee.liquid.samples.app.common.ShaderBackground
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import kotlin.time.Duration.Companion.seconds
