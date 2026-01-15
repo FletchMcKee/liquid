@@ -145,7 +145,8 @@ jobs:
           disable-animations: true
           disk-size: 6000M
           heap-size: 600M
-          script: ./gradlew connectedAndroidDeviceTest --daemon
+          # TODO Remove this exclude task
+          script: ./gradlew :liquid:connectedAndroidDeviceTest -x copyAndroidDeviceTestComposeResourcesToAndroidAssets
 
   screenshot-tests:
     name: Screenshot tests

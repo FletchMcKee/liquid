@@ -1,6 +1,6 @@
 [versions]
 activityCompose = "1.12.2"
-agp = "9.0.0-rc01"
+agp = "9.0.0"
 androidXTestManifest = "1.10.0"
 assertk = "0.28.1"
 benchmark = "1.4.1"
