@@ -1,5 +1,6 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+import io.github.fletchmckee.buildlogic.Versions
 import io.github.fletchmckee.buildlogic.configureSpotless
 import io.github.fletchmckee.buildlogic.configureTesting
 import org.gradle.api.Plugin
@@ -8,9 +9,7 @@ import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
 @Suppress("unused") // Invoked reflectively
@@ -21,8 +20,8 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
     configureTesting()
 
     tasks.withType<JavaCompile>().configureEach {
-      sourceCompatibility = "11"
-      targetCompatibility = "11"
+      sourceCompatibility = Versions.Java.toString()
+      targetCompatibility = Versions.Java.toString()
     }
 
     kotlin {
@@ -32,15 +31,9 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
         freeCompilerArgs.add("-Xexpect-actual-classes")
       }
 
-      targets.withType<KotlinAndroidTarget> {
+      targets.withType<KotlinJvmTarget>().configureEach {
         compilerOptions {
-          jvmTarget.set(JvmTarget.JVM_11)
-        }
-      }
-
-      targets.withType<KotlinJvmTarget> {
-        compilerOptions {
-          jvmTarget.set(JvmTarget.JVM_11)
+          jvmTarget.set(Versions.Jvm)
         }
       }
     }

@@ -47,7 +47,7 @@ import io.github.fletchmckee.liquid.LiquidState
 import io.github.fletchmckee.liquid.liquefiable
 import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
-import io.github.fletchmckee.liquid.samples.app.R
+import io.github.fletchmckee.liquid.samples.shared.R
 
 @Composable
 fun VideoPlayer(
@@ -78,7 +78,7 @@ fun VideoPlayer(
     MediaPlayerScreen(
       player = it,
       liquidState = liquidState,
-      modifier = modifier,
+      modifier = modifier.background(Color.Black),
     )
   }
 }

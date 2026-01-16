@@ -1,19 +1,14 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-import com.android.build.api.variant.HasUnitTestBuilder
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
 import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 
 plugins {
-  alias(libs.plugins.kotlin.multiplatform)
-  alias(libs.plugins.liquid.android.application)
-  alias(libs.plugins.compose.multiplatform)
-  alias(libs.plugins.kotlin.compose)
+  alias(libs.plugins.liquid.kotlin.multiplatform)
+  alias(libs.plugins.liquid.compose.multiplatform)
+  alias(libs.plugins.liquid.android.kotlin.multiplatform.library)
   alias(libs.plugins.kotlin.serialization)
-  alias(libs.plugins.compose.hotReload)
   alias(libs.plugins.roborazzi)
 }
 
@@ -25,10 +20,10 @@ kotlin {
     )
   }
 
-  androidTarget {
-    compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_11)
-    }
+  androidLibrary {
+    namespace = "io.github.fletchmckee.liquid.samples.shared"
+
+    androidResources { enable = true }
   }
 
   listOf(
@@ -44,11 +39,11 @@ kotlin {
     iosTarget.compilations.named("main") {
       cinterops.register("SwiftGlassWebViewProvider") {
         definitionFile.set(
-          project.layout.projectDirectory.file("../iosApp/iosApp/Interops/SwiftGlassWebViewProvider.def"),
+          project.layout.projectDirectory.file("../ios/App/Interops/SwiftGlassWebViewProvider.def"),
         )
         includeDirs(
           project.layout.projectDirectory
-            .dir("../iosApp/iosApp/Interops/")
+            .dir("../ios/App/Interops/")
             .asFile,
         )
       }
@@ -70,9 +65,9 @@ kotlin {
 
   sourceSets {
     commonMain.dependencies {
+      api(libs.jetbrains.compose.foundation)
       implementation(projects.liquid)
       implementation(libs.jetbrains.compose.runtime)
-      implementation(libs.jetbrains.compose.foundation)
       implementation(libs.jetbrains.material3)
       implementation(libs.jetbrains.compose.ui)
       implementation(libs.jetbrains.components.resources)
@@ -88,7 +83,6 @@ kotlin {
 
     androidMain.dependencies {
       implementation(libs.ktor.cio)
-      implementation(libs.activity.compose)
       implementation(libs.androidx.media3.exoplayer)
       implementation(libs.androidx.media3.ui.compose)
     }
@@ -104,68 +98,20 @@ kotlin {
 
     jvmMain.dependencies {
       implementation(libs.ktor.cio)
-      implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
     }
   }
 }
 
-android {
-  namespace = "io.github.fletchmckee.liquid.samples.app"
-
-  defaultConfig {
-    applicationId = "io.github.fletchmckee.liquid.samples.app"
-    versionCode = 1
-    versionName = "1.0"
-  }
-
-  buildTypes {
-    getByName("release") {
-      isMinifyEnabled = false
-    }
-
-    create("benchmark") {
-      initWith(buildTypes.getByName("release"))
-      signingConfig = signingConfigs.getByName("debug")
-      matchingFallbacks += listOf("release")
-      isDebuggable = false
-    }
-  }
-
-  testOptions {
-    animationsDisabled = true
-  }
+compose.resources {
+  publicResClass = true
 }
 
-androidComponents {
-  beforeVariants(selector().withBuildType("release")) { variantBuilder ->
-    variantBuilder.enable = false
-  }
-
-  beforeVariants(selector().withBuildType("benchmark")) { variantBuilder ->
-    (variantBuilder as? HasUnitTestBuilder)?.apply {
-      enableUnitTest = false
-    }
-  }
-}
-
-compose.desktop {
-  application {
-    mainClass = "io.github.fletchmckee.liquid.samples.app.MainKt"
-
-    nativeDistributions {
-      targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-      packageName = "io.github.fletchmckee.liquid.samples.app"
-      packageVersion = "1.0.0"
-    }
-  }
-}
-
-tasks.withType<KotlinJsTest> {
+tasks.withType<KotlinJsTest>().configureEach {
   enabled = false
 }
 
-tasks.withType<Test> {
+tasks.withType<Test>().configureEach {
   failOnNoDiscoveredTests.set(false)
 }
 
