@@ -210,8 +210,8 @@ jobs:
           path: '**/build/outputs/roborazzi/*_compare.png'
           retention-days: 1
 
-  assemble:
-    name: Assemble samples
+  assemble-android:
+    name: Assemble Android sample
     runs-on: macos-latest
     timeout-minutes: 60
     steps:
@@ -232,18 +232,14 @@ jobs:
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
 
-      - name: Assemble samples
-        run: >
-          ./gradlew
-          kotlinUpgradeYarnLock
-          kotlinWasmUpgradeYarnLock
-          :samples:composeApp:assembleDebug
+      - name: Assemble
+        run: ./gradlew :samples:android:assembleDebug
 
   final-status:
     name: Final status check
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, screenshot-tests, assemble]
+    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, screenshot-tests, assemble-android]
     steps:
       - name: Final status check
         run: |
