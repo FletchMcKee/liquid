@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-01-18
+
+New:
+- Support for Compose Multiplatform 1.10.0 ([#108](https://github.com/FletchMcKee/liquid/pull/108)).
+
+Changed:
+- Improved shader performance by using analytical SDF gradient calculation ([#96](https://github.com/FletchMcKee/liquid/pull/96)).
+
 ## [1.1.0] - 2025-12-03
 
 New:
@@ -100,7 +108,8 @@ Changed:
 
 Initial (alpha) Release
 
-[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/fletchmckee/liquid/compare/1.1.1...HEAD
+[1.1.1]: https://github.com/fletchmckee/liquid/releases/tag/1.1.1
 [1.1.0]: https://github.com/fletchmckee/liquid/releases/tag/1.1.0
 [1.0.1]: https://github.com/fletchmckee/liquid/releases/tag/1.0.1
 [1.0.0]: https://github.com/fletchmckee/liquid/releases/tag/1.0.0
