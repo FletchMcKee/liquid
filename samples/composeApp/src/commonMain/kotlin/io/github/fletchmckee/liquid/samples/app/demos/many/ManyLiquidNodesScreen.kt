@@ -73,7 +73,7 @@ fun ManyLiquidNodesScreen(
     useLiquidProvider = { useLiquid },
     onUseLiquidChange = { useLiquid = it },
     modifier = modifier,
-  ) { paddingValues ->
+  ) {
     val defaultPainter = painterResource(Res.drawable.dotonbori)
     val painter = rememberPicsumPainter(
       cacheKey = cacheKey,
@@ -108,6 +108,7 @@ private fun BlurHack(
   modifier = Modifier
     .fillMaxSize()
     .liquefiable(liquidState)
+    .background(Color.LightGray) // Avoids the transparent background in between image loads.
     .graphicsLayer {
       renderEffect = BlurEffect(radiusX = frost.dp.toPx(), radiusY = frost.dp.toPx())
     },

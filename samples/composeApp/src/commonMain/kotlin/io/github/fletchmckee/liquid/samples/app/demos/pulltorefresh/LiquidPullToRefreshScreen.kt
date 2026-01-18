@@ -200,10 +200,13 @@ private fun PicsumImage(
   val painter = rememberAsyncImagePainter(
     model = "https://picsum.photos/600?random=$cacheKey",
     onSuccess = {
+      // These are read.
+      @Suppress("ASSIGNED_VALUE_IS_NEVER_READ")
       lastSuccessfulPainter = it.painter
       onComplete()
     },
     onError = {
+      @Suppress("ASSIGNED_VALUE_IS_NEVER_READ")
       lastSuccessfulPainter = ColorPainter(Color.Magenta)
       onComplete()
     },
@@ -255,8 +258,8 @@ private fun LiquidRefreshIndicator(
   )
 
   val lens by infiniteTransition.animateFloat(
-    initialValue = if (isRefreshing) 0.2f else 0.3f,
-    targetValue = if (isRefreshing) 0.4f else 0.3f,
+    initialValue = 0.25f,
+    targetValue = if (isRefreshing) 0.45f else 0.25f,
     animationSpec = infiniteRepeatable(
       animation = tween(2000),
       repeatMode = RepeatMode.Reverse,
@@ -296,7 +299,8 @@ private fun LiquidRefreshIndicator(
         }
       }
       .liquid(liquidState) {
-        frost = 6.dp - (scale * 4f).dp
+        // Starts at 0.dp and maxes at 10.dp.
+        frost = ((scale - 1f) * 20f).dp
         shape = indicatorShape
         // Generally the best combos are when refraction * curve <= cornerPercent².
         refraction = 0.09f / lens
