@@ -39,8 +39,6 @@ actual fun NavGraphBuilder.platformDemoDestinations(navController: NavHostContro
 private fun NavGraphBuilder.webViewNavigation(navController: NavHostController) = composable<WebView> {
   LiquidWebViewScreen(
     navController = navController,
-    modifier = Modifier
-      .fillMaxSize()
-      .systemBarsPadding(),
+    modifier = Modifier.fillMaxSize(),
   )
 }

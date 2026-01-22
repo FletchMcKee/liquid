@@ -38,14 +38,12 @@ kotlin {
     // Enables calling Swift code from Kotlin for the WebVIew.
     iosTarget.compilations.named("main") {
       cinterops.register("SwiftGlassWebViewProvider") {
-        definitionFile.set(
-          project.layout.projectDirectory.file("../ios/App/Interops/SwiftGlassWebViewProvider.def"),
-        )
-        includeDirs(
-          project.layout.projectDirectory
-            .dir("../ios/App/Interops/")
-            .asFile,
-        )
+        val glassDef = project.layout.projectDirectory.file("../ios/App/Interops/SwiftGlassWebViewProvider.def")
+        definitionFile.set(glassDef)
+        val interOpsDir = project.layout.projectDirectory.dir("../ios/App/Interops/")
+        includeDirs {
+          allHeaders(interOpsDir)
+        }
       }
     }
   }
