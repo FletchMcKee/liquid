@@ -15,7 +15,7 @@ android {
   }
 
   buildTypes {
-    create("benchmark") {
+    register("benchmark") {
       isDebuggable = false
       signingConfig = getByName("debug").signingConfig
       matchingFallbacks += listOf("release")
@@ -26,7 +26,7 @@ android {
   experimentalProperties["android.experimental.self-instrumenting"] = true
 
   testOptions.managedDevices.allDevices {
-    create<ManagedVirtualDevice>("pixel5Api34") {
+    register<ManagedVirtualDevice>("pixel5Api34") {
       device = "Pixel 5"
       apiLevel = 34
       systemImageSource = "aosp"

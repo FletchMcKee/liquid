@@ -42,8 +42,6 @@ jobs:
 
       - run: >
           ./gradlew
-          kotlinUpgradeYarnLock
-          kotlinWasmUpgradeYarnLock
           check
           -x test
           -x allTests
@@ -210,6 +208,31 @@ jobs:
           path: '**/build/outputs/roborazzi/*_compare.png'
           retention-days: 1
 
+  browser-tests:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java version
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version-file: .github/workflows/.java-version
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_ENCRYPTION_KEY }}
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
+
+      - name: Run wasmJs browser tests
+        run: ./gradlew :liquid:wasmJsBrowserTest
+
   assemble-android:
     name: Assemble Android sample
     runs-on: macos-latest
@@ -239,7 +262,7 @@ jobs:
     name: Final status check
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, screenshot-tests, assemble-android]
+    needs: [check-no-tests, jvm-tests, ios-tests, android-instrumentation-tests, screenshot-tests, browser-tests, assemble-android]
     steps:
       - name: Final status check
         run: |

@@ -3,7 +3,6 @@
 package io.github.fletchmckee.liquid.samples.app
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraphBuilder

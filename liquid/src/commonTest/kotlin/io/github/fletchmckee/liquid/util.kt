@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import io.github.fletchmckee.liquid.internal.AbstractLiquidNode
 
 // These are Jetpack helper methods/classes, but they're internal so just adding them manually.
 internal fun Modifier.elementOf(node: Modifier.Node): Modifier = this.then(ElementOf { node })
@@ -26,6 +28,13 @@ internal data class ElementOf<T : Modifier.Node>(val factory: () -> T) : Modifie
   override fun InspectorInfo.inspectableProperties() {
     name = "testNode"
   }
+}
+
+internal class LiquidNode(
+  liquidState: LiquidState,
+  block: LiquidScope.() -> Unit = {},
+) : AbstractLiquidNode(liquidState, block) {
+  override fun createRenderEffect(): RenderEffect? = null
 }
 
 @Composable
