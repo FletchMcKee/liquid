@@ -231,7 +231,7 @@ jobs:
           build-scan-terms-of-use-agree: "yes"
 
       - name: Run wasmJs browser tests
-        run: ./gradlew :liquid:wasmJsBrowserTest
+        run: ./gradlew kotlinWasmStorePackageLock :liquid:wasmJsBrowserTest
 
   assemble-android:
     name: Assemble Android sample
