@@ -1,12 +1,10 @@
 [versions]
 activityCompose = "1.12.2"
 agp = "9.0.0"
-androidXTestManifest = "1.10.0"
+androidXTestManifest = "1.10.1"
 assertk = "0.28.1"
 benchmark = "1.4.1"
-binaryCompatibility = "0.18.1"
 coilCompose = "3.3.0"
-composeHotReload = "1.0.0"
 composeMultiplatform = "1.10.0"
 dokka = "2.1.0"
 espressoCore = "3.7.0"
@@ -83,18 +81,15 @@ roborazzi-compose-desktop = { module = "io.github.takahirom.roborazzi:roborazzi-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 android-kotlin-multiplatform-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 android-test = { id = "com.android.test", version.ref = "agp" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binaryCompatibility" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
-compose-hotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 
 liquid-root = { id = "io.github.fletchmckee.liquid.root" }

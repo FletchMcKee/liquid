@@ -1,5 +1,7 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+rootProject.name = "liquid-root"
+
 pluginManagement {
   includeBuild("build-logic")
   repositories {
@@ -22,8 +24,6 @@ dependencyResolutionManagement {
     mavenCentral()
   }
 }
-
-rootProject.name = "liquid-root"
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")

@@ -1,5 +1,7 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+rootProject.name = "build-logic"
+
 pluginManagement {
   repositories {
     gradlePluginPortal()
@@ -20,11 +22,10 @@ dependencyResolutionManagement {
     mavenCentral()
   }
   versionCatalogs {
-    create("libs") {
+    register("libs") {
       from(files("../gradle/libs.versions.toml"))
     }
   }
 }
 
-rootProject.name = "build-logic"
 include(":convention")

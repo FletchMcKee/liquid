@@ -60,7 +60,7 @@ class LiquefiableNodeTest {
         Box(
           Modifier
             .size(100.dp)
-            .liquid(liquidState)
+            .elementOf(LiquidNode(liquidState))
             .drawBehind { liquidDrawCount++ },
         )
       }
@@ -149,7 +149,7 @@ class LiquefiableNodeTest {
         Box(
           Modifier
             .size(100.dp)
-            .liquid(liquidState)
+            .elementOf(LiquidNode(liquidState))
             .drawBehind { liquidDrawCount++ },
         )
       }
