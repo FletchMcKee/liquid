@@ -20,7 +20,6 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.RenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.boundsInRoot
@@ -35,7 +34,6 @@ import assertk.assertThat
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isZero
-import io.github.fletchmckee.liquid.internal.AbstractLiquidNode
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
@@ -554,11 +552,4 @@ class LiquidNodeTest {
       assertThat(drawCount).isEqualTo(4)
     }
   }
-}
-
-private class LiquidNode(
-  liquidState: LiquidState,
-  block: LiquidScope.() -> Unit,
-) : AbstractLiquidNode(liquidState, block) {
-  override fun createRenderEffect(): RenderEffect? = null
 }

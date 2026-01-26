@@ -2,20 +2,22 @@
 // SPDX-License-Identifier: Apache-2.0
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
-import kotlinx.validation.ExperimentalBCVApi
-import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
   alias(libs.plugins.liquid.kotlin.multiplatform)
   alias(libs.plugins.liquid.compose.multiplatform)
   alias(libs.plugins.liquid.android.kotlin.multiplatform.library)
   alias(libs.plugins.maven.publish)
-  alias(libs.plugins.binary.compatibility.validator)
   alias(libs.plugins.dokka)
 }
 
 kotlin {
   explicitApi()
+
+  @OptIn(ExperimentalAbiValidation::class)
+  abiValidation { enabled = true }
+
   addDefaultLiquidTargets()
 
   compilerOptions { allWarningsAsErrors = true }
@@ -28,13 +30,13 @@ kotlin {
       implementation(libs.jetbrains.compose.foundation)
     }
 
-    val skikoMain by creating { dependsOn(commonMain.get()) }
+    val skikoMain by registering { dependsOn(commonMain.get()) }
 
-    iosMain { dependsOn(skikoMain) }
-    macosMain { dependsOn(skikoMain) }
-    jvmMain { dependsOn(skikoMain) }
-    wasmJsMain { dependsOn(skikoMain) }
-    jsMain { dependsOn(skikoMain) }
+    iosMain { dependsOn(skikoMain.get()) }
+    macosMain { dependsOn(skikoMain.get()) }
+    jvmMain { dependsOn(skikoMain.get()) }
+    wasmJsMain { dependsOn(skikoMain.get()) }
+    jsMain { dependsOn(skikoMain.get()) }
 
     commonTest.dependencies {
       implementation(kotlin("test"))
@@ -49,6 +51,11 @@ kotlin {
 
     jvmTest.dependencies {
       implementation(compose.desktop.currentOs)
+    }
+
+    // For some reason you can't add this to commonTest or in the classes themselves.
+    wasmJsTest.languageSettings {
+      optIn("kotlin.js.ExperimentalWasmJsInterop")
     }
   }
 }
@@ -65,20 +72,10 @@ dependencies {
   }
 }
 
-tasks.withType<KotlinJsTest>().configureEach {
-  enabled = false
-}
-
-apiValidation {
-  @OptIn(ExperimentalBCVApi::class)
-  klib { enabled = true }
-}
-
 mavenPublishing {
   configure(
     KotlinMultiplatform(
       javadocJar = JavadocJar.Dokka("dokkaGenerate"),
-      sourcesJar = true,
     ),
   )
 }

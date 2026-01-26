@@ -5,7 +5,6 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
   alias(libs.plugins.liquid.kotlin.multiplatform)
   alias(libs.plugins.liquid.compose.multiplatform)
-  alias(libs.plugins.compose.hotReload)
 }
 
 kotlin {
