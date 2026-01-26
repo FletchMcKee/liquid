@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Make sure package-lock.json is up to date
+./gradlew kotlinWasmUpgradePackageLock kotlinUpgradePackageLock
+
 mkdir -p docs/sample
 # Build the Compose WASM and JS samples.
 ./gradlew samples:web:wasmJsBrowserDistribution
