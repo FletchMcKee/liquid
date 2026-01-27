@@ -1,3 +1,5 @@
+// Copyright 2026, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.liquid.samples.app.common
 
 import androidx.compose.foundation.background
@@ -107,9 +109,9 @@ fun LiquidTabItem(
   icon: @Composable (tint: Color) -> Unit,
   onClick: () -> Unit,
   liquidState: LiquidState,
+  modifier: Modifier = Modifier,
   selectedColor: Color = MaterialTheme.colorScheme.primary,
   unselectedColor: Color = Color(0x99000000),
-  modifier: Modifier = Modifier,
 ) {
   // No ripple / hover highlight
   val interactionSource = remember { MutableInteractionSource() }
@@ -143,7 +145,9 @@ fun LiquidTabItem(
             contrast = 1.15f
             dispersion = 0.05f
           }
-        } else Modifier,
+        } else {
+          Modifier
+        },
       )
       .clickable(
         interactionSource = interactionSource,
