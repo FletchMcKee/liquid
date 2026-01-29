@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 @Suppress("unused") // Invoked reflectively
-class AndroidKmpLibraryConventionPlugin : Plugin<Project> {
+class AndroidMultiplatformLibraryConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) = with(target) {
     apply(plugin = "com.android.kotlin.multiplatform.library")
 

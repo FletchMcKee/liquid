@@ -15,11 +15,11 @@ android {
   }
 
   buildTypes {
-    getByName("release") {
+    release {
       isMinifyEnabled = false
     }
 
-    create("benchmark") {
+    register("benchmark") {
       initWith(buildTypes.getByName("release"))
       signingConfig = signingConfigs.getByName("debug")
       matchingFallbacks += listOf("release")

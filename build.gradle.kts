@@ -1,5 +1,12 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+buildscript {
+  dependencies {
+    // Override AGP's built-in KGP version.
+    classpath(libs.kotlin.gradlePlugin)
+  }
+}
+
 plugins {
   alias(libs.plugins.liquid.root)
   alias(libs.plugins.android.application) apply false

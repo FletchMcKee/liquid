@@ -7,14 +7,22 @@ plugins {
 
 spotless {
   kotlin {
-    target("**/*.kt")
-    ktlint()
+    target("src/**/*.kt")
+    ktlint(
+      libs.ktlint.core
+        .get()
+        .version,
+    ).editorConfigOverride(
+      mapOf(
+        "ktlint_standard_filename" to "disabled",
+        "ktlint_standard_property-naming" to "disabled",
+      ),
+    )
     licenseHeaderFile(rootProject.file("../spotless/copyright.txt"))
   }
 
   kotlinGradle {
-    target("**/*.kts")
-    targetExclude("build/**/*.kts")
+    target("*.kts")
     ktlint()
     licenseHeaderFile(rootProject.file("../spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
   }
@@ -53,12 +61,12 @@ gradlePlugin {
       implementationClass = "ComposeMultiplatformConventionPlugin"
     }
 
-    register("androidKmpLibrary") {
+    register("androidMultiplatformLibrary") {
       id =
         libs.plugins.liquid.android.kotlin.multiplatform.library
           .get()
           .pluginId
-      implementationClass = "AndroidKmpLibraryConventionPlugin"
+      implementationClass = "AndroidMultiplatformLibraryConventionPlugin"
     }
 
     register("androidApplication") {

@@ -40,6 +40,8 @@ jobs:
 
       - run: bash ./scripts/enforce_git_lfs.sh
 
+      - run: ./gradlew :build-logic:convention:spotlessCheck
+
       - run: >
           ./gradlew
           check

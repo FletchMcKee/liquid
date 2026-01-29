@@ -16,8 +16,7 @@ internal fun Project.configureSpotless() {
     val composeRulesCoordinates = "${composeRulesDep.get().module}:${composeRulesDep.get().version}"
 
     kotlin {
-      target("**/*.kt")
-      targetExclude("build/**/*.kt")
+      target("src/**/*.kt")
       ktlint(ktlintVersion)
         .editorConfigOverride(
           mapOf(
@@ -30,8 +29,7 @@ internal fun Project.configureSpotless() {
     }
 
     kotlinGradle {
-      target("**/*.kts")
-      targetExclude("build/**/*.kts")
+      target("*.kts")
       ktlint(ktlintVersion)
       licenseHeaderFile(rootProject.file("spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
     }

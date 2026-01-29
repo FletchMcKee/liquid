@@ -114,7 +114,7 @@ fun LiquidPullToRefreshScreen(
           imageVector = Icons.Default.Refresh,
           contentDescription = null,
           modifier = Modifier.size(80.dp),
-          tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f),
+          tint = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.3f),
         )
       }
     },
@@ -229,7 +229,7 @@ private fun LiquidRefreshIndicator(
   liquidState: LiquidState,
   isRefreshing: Boolean,
   modifier: Modifier = Modifier,
-  indicatorShape: Shape = RoundedCornerShape(30),
+  indicatorShape: Shape = RoundedCornerShape(32),
   indicatorSize: Dp = DefaultIndicatorSize,
   threshold: Dp = DefaultThreshold,
   content: @Composable () -> Unit,
@@ -300,15 +300,15 @@ private fun LiquidRefreshIndicator(
       }
       .liquid(liquidState) {
         // Starts at 0.dp and maxes at 10.dp.
-        frost = ((scale - 1f) * 20f).dp
+        frost = ((scale - 1f) * 10f).dp
         shape = indicatorShape
         // Generally the best combos are when refraction * curve <= cornerPercent².
-        refraction = 0.09f / lens
+        refraction = 0.1024f / lens
         curve = lens
-        edge = 0.05f
-        dispersion = 0.02f * scale
-        saturation = 1f * scale
-        contrast = 1f * scale
+        edge = 0.04f * scale
+        dispersion = 0.01f * scale
+        saturation = 1f * ((scale - 1f) / 2f) + 1f
+        contrast = 1f * ((scale - 1f) / 2f) + 1f
       },
     contentAlignment = Alignment.Center,
   ) {
