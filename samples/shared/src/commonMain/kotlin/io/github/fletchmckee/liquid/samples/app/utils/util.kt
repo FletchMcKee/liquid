@@ -26,8 +26,8 @@ import coil3.compose.rememberAsyncImagePainter
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsBenchmark
 import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import kotlin.math.roundToInt
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.moon_and_stars
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.moon_and_stars
 import org.jetbrains.compose.resources.painterResource
 
 internal expect fun formatFloat(value: Float, format: String): String

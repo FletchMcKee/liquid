@@ -67,7 +67,3 @@ kotlin {
     }
   }
 }
-
-tasks.withType<Test>().configureEach {
-  failOnNoDiscoveredTests.set(false)
-}

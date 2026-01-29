@@ -53,9 +53,9 @@ import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.rememberPicsumPainter
 import io.github.fletchmckee.liquid.samples.app.utils.toPicsumId
 import kotlin.random.Random
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.dotonbori
-import liquid_root.samples.composeapp.generated.resources.moon_and_stars
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.dotonbori
+import liquid_root.samples.shared.generated.resources.moon_and_stars
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

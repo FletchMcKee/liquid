@@ -46,8 +46,8 @@ import io.github.fletchmckee.liquid.samples.app.nodes.testTagsAsResourceId
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.northern_lights
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.northern_lights
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

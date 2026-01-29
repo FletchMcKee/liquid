@@ -3,15 +3,20 @@
 package io.github.fletchmckee.buildlogic
 
 import org.gradle.api.Project
-import org.gradle.api.tasks.testing.AbstractTestTask
+import org.gradle.api.tasks.testing.Test
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 internal fun Project.configureTesting() {
-  tasks.withType(AbstractTestTask::class.java).configureEach {
+  tasks.withType(Test::class.java).configureEach {
+    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+
+    failOnNoDiscoveredTests.set(false)
+    reports.html.required.set(false)
+    reports.junitXml.required.set(false)
+
     testLogging {
       exceptionFormat = TestExceptionFormat.FULL
-      // Always set some events
       events(TestLogEvent.FAILED, TestLogEvent.SKIPPED, TestLogEvent.PASSED)
     }
   }

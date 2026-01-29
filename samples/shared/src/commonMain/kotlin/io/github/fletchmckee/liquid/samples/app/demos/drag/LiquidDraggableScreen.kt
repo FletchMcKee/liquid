@@ -52,10 +52,10 @@ import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialFrost
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.moon_and_stars
-import liquid_root.samples.composeapp.generated.resources.northern_lights
-import liquid_root.samples.composeapp.generated.resources.ny_city
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.moon_and_stars
+import liquid_root.samples.shared.generated.resources.northern_lights
+import liquid_root.samples.shared.generated.resources.ny_city
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
