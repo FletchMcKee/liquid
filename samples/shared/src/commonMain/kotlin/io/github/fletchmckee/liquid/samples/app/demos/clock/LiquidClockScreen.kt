@@ -62,9 +62,9 @@ import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.clock_format
-import liquid_root.samples.composeapp.generated.resources.prague_clock
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.clock_format
+import liquid_root.samples.shared.generated.resources.prague_clock
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 

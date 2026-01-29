@@ -58,8 +58,8 @@ import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.blendMode
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
 import kotlin.random.Random
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.ny_city
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.ny_city
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

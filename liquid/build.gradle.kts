@@ -22,7 +22,10 @@ kotlin {
 
   compilerOptions { allWarningsAsErrors = true }
   // Convention plugin sets everything else.
-  androidLibrary { namespace = "io.github.fletchmckee.liquid" }
+  androidLibrary {
+    namespace = "io.github.fletchmckee.liquid"
+    androidResources.enable = true
+  }
 
   sourceSets {
     commonMain.dependencies {

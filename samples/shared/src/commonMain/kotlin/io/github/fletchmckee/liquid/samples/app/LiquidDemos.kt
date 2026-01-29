@@ -55,8 +55,8 @@ import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.StickyHeader
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidShadow
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import io.github.fletchmckee.liquid.samples.app.utils.rememberShaderBrush
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.liquid_demos_platform
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.liquid_demos_platform
 import org.jetbrains.compose.resources.stringResource
 
 @Stable

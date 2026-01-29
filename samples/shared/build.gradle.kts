@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
-import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 
 plugins {
   alias(libs.plugins.liquid.kotlin.multiplatform)
@@ -16,14 +15,12 @@ kotlin {
   compilerOptions {
     freeCompilerArgs.addAll(
       "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api",
-      "-opt-in=kotlin.time.ExperimentalTime",
     )
   }
 
   androidLibrary {
     namespace = "io.github.fletchmckee.liquid.samples.shared"
-
-    androidResources { enable = true }
+    androidResources.enable = true
   }
 
   listOf(
@@ -89,29 +86,19 @@ kotlin {
       implementation(libs.ktor.darwin)
     }
 
-    commonTest.dependencies {
-      implementation(kotlin("test"))
-      implementation(projects.core.testing)
-    }
-
     jvmMain.dependencies {
       implementation(libs.ktor.cio)
       implementation(libs.kotlinx.coroutines.swing)
     }
+
+    commonTest.dependencies {
+      implementation(kotlin("test"))
+      implementation(projects.core.testing)
+    }
   }
 }
 
-compose.resources {
-  publicResClass = true
-}
-
-tasks.withType<KotlinJsTest>().configureEach {
-  enabled = false
-}
-
-tasks.withType<Test>().configureEach {
-  failOnNoDiscoveredTests.set(false)
-}
+compose.resources { publicResClass = true }
 
 roborazzi {
   outputDir.set(project.layout.projectDirectory.dir("screenshots"))

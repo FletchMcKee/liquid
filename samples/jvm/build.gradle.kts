@@ -12,7 +12,7 @@ kotlin {
 
   sourceSets {
     jvmMain.dependencies {
-      implementation(projects.samples.composeApp)
+      implementation(projects.samples.shared)
       implementation(compose.desktop.currentOs)
       implementation(libs.kotlinx.coroutines.swing)
     }

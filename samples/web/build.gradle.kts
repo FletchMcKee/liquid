@@ -22,7 +22,7 @@ kotlin {
 
   sourceSets {
     webMain.dependencies {
-      implementation(projects.samples.composeApp)
+      implementation(projects.samples.shared)
       implementation(projects.liquid)
       implementation(libs.jetbrains.compose.ui)
       implementation(libs.jetbrains.material3)

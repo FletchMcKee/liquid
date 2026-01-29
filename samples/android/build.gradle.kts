@@ -33,6 +33,6 @@ android {
 }
 
 dependencies {
-  implementation(projects.samples.composeApp)
+  implementation(projects.samples.shared)
   implementation(libs.activity.compose)
 }

@@ -66,10 +66,10 @@ inspiration, particularly for the use of content and effect `Modifier` nodes.
 [AndroidLiquidGlass](https://github.com/Kyant0/AndroidLiquidGlass) library.
 - The dispersion effect was inspired by ShaderToy user [PuZo](https://www.shadertoy.com/user/PuZo) with their
 [Chromatic Aberration example](https://www.shadertoy.com/view/ltByR3).
-- Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable/northern_lights.webp)
-- Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable/ny_city.webp).
-- Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable/dotonbori.webp).
-- Efrem Efre [@efrem-efre-2786187](https://www.pexels.com/@efrem-efre-2786187/) for the [prague_clock.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/composeApp/src/commonMain/composeResources/drawable-xxhdpi/prague_clock.webp).
+- Tobias Bjørkli [@tobiasbjorkli](https://www.pexels.com/@tobiasbjorkli/) for the [northern_lights.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/shared/src/commonMain/composeResources/drawable/northern_lights.webp)
+- Vlad Alexandru Popa [@vladalex94](https://www.pexels.com/@vladalex94/) for the [ny_city.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/shared/src/commonMain/composeResources/drawable/ny_city.webp).
+- Romain Guy [romainguy.dev](https://www.romainguy.dev/) for the [dotonbori.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/shared/src/commonMain/composeResources/drawable/dotonbori.webp).
+- Efrem Efre [@efrem-efre-2786187](https://www.pexels.com/@efrem-efre-2786187/) for the [prague_clock.webp](https://github.com/FletchMcKee/liquid/blob/trunk/samples/shared/src/commonMain/composeResources/drawable-xxhdpi/prague_clock.webp).
 
 ## License
 

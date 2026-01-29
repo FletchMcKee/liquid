@@ -46,11 +46,11 @@ import io.github.fletchmckee.liquid.samples.app.common.ShaderBackground
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
-import liquid_root.samples.composeapp.generated.resources.Res
-import liquid_root.samples.composeapp.generated.resources.moon_and_stars
-import liquid_root.samples.composeapp.generated.resources.northern_lights
-import liquid_root.samples.composeapp.generated.resources.ny_city
-import liquid_root.samples.composeapp.generated.resources.prague_clock
+import liquid_root.samples.shared.generated.resources.Res
+import liquid_root.samples.shared.generated.resources.moon_and_stars
+import liquid_root.samples.shared.generated.resources.northern_lights
+import liquid_root.samples.shared.generated.resources.ny_city
+import liquid_root.samples.shared.generated.resources.prague_clock
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.preloadImageBitmap
 

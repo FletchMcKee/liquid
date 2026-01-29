@@ -145,8 +145,7 @@ jobs:
           disable-animations: true
           disk-size: 6000M
           heap-size: 600M
-          # TODO Remove this exclude task
-          script: ./gradlew :liquid:connectedAndroidDeviceTest -x copyAndroidDeviceTestComposeResourcesToAndroidAssets
+          script: ./gradlew :liquid:connectedAndroidDeviceTest
 
   screenshot-tests:
     name: Screenshot tests
@@ -177,7 +176,7 @@ jobs:
       - name: Run Roborazzi screenshot tests
         id: screenshotsverify
         continue-on-error: true
-        run: ./gradlew :samples:composeApp:verifyRoborazzi
+        run: ./gradlew :samples:shared:verifyRoborazzi
 
       - name: Prevent pushing new screenshots if this is a fork
         id: checkfork_screenshots
@@ -192,7 +191,7 @@ jobs:
         id: screenshotsrecord
         if: steps.screenshotsverify.outcome == 'failure' && github.event_name == 'pull_request'
         run: |
-          ./gradlew :samples:composeApp:recordRoborazzi
+          ./gradlew :samples:shared:recordRoborazzi
 
       - name: Push new screenshots if available
         uses: stefanzweifel/git-auto-commit-action@v7

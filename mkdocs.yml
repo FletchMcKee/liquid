@@ -58,7 +58,7 @@ nav:
   - 'Getting Started': getting_started.md
   - 'LiquidScope': liquidscope.md
   - 'Limitations': limitations.md
-  - 'Samples ⏏': https://github.com/fletchmckee/liquid/tree/trunk/samples/composeApp/src/commonMain/kotlin/io/github/fletchmckee/liquid/samples/app/demos
+  - 'Samples ⏏': https://github.com/fletchmckee/liquid/tree/trunk/samples/shared/src/commonMain/kotlin/io/github/fletchmckee/liquid/samples/app/demos
   - 'API ⏏': api/index.html
   - 'WASM Sample ⏏': sample/wasm/index.html
   - 'JS Sample ⏏': sample/js/index.html
