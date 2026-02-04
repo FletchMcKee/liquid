@@ -2,30 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 plugins {
   `kotlin-dsl`
-  alias(libs.plugins.spotless)
-}
-
-spotless {
-  kotlin {
-    target("src/**/*.kt")
-    ktlint(
-      libs.ktlint.core
-        .get()
-        .version,
-    ).editorConfigOverride(
-      mapOf(
-        "ktlint_standard_filename" to "disabled",
-        "ktlint_standard_property-naming" to "disabled",
-      ),
-    )
-    licenseHeaderFile(rootProject.file("../spotless/copyright.txt"))
-  }
-
-  kotlinGradle {
-    target("*.kts")
-    ktlint()
-    licenseHeaderFile(rootProject.file("../spotless/copyright.txt"), "(^(?![\\/ ]\\**).*$)")
-  }
 }
 
 dependencies {
@@ -33,6 +9,11 @@ dependencies {
   compileOnly(libs.kotlin.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
   compileOnly(libs.spotless.gradlePlugin)
+}
+
+tasks.validatePlugins {
+  enableStricterValidation = true
+  failOnWarning = true
 }
 
 gradlePlugin {
