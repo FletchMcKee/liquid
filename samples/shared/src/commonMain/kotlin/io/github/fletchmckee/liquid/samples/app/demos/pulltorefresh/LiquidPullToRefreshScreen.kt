@@ -299,7 +299,7 @@ private fun LiquidRefreshIndicator(
         }
       }
       .liquid(liquidState) {
-        // Starts at 0.dp and maxes at 10.dp.
+        // Starts at 0.dp and maxes at 5.dp.
         frost = ((scale - 1f) * 10f).dp
         shape = indicatorShape
         // Generally the best combos are when refraction * curve <= cornerPercent².
@@ -307,7 +307,7 @@ private fun LiquidRefreshIndicator(
         curve = lens
         edge = 0.04f * scale
         dispersion = 0.01f * scale
-        saturation = 1f * ((scale - 1f) / 2f) + 1f
+        saturation = 1f * scale
         contrast = 1f * ((scale - 1f) / 2f) + 1f
       },
     contentAlignment = Alignment.Center,
