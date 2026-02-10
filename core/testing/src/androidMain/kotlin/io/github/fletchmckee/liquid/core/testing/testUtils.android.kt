@@ -19,7 +19,7 @@ import org.robolectric.annotation.GraphicsMode
 
 @RunWith(AndroidJUnit4::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [31, 35], qualifiers = RobolectricDeviceQualifiers.Pixel7)
+@Config(sdk = [31, 36], qualifiers = RobolectricDeviceQualifiers.Pixel7)
 actual abstract class ScreenshotTest
 
 actual fun runScreenshotTest(
