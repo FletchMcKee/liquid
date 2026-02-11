@@ -1,5 +1,5 @@
 [versions]
-activityCompose = "1.12.3"
+activityCompose = "1.12.4"
 agp = "9.0.0"
 androidXTestManifest = "1.10.1"
 assertk = "0.28.1"
