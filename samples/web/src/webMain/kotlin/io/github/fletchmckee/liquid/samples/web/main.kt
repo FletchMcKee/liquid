@@ -50,20 +50,17 @@ import liquid_root.samples.shared.generated.resources.Res
 import liquid_root.samples.shared.generated.resources.moon_and_stars
 import liquid_root.samples.shared.generated.resources.northern_lights
 import liquid_root.samples.shared.generated.resources.ny_city
-import liquid_root.samples.shared.generated.resources.prague_clock
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.preloadImageBitmap
 
 fun main() {
   ComposeViewport("ComposeApp") {
-    val pragueClock by preloadImageBitmap(Res.drawable.prague_clock)
     val moonAndStars by preloadImageBitmap(Res.drawable.moon_and_stars)
     val northernLights by preloadImageBitmap(Res.drawable.northern_lights)
     val nyCity by preloadImageBitmap(Res.drawable.ny_city)
 
     var minTimeElapsed by rememberSaveable { mutableStateOf(false) }
-    val resourcesLoaded = pragueClock != null &&
-      moonAndStars != null &&
+    val resourcesLoaded = moonAndStars != null &&
       northernLights != null &&
       nyCity != null
 

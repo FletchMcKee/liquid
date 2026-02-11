@@ -5,6 +5,7 @@ package io.github.fletchmckee.liquid.samples.app.demos.many
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -74,21 +75,23 @@ fun ManyLiquidNodesScreen(
     onUseLiquidChange = { useLiquid = it },
     modifier = modifier,
   ) {
-    val defaultPainter = painterResource(Res.drawable.dotonbori)
-    val painter = rememberPicsumPainter(
-      cacheKey = cacheKey,
-      defaultPainter = defaultPainter,
-      error = defaultPainter,
-    )
+    Box {
+      val defaultPainter = painterResource(Res.drawable.dotonbori)
+      val painter = rememberPicsumPainter(
+        cacheKey = cacheKey,
+        defaultPainter = defaultPainter,
+        error = defaultPainter,
+      )
 
-    // Draw the BlurHack first with the `liquefiable` node. The `liquid` nodes will see this
-    // instead of the unblurred image background.
-    if (useLiquid) {
-      BlurHack(liquidState, painter)
+      // Draw the BlurHack first with the `liquefiable` node. The `liquid` nodes will see this
+      // instead of the unblurred image background.
+      if (useLiquid) {
+        BlurHack(liquidState, painter)
+      }
+      // Then draw the real image on top. This way the blur is only visible through the `liquid` nodes.
+      DisplayBackground(painter)
+      LiquidNodesList(liquidState, useLiquid)
     }
-    // Then draw the real image on top. This way the blur is only visible through the `liquid` nodes.
-    DisplayBackground(painter)
-    LiquidNodesList(liquidState, useLiquid)
   }
 }
 

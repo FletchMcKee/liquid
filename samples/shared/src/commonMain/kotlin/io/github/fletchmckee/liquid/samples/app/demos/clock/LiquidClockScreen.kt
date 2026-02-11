@@ -8,10 +8,8 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -24,6 +22,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,7 +34,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -50,6 +48,7 @@ import io.github.fletchmckee.liquid.liquid
 import io.github.fletchmckee.liquid.rememberLiquidState
 import io.github.fletchmckee.liquid.samples.app.common.LiquidControls
 import io.github.fletchmckee.liquid.samples.app.common.LiquidScopeManager
+import io.github.fletchmckee.liquid.samples.app.common.PicsumBackground
 import io.github.fletchmckee.liquid.samples.app.common.SliderScaffold
 import io.github.fletchmckee.liquid.samples.app.common.retainLiquidScopeManager
 import io.github.fletchmckee.liquid.samples.app.theme.LocalInitialDispersion
@@ -58,6 +57,7 @@ import io.github.fletchmckee.liquid.samples.app.theme.LocalIsScreenshotTest
 import io.github.fletchmckee.liquid.samples.app.theme.LocalUseLiquid
 import io.github.fletchmckee.liquid.samples.app.utils.drag
 import io.github.fletchmckee.liquid.samples.app.utils.thenIf
+import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.delay
@@ -65,7 +65,6 @@ import kotlinx.coroutines.isActive
 import liquid_root.samples.shared.generated.resources.Res
 import liquid_root.samples.shared.generated.resources.clock_format
 import liquid_root.samples.shared.generated.resources.prague_clock
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -96,7 +95,13 @@ fun LiquidClockScreen(
     modifier = modifier,
   ) {
     Box {
-      PragueClockBackground(liquidState, useLiquid)
+      var cacheKey by rememberSaveable { mutableIntStateOf(Random.nextInt(until = 2000)) }
+      PicsumBackground(
+        liquidState = liquidState,
+        cacheKey = cacheKey,
+        useLiquid = useLiquid,
+        defaultDrawable = Res.drawable.prague_clock,
+      )
 
       ClockTimer(
         liquidState = liquidState,
@@ -134,21 +139,6 @@ fun LiquidClockScreen(
     }
   }
 }
-
-@Composable
-private fun PragueClockBackground(
-  liquidState: LiquidState,
-  useLiquid: Boolean,
-) = Image(
-  painter = painterResource(Res.drawable.prague_clock),
-  contentDescription = null,
-  contentScale = ContentScale.Crop,
-  modifier = Modifier
-    .fillMaxSize()
-    .thenIf(useLiquid) {
-      liquefiable(liquidState)
-    },
-)
 
 @Composable
 private fun ClockTimer(
