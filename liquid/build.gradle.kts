@@ -76,9 +76,10 @@ dependencies {
 }
 
 mavenPublishing {
-  configure(
-    KotlinMultiplatform(
-      javadocJar = JavadocJar.Dokka("dokkaGenerate"),
-    ),
-  )
+  configure(KotlinMultiplatform(javadocJar = JavadocJar.Dokka("dokkaGenerate")))
+}
+
+tasks.named(LifecycleBasePlugin.CHECK_TASK_NAME) {
+  // TODO: Will be fixed in Kotlin 2.3.20.
+  dependsOn(tasks.named("checkLegacyAbi"))
 }

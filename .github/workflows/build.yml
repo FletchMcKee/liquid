@@ -45,6 +45,7 @@ jobs:
           check
           -x test
           -x allTests
+          -x testAndroidHostTest
           -x iosSimulatorArm64Test
           -x iosX64Test
           -x macosX64Test
