@@ -1,6 +1,7 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
 import io.github.fletchmckee.buildlogic.configureAndroidApp
+import io.github.fletchmckee.buildlogic.configureSpotless
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.apply
@@ -11,5 +12,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
     apply(plugin = "com.android.application")
 
     configureAndroidApp()
+    configureSpotless()
   }
 }
