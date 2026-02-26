@@ -20,6 +20,7 @@ env:
     -Dkotlin.incremental=false
     -Dorg.gradle.parallel=true
     -Dorg.gradle.configuration-cache=true
+    -Dorg.gradle.configureondemand=false
 
 jobs:
   check-no-tests:
