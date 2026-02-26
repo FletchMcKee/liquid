@@ -203,7 +203,7 @@ jobs:
 
       - name: Upload screenshot results if failed
         if: ${{ !cancelled() && steps.screenshotsverify.outcome == 'failure' }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: screenshot-test-results
           path: '**/build/outputs/roborazzi/*_compare.png'
