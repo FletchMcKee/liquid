@@ -10,12 +10,9 @@ plugins {
 }
 
 kotlin {
-  androidLibrary {
+  android {
     namespace = "io.github.fletchmckee.liquid.core.testing"
-
-    withHostTest {
-      isIncludeAndroidResources = true
-    }
+    withHostTest { isIncludeAndroidResources = true }
   }
 
   iosArm64()

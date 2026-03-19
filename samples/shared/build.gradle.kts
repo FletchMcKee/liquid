@@ -18,13 +18,10 @@ kotlin {
     )
   }
 
-  androidLibrary {
+  android {
     namespace = "io.github.fletchmckee.liquid.samples.shared"
     androidResources.enable = true
-
-    withHostTest {
-      isIncludeAndroidResources = true
-    }
+    withHostTest { isIncludeAndroidResources = true }
   }
 
   listOf(
