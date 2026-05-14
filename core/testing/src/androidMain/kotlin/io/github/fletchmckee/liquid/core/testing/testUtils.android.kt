@@ -5,8 +5,8 @@ package io.github.fletchmckee.liquid.core.testing
 import android.content.ContentProvider
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.test.AndroidComposeUiTestEnvironment
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.v2.AndroidComposeUiTestEnvironment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.RoborazziOptions

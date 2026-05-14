@@ -5,7 +5,7 @@ package io.github.fletchmckee.liquid.core.testing
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runSkikoComposeUiTest
+import androidx.compose.ui.test.v2.runSkikoComposeUiTest
 import androidx.compose.ui.unit.Density
 import com.github.takahirom.roborazzi.roborazziSystemPropertyCompareOutputDirectory
 import io.github.takahirom.roborazzi.CompareOptions

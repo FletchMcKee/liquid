@@ -4,7 +4,7 @@ package io.github.fletchmckee.liquid.core.testing
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.runSkikoComposeUiTest
+import androidx.compose.ui.test.v2.runSkikoComposeUiTest
 import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.roboOutputName
 import io.github.takahirom.roborazzi.captureRoboImage

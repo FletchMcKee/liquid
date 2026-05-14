@@ -63,18 +63,6 @@ kotlin {
   }
 }
 
-dependencies {
-  // This is for backwards compatibility. Can be removed in 2.0.0.
-  constraints {
-    "androidMainApi"("androidx.compose.ui:ui:1.9.3") {
-      because("Library now uses JetBrains Compose Multiplatform")
-    }
-    "androidMainImplementation"("androidx.compose.foundation:foundation:1.9.3") {
-      because("Library now uses JetBrains Compose Multiplatform")
-    }
-  }
-}
-
 mavenPublishing {
   configure(KotlinMultiplatform(javadocJar = JavadocJar.Dokka("dokkaGenerate")))
 }
