@@ -55,7 +55,7 @@ ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
 # Formatting
-ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.5.8"
+ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.5.9"
 
 # build-logic dependencies
 android-api-gradlePlugin = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
