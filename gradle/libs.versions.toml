@@ -20,7 +20,7 @@ jetbrainsLifecycle = "2.10.0"
 jetbrainsNavigation = "2.9.2"
 media3 = "1.10.1"
 robolectric = "4.16.1"
-roborazzi = "1.60.0"
+roborazzi = "1.61.0"
 serialization = "1.11.0"
 spotless = "8.5.1"
 uiautomator = "2.3.0"
@@ -55,7 +55,7 @@ ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 
 # Formatting
-ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.5.8"
+ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.5.9"
 
 # build-logic dependencies
 android-api-gradlePlugin = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
