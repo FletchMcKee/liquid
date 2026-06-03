@@ -16,12 +16,12 @@ kotlin {
   explicitApi()
 
   @OptIn(ExperimentalAbiValidation::class)
-  abiValidation { enabled = true }
+  abiValidation()
 
   addDefaultLiquidTargets()
 
   compilerOptions { allWarningsAsErrors = true }
-  // Convention plugin sets everything else.
+
   android {
     namespace = "io.github.fletchmckee.liquid"
     androidResources.enable = true
@@ -56,7 +56,6 @@ kotlin {
       implementation(compose.desktop.currentOs)
     }
 
-    // For some reason you can't add this to commonTest or in the classes themselves.
     wasmJsTest.languageSettings {
       optIn("kotlin.js.ExperimentalWasmJsInterop")
     }
