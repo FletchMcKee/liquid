@@ -1,7 +1,7 @@
 [versions]
 activityCompose = "1.13.0"
 agp = "9.2.1"
-androidXTestManifest = "1.11.2"
+androidXTestManifest = "1.11.3"
 assertk = "0.28.1"
 benchmark = "1.4.1"
 coilCompose = "3.5.0"
