@@ -93,8 +93,10 @@ internal abstract class AbstractLiquidNode(
 
   // Invoked when [renderEffectFlags] is mutated
   protected abstract fun createRenderEffect(): RenderEffect?
+
   // Invoked when [invalidateFlags] is mutated.
   protected open fun inspectDirtyFields() = Unit
+
   // Apply additional effects unrelated to the RenderEffect
   protected open fun ContentDrawScope.applyAdditionalEffects(
     layer: GraphicsLayer,
