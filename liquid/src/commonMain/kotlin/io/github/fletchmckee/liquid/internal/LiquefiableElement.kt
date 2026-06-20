@@ -106,11 +106,9 @@ internal class LiquefiableNode(
       drawContent()
       return
     }
-    // Prevents double reads with the mutableState `liquefiable.layer` when `createGraphicsLayer` is called.
+    // Prevents double reads with the mutableState `liquefiable.layer` when `createGraphicsLayer` is invoked.
     val contentLayer = Snapshot.withoutReadObservation { obtainGraphicsLayer() }
-    // Record the content into the layer
     contentLayer.record { this@draw.drawContent() }
-    // No need to call drawContent since we did so in the recording.
     drawLayer(contentLayer)
   }
 }

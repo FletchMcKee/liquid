@@ -27,14 +27,13 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   // Only record content inside the effect's bounds.
   val liquefiables = liquefiables.fastFilter { boundsInRoot.overlaps(it.boundsOnScreen) }
   if (liquefiables.isEmpty()) return@with
-  // We avoid unnecessary liquidScope invalidations by observing the mutableState boundsOnScreen
-  // and layers here. Changes to these properties will recompose the full draw pass.
+
   layer.record(intSize) {
     liquefiables.fastForEach { liquefiable ->
       liquefiable.layer
         ?.takeUnless { it.isReleased }
         ?.let { liquefiableLayer ->
-          // Position content where it should appear on screen.
+          // All positioning calculations are based on the `topLeft` coordinate.
           val (x, y) = liquefiable.boundsOnScreen.topLeft - positionOnScreen
           withTransform(
             {
@@ -50,10 +49,7 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
   }
 }
 
-/**
- * Allows passing a [Shape] parameter to a composable that can be used for other GraphicsLayer requirements
- * along with being used in our liquid nodes.
- */
+// Calculate the corner radii once upfront instead of in the shader.
 @androidx.annotation.Size(value = 4)
 internal fun Shape.normalizedCornerRadii(
   size: Size,

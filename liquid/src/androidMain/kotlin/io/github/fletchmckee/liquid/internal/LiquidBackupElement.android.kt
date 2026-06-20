@@ -114,8 +114,6 @@ private fun Outline.asPath(): Path = when (this) {
   is Outline.Generic -> path
 }
 
-// This won't be that accurate, but we should at least provide an edge-like inner border using gradients
-// if the user provided a value.
 private fun ContentDrawScope.drawBackupEdgeEffect(shapePath: Path) = clipPath(shapePath) {
   val strokeWidth = 4.dp.toPx()
   val radius = size.minDimension

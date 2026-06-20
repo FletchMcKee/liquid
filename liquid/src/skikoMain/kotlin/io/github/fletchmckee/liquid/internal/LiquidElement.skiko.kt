@@ -20,10 +20,7 @@ internal actual fun liquidElement(
   block: LiquidScope.() -> Unit,
 ): AbstractLiquidElement<out AbstractLiquidNode> = LiquidElement(liquidState, block)
 
-/**
- * Using `positionOnScreen()` results in incorrect positioning. Will need to monitor if this
- * changes in the future.
- */
+// Using `positionOnScreen()` results in incorrect positioning for jvm.
 internal actual fun LayoutCoordinates.liquidPositionOnScreen(): Offset = positionInWindow()
 
 internal class LiquidElement(
@@ -58,7 +55,6 @@ internal class LiquidNode(
       else -> null
     }.also { cachedBlurImageFilter = it }
 
-    // Logic differs from Android slightly as we can set the blurEffect as an input.
     return ImageFilter.makeRuntimeShader(
       runtimeShaderBuilder = liquidShader,
       shaderNames = arrayOf("content"),
