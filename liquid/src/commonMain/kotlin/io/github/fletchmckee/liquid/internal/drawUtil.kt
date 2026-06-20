@@ -33,7 +33,7 @@ internal fun ContentDrawScope.recordLiquefiablesIntoLayer(
       liquefiable.layer
         ?.takeUnless { it.isReleased }
         ?.let { liquefiableLayer ->
-          // All the positioning calculations are based on the `topLeft` coordinate.
+          // All positioning calculations are based on the `topLeft` coordinate.
           val (x, y) = liquefiable.boundsOnScreen.topLeft - positionOnScreen
           withTransform(
             {
