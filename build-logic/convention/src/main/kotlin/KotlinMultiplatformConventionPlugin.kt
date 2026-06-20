@@ -55,9 +55,7 @@ fun KotlinMultiplatformExtension.addDefaultLiquidTargets() {
     browser()
   }
 
-  js(IR) {
-    browser()
-  }
+  js { browser() }
 }
 
 internal fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
