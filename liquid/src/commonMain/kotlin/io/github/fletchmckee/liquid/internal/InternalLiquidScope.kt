@@ -25,7 +25,7 @@ internal interface InternalLiquidScope : LiquidScope {
   var layoutDirection: LayoutDirection
   var size: Size
 
-  /**
+  /*
    * The GraphicsLayer `record` method requires IntSize.
    *
    * This exists just so that we don't have to call `toIntSize` for every draw operation,
@@ -39,7 +39,7 @@ internal interface InternalLiquidScope : LiquidScope {
   var boundsInRoot: Rect
   var liquefiables: List<Liquefiable>
 
-  /** Resets the `mutatedFields` dirty tracker. */
+  // Resets the `mutatedFields` dirty tracker.
   fun clean()
 }
 
@@ -60,8 +60,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
     set(value) {
       if (field != value) {
         field = value
-        // Similar to tint, we don't really care about the shape interface, we just need the corner radii,
-        // so the mutatedFields tracker is set there.
+        // Similar to tint, we just need the corner radii from Shape.
         if (size.isSpecified) {
           cornerRadii = value.normalizedCornerRadii(size, density, layoutDirection)
         }
@@ -138,8 +137,6 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   override var layoutDirection: LayoutDirection = LayoutDirection.Ltr
     set(value) {
       if (field != value) {
-        // Doesn't need its own mutatedFields tracker as we only care about changes to cornerRadii.
-        // Also even if this did change frequently, most use cases will have uniform cornerRadii.
         field = value
         if (size.isSpecified) {
           cornerRadii = shape.normalizedCornerRadii(size, density, value)
@@ -235,8 +232,6 @@ internal class LiquidScopeImpl : InternalLiquidScope {
   internal var argbColor: Int = 0 // Same as Color.Unspecified.toArgb()
     private set(value) {
       if (field != value) {
-        // We set the mutatedFields on this internal property rather than the public `tint` property because
-        // ultimately this is the value we pass to the shader.
         mutatedFields = mutatedFields or Fields.Tint
         field = value
       }
@@ -264,7 +259,7 @@ internal class LiquidScopeImpl : InternalLiquidScope {
 
 @Suppress("ConstPropertyName")
 internal object Fields {
-  // A change in these requires recreating the RenderEffect and invalidating the draw.
+  // A change in these require recreating the RenderEffect and invalidating the draw.
   const val Frost: Int = 0b1
   const val Shape: Int = 0b1 shl 1
   const val Refraction: Int = 0b1 shl 2
@@ -285,7 +280,6 @@ internal object Fields {
   const val Liquefiables: Int = 0b1 shl 14
   const val BoundsInRoot: Int = 0b1 shl 15
 
-  // PositionOnScreen isn't a shader uniform as it's only used to translate liquefiables into the correct space.
   const val RenderEffectFields: Int =
     Frost or
       Shape or

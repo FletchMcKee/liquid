@@ -10,10 +10,7 @@ plugins {
 }
 
 kotlin {
-  android {
-    namespace = "io.github.fletchmckee.liquid.core.testing"
-    withHostTest { isIncludeAndroidResources = true }
-  }
+  android { namespace = "io.github.fletchmckee.liquid.core.testing" }
 
   iosArm64()
   iosSimulatorArm64()

@@ -35,14 +35,13 @@ import kotlin.math.PI
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
-// We have separate nodes so that Android and Skiko can create their RuntimeShader/RuntimeEffect
-// in `init` rather than the draw pass as this has shown better performance.
+// Nodes are separated so that RuntimeShader/RuntimeEffect can be created once.
 internal expect fun liquidElement(
   liquidState: LiquidState,
   block: LiquidScope.() -> Unit,
 ): AbstractLiquidElement<out AbstractLiquidNode>
 
-// The `positionOnScreen()` doesn't return the same thing between Android and Skiko.
+// `positionOnScreen()` doesn't return the same thing between Android and Skiko.
 internal expect fun LayoutCoordinates.liquidPositionOnScreen(): Offset
 
 internal abstract class AbstractLiquidElement<N : AbstractLiquidNode>(
@@ -92,46 +91,23 @@ internal abstract class AbstractLiquidNode(
   private var cachedLayer: GraphicsLayer? = null
   private var cachedRenderEffect: RenderEffect? = null
 
-  /**
-   * Called when [renderEffectFlags] is mutated, signaling it needs to be created, recreated
-   * or set to null.
-   */
+  // Invoked when [renderEffectFlags] is mutated
   protected abstract fun createRenderEffect(): RenderEffect?
-
-  /**
-   * Called when [invalidateFlags] is mutated which means we're going to call [invalidateDraw],
-   * but before we clean the dirty tracker.
-   *
-   * The purpose of this method is to give consumers the chance to check the tracker for specific
-   * fields as they may contain cached effects unrelated to the RenderEffect.
-   */
+  // Invoked when [invalidateFlags] is mutated.
   protected open fun inspectDirtyFields() = Unit
-
-  /**
-   * Apply any additional effects to the [layer] unrelated to the RenderEffect. Any changes to the
-   * layer's renderEffect property are ignored as this is controlled by [createRenderEffect].
-   *
-   * @param layer The composite layer with the appropriate liquefiables recorded into place.
-   * @param drawBlock The block for drawing any additional effects. The default implementation invokes
-   * this block immediately with no additional effects.
-   */
+  // Apply additional effects unrelated to the RenderEffect
   protected open fun ContentDrawScope.applyAdditionalEffects(
     layer: GraphicsLayer,
     drawBlock: () -> Unit,
   ) = drawBlock()
 
-  /** Triggers draw invalidation when mutated. */
   protected open val invalidateFlags: Int = Fields.InvalidateFlags
-
-  /** Resets the RenderEffect when mutated */
   protected open val renderEffectFlags: Int = Fields.RenderEffectFields
 
   internal fun invalidateLiquidBlock() {
     if (!isAttached) return
-    // Our frostRadius calculations rely on density. Setting it here prevents unnecessary RenderEffect
-    // invalidations in the draw pass.
+    // Updating density/layoutDirection here prevents unnecessary RenderEffect invalidations in the draw pass.
     reusableScope.density = currentValueOf(LocalDensity)
-    // The cornerRadii ordering depends on layoutDirection.
     reusableScope.layoutDirection = currentValueOf(LocalLayoutDirection)
     block(reusableScope)
 
@@ -142,8 +118,6 @@ internal abstract class AbstractLiquidNode(
     }
     reusableScope.liquefiables = liquidState.liquefiables.fastFilter { it != ancestor }
 
-    // This avoids unnecessary invalidateDraw calls as this could be called multiple times before we have
-    // a valid size and position.
     if (reusableScope.size.isSpecified) {
       invalidateDrawIfNeeded()
     }
@@ -156,8 +130,7 @@ internal abstract class AbstractLiquidNode(
       if (reusableScope.mutatedFields has renderEffectFlags) {
         cachedRenderEffect = createRenderEffect()
       }
-      // It's important to call `clean()` after `createRenderEffect()` as the `createRenderEffect()`
-      // relies on the `mutatedFields` tracker to know when it has to be reconfigured.
+
       reusableScope.clean()
       invalidateDraw()
     }
@@ -168,11 +141,9 @@ internal abstract class AbstractLiquidNode(
       .createGraphicsLayer()
       .also { cachedLayer = it }
 
-  // We handle all necessary invalidations in LiquidScopeImpl.
+  // Performance optimization since we handle invalidations.
   override val shouldAutoInvalidate: Boolean = false
 
-  // The `observeReads` call is critical here, otherwise we won't receive updates from
-  // LiquidScope/Liquefiable property mutations.
   override fun onAttach() = observeReads(::invalidateLiquidBlock)
 
   override fun onDetach() {
@@ -218,7 +189,6 @@ internal abstract class AbstractLiquidNode(
       drawLayer(layer)
     }
 
-    // Necessary since it isn't part of the recording.
     drawContent()
   }
 }

@@ -33,7 +33,8 @@ kotlin {
       implementation(libs.jetbrains.compose.foundation)
     }
 
-    val skikoMain by registering { dependsOn(commonMain.get()) }
+    val skikoMain = register("skikoMain")
+    skikoMain { dependsOn(commonMain.get()) }
 
     iosMain { dependsOn(skikoMain.get()) }
     macosMain { dependsOn(skikoMain.get()) }
