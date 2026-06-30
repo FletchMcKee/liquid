@@ -1,0 +1,19 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.github.fletchmckee.liquid////PointingToDeclaration/liquid/io.github.fletchmckee.liquid/index.html
+$dokka.location:io.github.fletchmckee.liquid//liquefiable/androidx.compose.ui.Modifier#io.github.fletchmckee.liquid.LiquidState/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/liquefiable.html
+$dokka.location:io.github.fletchmckee.liquid//liquid/androidx.compose.ui.Modifier#io.github.fletchmckee.liquid.LiquidState#kotlin.Function1[io.github.fletchmckee.liquid.LiquidScope,kotlin.Unit]/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/liquid.html
+$dokka.location:io.github.fletchmckee.liquid//rememberLiquidState/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/remember-liquid-state.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope///PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/index.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/contrast/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/contrast.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/curve/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/curve.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/dispersion/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/dispersion.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/edge/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/edge.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/frost/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/frost.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/refraction/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/refraction.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/saturation/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/saturation.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/shape/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/shape.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidScope/tint/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-scope/tint.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidState///PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-state/index.html
+$dokka.location:io.github.fletchmckee.liquid/LiquidState/LiquidState/#/PointingToDeclaration/liquid/io.github.fletchmckee.liquid/-liquid-state/-liquid-state.html
+io.github.fletchmckee.liquid
