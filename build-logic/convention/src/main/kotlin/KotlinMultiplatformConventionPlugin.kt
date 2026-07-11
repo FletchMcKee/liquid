@@ -7,7 +7,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
@@ -61,6 +60,3 @@ fun KotlinMultiplatformExtension.addDefaultLiquidTargets() {
 internal fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
   extensions.configure<KotlinMultiplatformExtension>(action)
 }
-
-internal val Project.kotlin: KotlinMultiplatformExtension
-  get() = extensions.getByType<KotlinMultiplatformExtension>()
