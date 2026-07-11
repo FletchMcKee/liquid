@@ -60,4 +60,3 @@ fun KotlinMultiplatformExtension.addDefaultLiquidTargets() {
 internal fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
   extensions.configure<KotlinMultiplatformExtension>(action)
 }
-
