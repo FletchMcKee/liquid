@@ -7,9 +7,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.v2.runSkikoComposeUiTest
 import androidx.compose.ui.unit.Density
+import com.github.takahirom.roborazzi.RoborazziOptions
 import com.github.takahirom.roborazzi.roborazziSystemPropertyCompareOutputDirectory
-import io.github.takahirom.roborazzi.CompareOptions
-import io.github.takahirom.roborazzi.RoborazziOptions
 import io.github.takahirom.roborazzi.captureRoboImage
 
 actual abstract class ScreenshotTest
@@ -29,7 +28,8 @@ actual fun runScreenshotTest(
     composeUiTest = this,
     filePath = "ios/${roboOutputName()}.png",
     roborazziOptions = RoborazziOptions(
-      compareOptions = CompareOptions(
+      compareOptions = RoborazziOptions.CompareOptions(
+        changeThreshold = 0.005f,
         outputDirectoryPath = roborazziSystemPropertyCompareOutputDirectory(),
       ),
     ),
