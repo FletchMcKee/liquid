@@ -17,6 +17,8 @@ import io.github.fletchmckee.liquid.samples.app.demos.many.ManyLiquidNodesScreen
 import io.github.fletchmckee.liquid.samples.app.demos.stickyheader.LiquidStickyHeaderScreen
 import io.github.fletchmckee.liquid.samples.app.theme.LiquidTheme
 import kotlin.test.Test
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 class LiquidScreenshotTest : ScreenshotTest() {
   @Test fun capture_drag_no_frost() = runLiquidScreenshotTest {
@@ -59,19 +61,19 @@ class LiquidScreenshotTest : ScreenshotTest() {
   }
 
   @Test fun capture_clock_no_frost() = runLiquidScreenshotTest {
-    LiquidClockScreen()
+    LiquidClockScreen(clock = fakeClock)
   }
 
   @Test fun capture_clock_10_dp_frost() = runLiquidScreenshotTest(
     initialFrost = 10f,
   ) {
-    LiquidClockScreen()
+    LiquidClockScreen(clock = fakeClock)
   }
 
   @Test fun capture_clock_quarter_dispersion_no_frost() = runLiquidScreenshotTest(
     initialDispersion = 0.25f,
   ) {
-    LiquidClockScreen()
+    LiquidClockScreen(clock = fakeClock)
   }
 
   private fun runLiquidScreenshotTest(
@@ -103,5 +105,9 @@ class LiquidScreenshotTest : ScreenshotTest() {
       firstVisibleItemIndex = 19,
       firstVisibleItemScrollOffset = 400,
     )
+
+    val fakeClock = object : Clock {
+      override fun now(): Instant = Instant.fromEpochMilliseconds(0)
+    }
   }
 }

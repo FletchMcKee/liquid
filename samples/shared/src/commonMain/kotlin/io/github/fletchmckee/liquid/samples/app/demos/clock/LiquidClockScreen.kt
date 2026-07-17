@@ -73,6 +73,7 @@ fun LiquidClockScreen(
   liquidState: LiquidState = rememberLiquidState(),
   navController: NavController = rememberNavController(),
   windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass,
+  clock: Clock = Clock.System,
 ) {
   val initialUseLiquid = LocalUseLiquid.current
   val initialFrost = LocalInitialFrost.current
@@ -106,6 +107,7 @@ fun LiquidClockScreen(
       ClockTimer(
         liquidState = liquidState,
         useLiquid = useLiquid,
+        clock = clock,
         modifier = Modifier
           .systemBarsPadding()
           .padding(top = 72.dp)
@@ -144,14 +146,15 @@ fun LiquidClockScreen(
 private fun ClockTimer(
   liquidState: LiquidState,
   useLiquid: Boolean,
+  clock: Clock,
   modifier: Modifier = Modifier,
 ) {
-  val startTime = remember { Clock.System.now().toEpochMilliseconds() }
+  val startTime = remember { clock.now().toEpochMilliseconds() }
   var elapsedMillis by remember { mutableLongStateOf(0L) }
 
   LaunchedEffect(Unit) {
     while (isActive) {
-      elapsedMillis = Clock.System.now().toEpochMilliseconds() - startTime
+      elapsedMillis = clock.now().toEpochMilliseconds() - startTime
       delay(1.seconds)
     }
   }

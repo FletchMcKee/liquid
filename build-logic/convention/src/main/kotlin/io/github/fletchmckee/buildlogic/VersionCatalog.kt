@@ -16,6 +16,6 @@ val Project.libs
 internal data object Versions {
   val Java = JavaVersion.VERSION_11
   val Jvm = JvmTarget.JVM_11
-  const val CompileSdk = 36
+  const val CompileSdk = 37
   const val MinSdk = 23
 }
