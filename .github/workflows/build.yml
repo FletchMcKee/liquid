@@ -28,7 +28,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Java version
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -87,7 +87,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Java version
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -115,7 +115,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up Java version
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -159,7 +159,7 @@ jobs:
           lfs: true
           ref: ${{ github.head_ref || github.ref }}
 
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -216,7 +216,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Java version
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -241,7 +241,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Set up Java version
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -278,7 +278,7 @@ jobs:
     needs: [final-status]
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
@@ -302,7 +302,7 @@ jobs:
     needs: [final-status]
     steps:
       - uses: actions/checkout@v7
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
           java-version-file: .github/workflows/.java-version
