@@ -41,22 +41,6 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
   }
 }
 
-fun KotlinMultiplatformExtension.addDefaultLiquidTargets() {
-  jvm()
-
-  iosArm64()
-  iosSimulatorArm64()
-
-  macosArm64()
-
-  @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-  wasmJs {
-    browser()
-  }
-
-  js { browser() }
-}
-
 internal fun Project.kotlin(action: KotlinMultiplatformExtension.() -> Unit) {
   extensions.configure<KotlinMultiplatformExtension>(action)
 }

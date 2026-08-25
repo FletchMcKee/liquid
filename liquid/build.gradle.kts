@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 plugins {
@@ -18,7 +19,23 @@ kotlin {
   @OptIn(ExperimentalAbiValidation::class)
   abiValidation()
 
-  addDefaultLiquidTargets()
+  jvm()
+
+  iosArm64()
+  iosSimulatorArm64()
+
+  macosArm64()
+
+  @OptIn(ExperimentalWasmDsl::class)
+  wasmJs {
+    browser()
+    binaries.executable()
+  }
+
+  js {
+    browser()
+    binaries.executable()
+  }
 
   compilerOptions { allWarningsAsErrors = true }
 
