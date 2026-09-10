@@ -1,5 +1,7 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
+import com.android.build.api.dsl.KotlinMultiplatformAndroidDeviceTestCompilation
+import com.android.build.api.dsl.KotlinMultiplatformAndroidHostTestCompilation
 import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
 import io.github.fletchmckee.buildlogic.Versions
 import org.gradle.api.Plugin
@@ -20,13 +22,14 @@ class AndroidMultiplatformLibraryConventionPlugin : Plugin<Project> {
           compileSdk = Versions.CompileSdk
           minSdk = Versions.MinSdk
 
-          withDeviceTestBuilder {
-            sourceSetTreeName = KotlinSourceSetTree.test.name
-          }.configure {
+          compilations.withType(KotlinMultiplatformAndroidDeviceTestCompilation::class.java).configureEach {
+            targetSdk { version = release(Versions.CompileSdk) }
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
           }
 
-          withHostTest { isIncludeAndroidResources = true }
+          compilations.withType(KotlinMultiplatformAndroidHostTestCompilation::class.java).configureEach {
+            isIncludeAndroidResources = true
+          }
 
           packaging {
             resources {
