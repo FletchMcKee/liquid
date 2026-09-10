@@ -4,6 +4,7 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSetTree
 
 plugins {
   alias(libs.plugins.liquid.kotlin.multiplatform)
@@ -42,6 +43,7 @@ kotlin {
   android {
     namespace = "io.github.fletchmckee.liquid"
     androidResources.enable = true
+    withDeviceTestBuilder { sourceSetTreeName = KotlinSourceSetTree.test.name }
   }
 
   sourceSets {
@@ -65,7 +67,7 @@ kotlin {
       implementation(libs.jetbrains.compose.uiTest)
     }
 
-    androidDeviceTest.dependencies {
+    getByName("androidDeviceTest").dependencies {
       implementation(libs.androidx.junit)
       implementation(libs.compose.test.manifest)
     }
