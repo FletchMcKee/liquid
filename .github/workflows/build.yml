@@ -208,7 +208,7 @@ jobs:
 
   browser-tests:
     name: Browser tests
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     timeout-minutes: 60
     steps:
       - name: Checkout
