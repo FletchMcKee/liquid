@@ -96,7 +96,7 @@ kotlin {
       implementation(projects.core.testing)
       // TODO: Remove once Robolectric is updated
       //noinspection UseTomlInstead
-      implementation("org.ow2.asm:asm:9.10.1")
+      implementation("org.ow2.asm:asm:9.11")
     }
   }
 }
