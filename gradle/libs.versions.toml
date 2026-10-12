@@ -59,7 +59,7 @@ ktor-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 # Formatting
 # Used in convention plugins
 #noinspection UnusedVersionCatalogEntry
-ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.6.7"
+ktlint-compose-rules = "io.nlopez.compose.rules:ktlint:0.6.8"
 
 # build-logic dependencies
 android-api-gradlePlugin = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
