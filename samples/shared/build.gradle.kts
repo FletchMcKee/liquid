@@ -20,6 +20,7 @@ kotlin {
 
   android {
     namespace = "io.github.fletchmckee.liquid.samples.shared"
+    minSdk = 24
     androidResources.enable = true
   }
 
