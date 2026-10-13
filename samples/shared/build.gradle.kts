@@ -95,9 +95,6 @@ kotlin {
     commonTest.dependencies {
       implementation(kotlin("test"))
       implementation(projects.core.testing)
-      // TODO: Remove once Robolectric is updated
-      //noinspection UseTomlInstead
-      implementation("org.ow2.asm:asm:9.10.1")
     }
   }
 }
