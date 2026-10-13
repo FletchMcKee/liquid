@@ -16,7 +16,7 @@ fun Project.configureAndroidApp() {
     compileSdk = Versions.CompileSdk
 
     defaultConfig {
-      minSdk = Versions.MinSdk
+      minSdk = 24
       targetSdk = Versions.CompileSdk
 
       testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
