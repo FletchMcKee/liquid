@@ -1,0 +1,9 @@
+.md-typeset h1, .md-typeset h2, .md-typeset h3, .md-typeset h4 {
+    font-weight: bold;
+}
+
+:root > * {
+  --md-code-hl-number-color: #6897BB;
+  --md-code-hl-string-color: #6A8759;
+  --md-code-hl-variable-color: #9876AA;
+}
