@@ -25,7 +25,7 @@ robolectric = "4.17"
 roborazzi = "1.76.0"
 serialization = "1.12.0"
 spotless = "8.10.4"
-uiautomator = "2.4.0"
+uiautomator = "2.4.1"
 
 [libraries]
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
