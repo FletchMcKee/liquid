@@ -17,6 +17,10 @@ pluginManagement {
   }
 }
 
+plugins {
+  id("io.github.fletchmckee.liquidSettings")
+}
+
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
   repositories {
@@ -28,6 +32,12 @@ dependencyResolutionManagement {
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 enableFeaturePreview("STABLE_CONFIGURATION_CACHE")
 enableFeaturePreview("NO_IMPLICIT_LOOKUP_IN_PARENT_PROJECTS")
+
+liquidVersions {
+  jdk.set(11)
+  minSdk.set(24)
+  compileSdk.set(37)
+}
 
 include(":liquid")
 include(":benchmark")

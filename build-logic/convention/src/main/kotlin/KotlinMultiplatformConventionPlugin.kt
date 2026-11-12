@@ -1,13 +1,13 @@
 // Copyright 2025, Colin McKee
 // SPDX-License-Identifier: Apache-2.0
-import io.github.fletchmckee.buildlogic.Versions
 import io.github.fletchmckee.buildlogic.configureSpotless
 import io.github.fletchmckee.buildlogic.configureTesting
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.the
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 
@@ -15,13 +15,7 @@ import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 class KotlinMultiplatformConventionPlugin : Plugin<Project> {
   override fun apply(target: Project) = with(target) {
     pluginManager.apply("org.jetbrains.kotlin.multiplatform")
-
-    configureTesting()
-
-    tasks.withType<JavaCompile>().configureEach {
-      sourceCompatibility = Versions.Java.toString()
-      targetCompatibility = Versions.Java.toString()
-    }
+    val liquidVersions = the<LiquidVersions>()
 
     kotlin {
       applyDefaultHierarchyTemplate()
@@ -32,12 +26,13 @@ class KotlinMultiplatformConventionPlugin : Plugin<Project> {
 
       targets.withType<KotlinJvmTarget>().configureEach {
         compilerOptions {
-          jvmTarget.set(Versions.Jvm)
+          jvmTarget.set(JvmTarget.fromTarget(liquidVersions.jdk.get().toString()))
         }
       }
     }
 
     configureSpotless()
+    configureTesting()
   }
 }
 
