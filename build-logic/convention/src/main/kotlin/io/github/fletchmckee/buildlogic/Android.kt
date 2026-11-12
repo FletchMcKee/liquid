@@ -2,22 +2,23 @@
 // SPDX-License-Identifier: Apache-2.0
 package io.github.fletchmckee.buildlogic
 
+import LiquidVersions
 import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.TestExtension
-import com.android.build.api.variant.ApplicationAndroidComponentsExtension
-import com.android.build.api.variant.HasUnitTestBuilder
-import com.android.build.api.variant.TestAndroidComponentsExtension
+import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.the
 
 // TODO: Figure out a better way of setting this up now that BaseExtension is no longer available.
 fun Project.configureAndroidApp() {
+  val liquidVersions = the<LiquidVersions>()
   extensions.configure<ApplicationExtension> {
-    compileSdk = Versions.CompileSdk
+    compileSdk = liquidVersions.compileSdk.get()
 
     defaultConfig {
-      minSdk = 24
-      targetSdk = Versions.CompileSdk
+      minSdk = liquidVersions.minSdk.get()
+      targetSdk = liquidVersions.compileSdk.get()
 
       testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -35,29 +36,20 @@ fun Project.configureAndroidApp() {
     }
 
     compileOptions {
-      sourceCompatibility = Versions.Java
-      targetCompatibility = Versions.Java
-    }
-  }
-
-  extensions.configure<ApplicationAndroidComponentsExtension> {
-    beforeVariants(selector().withBuildType("release")) { variantBuilder ->
-      (variantBuilder as? HasUnitTestBuilder)?.enableUnitTest = false
-    }
-
-    beforeVariants(selector().withBuildType("benchmark")) { variantBuilder ->
-      (variantBuilder as? HasUnitTestBuilder)?.enableUnitTest = false
+      sourceCompatibility = JavaVersion.toVersion(liquidVersions.jdk.get())
+      targetCompatibility = JavaVersion.toVersion(liquidVersions.jdk.get())
     }
   }
 }
 
 fun Project.configureAndroidTest() {
+  val liquidVersions = the<LiquidVersions>()
   extensions.configure<TestExtension> {
-    compileSdk = Versions.CompileSdk
+    compileSdk = liquidVersions.compileSdk.get()
 
     defaultConfig {
-      minSdk = Versions.MinSdk
-      targetSdk = Versions.CompileSdk
+      minSdk = liquidVersions.minSdk.get()
+      targetSdk = liquidVersions.compileSdk.get()
       testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -68,18 +60,8 @@ fun Project.configureAndroidTest() {
     }
 
     compileOptions {
-      sourceCompatibility = Versions.Java
-      targetCompatibility = Versions.Java
-    }
-  }
-
-  extensions.configure<TestAndroidComponentsExtension> {
-    beforeVariants(selector().withBuildType("release")) { variantBuilder ->
-      (variantBuilder as? HasUnitTestBuilder)?.enableUnitTest = false
-    }
-
-    beforeVariants(selector().withBuildType("benchmark")) { variantBuilder ->
-      (variantBuilder as? HasUnitTestBuilder)?.enableUnitTest = false
+      sourceCompatibility = JavaVersion.toVersion(liquidVersions.jdk.get())
+      targetCompatibility = JavaVersion.toVersion(liquidVersions.jdk.get())
     }
   }
 }
