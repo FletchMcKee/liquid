@@ -5,6 +5,7 @@ plugins {
 }
 
 dependencies {
+  compileOnly(project(":settings"))
   compileOnly(libs.android.api.gradlePlugin)
   compileOnly(libs.kotlin.gradlePlugin)
   compileOnly(libs.compose.gradlePlugin)
@@ -19,50 +20,32 @@ tasks.validatePlugins {
 gradlePlugin {
   plugins {
     register("root") {
-      id =
-        libs.plugins.liquid.root
-          .get()
-          .pluginId
+      id = libs.plugins.liquid.root.get().pluginId
       implementationClass = "RootConventionPlugin"
     }
 
     register("kotlinMultiplatform") {
-      id =
-        libs.plugins.liquid.kotlin.multiplatform
-          .get()
-          .pluginId
+      id = libs.plugins.liquid.kotlin.multiplatform.get().pluginId
       implementationClass = "KotlinMultiplatformConventionPlugin"
     }
 
     register("composeMultiplatform") {
-      id =
-        libs.plugins.liquid.compose.multiplatform
-          .get()
-          .pluginId
+      id = libs.plugins.liquid.compose.multiplatform.get().pluginId
       implementationClass = "ComposeMultiplatformConventionPlugin"
     }
 
     register("androidMultiplatformLibrary") {
-      id =
-        libs.plugins.liquid.android.kotlin.multiplatform.library
-          .get()
-          .pluginId
+      id = libs.plugins.liquid.android.kotlin.multiplatform.library.get().pluginId
       implementationClass = "AndroidMultiplatformLibraryConventionPlugin"
     }
 
     register("androidApplication") {
-      id =
-        libs.plugins.liquid.android.application
-          .get()
-          .pluginId
+      id = libs.plugins.liquid.android.application.get().pluginId
       implementationClass = "AndroidApplicationConventionPlugin"
     }
 
     register("androidTest") {
-      id =
-        libs.plugins.liquid.android.test
-          .get()
-          .pluginId
+      id = libs.plugins.liquid.android.test.get().pluginId
       implementationClass = "AndroidTestConventionPlugin"
     }
   }

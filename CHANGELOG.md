@@ -3,7 +3,7 @@
 ## [Unreleased]
 
 New:
-- Support for Compose Multiplatform 1.10.1 ([#131](https://github.com/FletchMcKee/liquid/pull/131)).
+- Support for Compose Multiplatform 1.12.2 ([#260](https://github.com/FletchMcKee/liquid/pull/260)).
 
 ## [1.1.1] - 2026-01-18
 
