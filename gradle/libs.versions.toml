@@ -21,7 +21,7 @@ mavenPublish = "0.37.0"
 jetbrainsLifecycle = "2.11.0"
 jetbrainsNavigation = "2.10.0"
 media3 = "1.11.1"
-robolectric = "4.17"
+robolectric = "4.18.1"
 roborazzi = "1.77.0"
 serialization = "1.13.0"
 spotless = "8.11.0"
@@ -102,5 +102,6 @@ liquid-android-application = { id = "io.github.fletchmckee.liquid.android.applic
 liquid-android-test = { id = "io.github.fletchmckee.liquid.android.test" }
 liquid-kotlin-multiplatform = { id = "io.github.fletchmckee.liquid.kotlin.multiplatform" }
 liquid-compose-multiplatform = { id = "io.github.fletchmckee.liquid.compose.multiplatform" }
+liquid-robolectric = { id = "io.github.fletchmckee.liquid.robolectric" }
 
 
