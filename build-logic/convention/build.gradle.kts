@@ -48,5 +48,10 @@ gradlePlugin {
       id = libs.plugins.liquid.android.test.get().pluginId
       implementationClass = "AndroidTestConventionPlugin"
     }
+
+    register("robolectric") {
+      id = libs.plugins.liquid.robolectric.get().pluginId
+      implementationClass = "RobolectricConventionPlugin"
+    }
   }
 }

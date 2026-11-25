@@ -7,6 +7,7 @@ plugins {
   alias(libs.plugins.liquid.kotlin.multiplatform)
   alias(libs.plugins.liquid.compose.multiplatform)
   alias(libs.plugins.liquid.android.kotlin.multiplatform.library)
+  alias(libs.plugins.liquid.robolectric)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.roborazzi)
 }

@@ -23,6 +23,8 @@ class AndroidMultiplatformLibraryConventionPlugin : Plugin<Project> {
           compileSdk = liquidVersions.compileSdk.get()
           minSdk = liquidVersions.minSdk.get()
 
+          withHostTestBuilder {}
+
           compilations.withType(KotlinMultiplatformAndroidDeviceTestCompilation::class.java).configureEach {
             targetSdk { version = release(liquidVersions.compileSdk.get()) }
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
