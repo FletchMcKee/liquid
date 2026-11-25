@@ -51,6 +51,7 @@ jobs:
           -x jsBrowserTest
           -x wasmJsBrowserTest
           -x jvmTest
+          -x testAndroidHostTest
 
   jvm-tests:
     name: JVM tests
