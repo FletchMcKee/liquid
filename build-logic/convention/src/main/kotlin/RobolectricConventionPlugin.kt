@@ -1,3 +1,5 @@
+// Copyright 2026, Colin McKee
+// SPDX-License-Identifier: Apache-2.0
 import com.android.build.api.variant.KotlinMultiplatformAndroidComponentsExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
